@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EasyTalent</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome para iconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- CSS personalizado -->
+    <style>
+        .hero-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 100px 0;
+        }
+        
+        .feature-card {
+            border: none;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .btn-primary {
+            background-color: #667eea;
+            border-color: #667eea;
+        }
+        
+        .btn-primary:hover {
+            background-color: #5a6fd8;
+            border-color: #5a6fd8;
+        }
+        
+        .btn-secondary {
+            background-color: #6c757d;
+            border-color: #6c757d;
+        }
+        
+        .navbar-brand {
+            font-weight: bold;
+            font-size: 1.5rem;
+        }
+        
+        .section-padding {
+            padding: 80px 0;
+        }
+        
+        .icon-large {
+            font-size: 3rem;
+            color: #667eea;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <i class="text-primary"></i>EasyTalent
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#features">Características</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#modules">Módulos</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#faq">FAQ</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'login' %}">Iniciar Sesión</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'register' %}">Registrarse</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6">
+                    <h1 class="display-4 fw-bold mb-4">
+                        Potencia tu Equipo de RRHH con <span class="text-warning">Software</span>
+                    </h1>
+                    <p class="lead mb-4">
+                        EasyTalent HRMS ofrece todas las características que esperarías de tu software de RRHH y mucho más.
+                    </p>
+                    <div class="d-flex gap-3">
+                        <a href="{% url 'login' %}" class="btn btn-primary btn-lg">
+                            <i class="fas fa-rocket me-2"></i>Iniciar Sesión
+                        </a>
+                    </div>
+                </div>
+                <div class="col-lg-6 text-center">
+                    
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="section-padding bg-light">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="display-5 fw-bold">¿Qué hace que EasyTalent HRMS se destaque?</h2>
+            </div>
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="card feature-card h-100 text-center p-4">
+                        <div class="card-body">
+                            <i class="fas fa-gift icon-large mb-3"></i>
+                            <h4 class="card-title">Servicio</h4>
+                            <p class="card-text">
+                                EasyTalent es la única solución integral de software de RRHH
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card feature-card h-100 text-center p-4">
+                        <div class="card-body">
+                            <i class="fas fa-code icon-large mb-3"></i>
+                            <h4 class="card-title">Control</h4>
+                            <p class="card-text">
+                                EasyTalent Tú tienes el control. Úsalo como mejor te parezca. Sin límites. Sin asteriscos.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card feature-card h-100 text-center p-4">
+                        <div class="card-body">
+                            <i class="fas fa-server icon-large mb-3"></i>
+                            <h4 class="card-title">Aloja tú mismo</h4>
+                            <p class="card-text">
+                                EasyTalent es tuyo, para siempre. Puedes alojarlo donde quieras. Ya sea localmente o en un servidor en vivo. Es todo tuyo.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Modules Section -->
+    <section id="modules" class="section-padding">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="display-5 fw-bold">Todos los módulos que necesitarás en un solo software</h2>
+            </div>
+            <div class="row g-4">
+                <div class="col-md-6 col-lg-4">
+                    <div class="card feature-card h-100">
+                        <div class="card-body">
+                            <i class="fas fa-users icon-large mb-3"></i>
+                            <h5 class="card-title">Gestión de Empleados</h5>
+                            <p class="card-text">Centraliza la gestión de empleados con integración LDAP para sincronización de datos perfecta.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-4">
+                    <div class="card feature-card h-100">
+                        <div class="card-body">
+                            <i class="fas fa-clock icon-large mb-3"></i>
+                            <h5 class="card-title">Control de Asistencia</h5>
+                            <p class="card-text">Automatiza el registro de entrada y salida con integración biométrica para gestión precisa.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-4">
+                    <div class="card feature-card h-100">
+                        <div class="card-body">
+                            <i class="fas fa-calendar icon-large mb-3"></i>
+                            <h5 class="card-title">Gestión de Permisos</h5>
+                            <p class="card-text">Simplifica las solicitudes de permisos con flujos de aprobación personalizables.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-4">
+                    <div class="card feature-card h-100">
+                        <div class="card-body">
+                            <i class="fas fa-money-bill-wave icon-large mb-3"></i>
+                            <h5 class="card-title">Nómina</h5>
+                            <p class="card-text">Gestiona contratos, asignaciones y deducciones con cálculos automáticos de impuestos.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-4">
+                    <div class="card feature-card h-100">
+                        <div class="card-body">
+                            <i class="fas fa-chart-bar icon-large mb-3"></i>
+                            <h5 class="card-title">Gestión del Rendimiento</h5>
+                            <p class="card-text">OKRs y retroalimentación 360° para mejorar continuamente el rendimiento.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-4">
+                    <div class="card feature-card h-100">
+                        <div class="card-body">
+                            <i class="fas fa-briefcase icon-large mb-3"></i>
+                            <h5 class="card-title">Reclutamiento</h5>
+                            <p class="card-text">Gestiona candidatos y procesos de reclutamiento con seguimiento en tiempo real.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section id="faq" class="section-padding bg-light">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="display-5 fw-bold">Preguntas Frecuentes</h2>
+            </div>
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <div class="accordion" id="faqAccordion">
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#faq1">
+                                    ¿Por qué las empresas utilizan software HRMS?
+                                </button>
+                            </h2>
+                            <div id="faq1" class="accordion-collapse collapse show" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body">
+                                    Las empresas utilizan software de gestión de recursos humanos para automatizar actividades de RRHH, aumentar la productividad, disminuir errores y asegurar el cumplimiento de las leyes laborales.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2">
+                                    ¿Se puede personalizar Horilla para adaptarse a requisitos empresariales específicos?
+                                </button>
+                            </h2>
+                            <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body">
+                                    Sí, el marco de código abierto de Horilla permite a las organizaciones adaptar módulos, flujos de trabajo y características para alinearse con sus procesos únicos de gestión de RRHH.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq3">
+                                    ¿Es Horilla ideal tanto para pequeñas como grandes empresas?
+                                </button>
+                            </h2>
+                            <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body">
+                                    Sí, el diseño modular y escalable de Horilla lo hace ideal para empresas de todos los tamaños, desde startups hasta grandes empresas, en diversas industrias.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="section-padding bg-white text-dark">
+        <div class="container text-center">
+            <h2 class="display-5 fw-bold mb-4">Controla Tu Empresa</h2>
+            <p class="lead mb-4">
+                Con el Software EasyTalent HRMS tienes total libertad para usarlo como mejor te parezca. Sin límites, sin asteriscos.
+            </p>
+            <div class="d-flex justify-content-center gap-3">
+                <a href="{% url 'login'%}" class="btn btn-primary btn-lg">
+                    <i class="fas fa-rocket me-2"></i>Comenzar Gratis
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white py-4">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5><i class="text-primary"></i>EasyTalent</h5>
+                    <p>Software de RRHH para empresas de todos los tamaños.</p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <p>&copy; 2025 EasyTalent. Todos los derechos reservados.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Smooth scrolling para enlaces internos
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

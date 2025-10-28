@@ -62,7 +62,8 @@ from horilla_audit.cbv import audit
 from horilla_audit.models import AuditTag
 
 urlpatterns = [
-    path("", views.home, name="home-page"),
+    path("", views.landing_page, name="landing-page"),
+    path("dashboard/", views.home, name="home-page"),
     path(
         "employee/work-type-request-view/",
         work_type_request.WorkRequestView.as_view(),

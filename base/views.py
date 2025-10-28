@@ -598,6 +598,13 @@ def initialize_job_position_delete(request, obj_id):
             "company": company,
         },
     )
+    
+
+def landing_page(request):
+    """
+    Vista para mostrar la página de landing
+    """
+    return render(request, 'landing/landing_page.html')
 
 
 def login_user(request):
@@ -607,7 +614,7 @@ def login_user(request):
     if request.method == "POST":
         username = request.POST.get("username")
         password = request.POST.get("password")
-        next_url = request.GET.get("next", "/")
+        next_url = request.GET.get("next", "/dashboard/")
         query_params = request.GET.dict()
         query_params.pop("next", None)
         params = urlencode(query_params)
@@ -646,7 +653,7 @@ def login_user(request):
         if not url_has_allowed_host_and_scheme(
             next_url, allowed_hosts={request.get_host()}
         ):
-            next_url = "/"
+            next_url = "/dashboard/"
 
         if params:
             next_url += f"?{params}"

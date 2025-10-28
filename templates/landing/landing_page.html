@@ -81,8 +81,9 @@
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
         <div class="container">
-            <a class="navbar-brand" href="#">
-                <i class="text-primary"></i>{% trans "EasyTalent" %}
+            <a class="navbar-brand d-flex align-items-center gap-2" href="#">
+                <img src="{% static 'favicons/android-chrome-192x192.png' %}" alt="EasyTalent" height="40" width="40">
+                {% trans "EasyTalent" %}
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>

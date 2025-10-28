@@ -58,12 +58,12 @@
                         class="oh-btn oh-onboarding-card__button mt-4 oh-btn--secondary oh-btn--shadow w-100 mb-4"
                         role="button">
                         <ion-icon class="me-2" name="lock-closed-outline"></ion-icon>
-                        {% trans "Iniciar Sesión Seguro" %}
+                        {% trans "Iniciar Sesión" %}
                     </button>
                     {% if not initialize_database %}
                         <small class="text-center">
                             <a href="{% url 'forgot-password' %}" class="oh-link oh-link--secondary justify-content-center">
-                                {% trans "¿Olvidaste tu contraseña?" %}?
+                                {% trans "¿Olvidaste tu contraseña?" %}
                             </a>
                         </small>
                         <small class="text-center d-block">

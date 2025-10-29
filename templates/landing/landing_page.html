@@ -5,7 +5,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% trans "EasyTalent" %}</title>
+    <title>{% trans "EasyTalent" %} – Software de RRHH</title>
     
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -24,7 +24,7 @@
     
     <!-- CSS personalizado -->
     <style>
-        :root{
+        :root {
             --primary: #e54f38;
             --primary-600: #d04430;
             --primary-700: #b93d2b;
@@ -35,12 +35,32 @@
             background: linear-gradient(135deg, var(--primary) 0%, var(--primary-700) 100%);
             color: white;
             padding: 100px 0;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url('{% static "landing/images/grid.svg" %}');
+            opacity: 0.1;
+            background-size: cover;
+        }
+        
+        .hero-content {
+            position: relative;
+            z-index: 2;
         }
         
         .feature-card {
             border: none;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             transition: transform 0.3s ease;
+            height: 100%;
         }
         
         .feature-card:hover {
@@ -74,6 +94,41 @@
         .icon-large {
             font-size: 3rem;
             color: var(--primary);
+        }
+        
+        .hero-image {
+            position: relative;
+            z-index: 2;
+        }
+        
+        .hero-image img {
+            max-width: 100%;
+            height: auto;
+        }
+        
+        .feature-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 20px;
+        }
+        
+        .module-screenshot {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+        
+        .app-mockup {
+            max-width: 300px;
+            height: auto;
+        }
+        
+        .pattern-bg {
+            background-image: url('{% static "landing/images/pattern-horilla.svg" %}');
+            background-size: cover;
+            background-position: center;
+            opacity: 0.1;
         }
     </style>
 </head>
@@ -113,10 +168,10 @@
     <!-- Hero Section -->
     <section class="hero-section">
         <div class="container">
-            <div class="row align-items-center">
+            <div class="row align-items-center hero-content">
                 <div class="col-lg-6">
                     <h1 class="display-4 fw-bold mb-4">
-                        Potencia tu Equipo de RRHH con <span class="text-warning">Software</span>
+                        Potencia tu Equipo de RRHH con <span class="text-warning">EasyTalent</span>
                     </h1>
                     <p class="lead mb-4">
                         EasyTalent HRMS ofrece todas las características que esperarías de tu software de RRHH y mucho más.
@@ -127,8 +182,8 @@
                         </a>
                     </div>
                 </div>
-                <div class="col-lg-6 text-center">
-                    
+                <div class="col-lg-6 hero-image text-center">
+                    <img src="{% static 'landing/images/home-img-new.avif' %}" alt="EasyTalent Dashboard" class="img-fluid">
                 </div>
             </div>
         </div>
@@ -144,10 +199,10 @@
                 <div class="col-md-4">
                     <div class="card feature-card h-100 text-center p-4">
                         <div class="card-body">
-                            <i class="fas fa-gift icon-large mb-3"></i>
+                            <img src="{% static 'landing/images/free-of-cost.svg' %}" alt="Servicio" class="feature-icon">
                             <h4 class="card-title">Servicio</h4>
                             <p class="card-text">
-                                EasyTalent es la única solución integral de software de RRHH
+                                EasyTalent es la única solución integral de software de RRHH para tu empresa.
                             </p>
                         </div>
                     </div>
@@ -155,10 +210,10 @@
                 <div class="col-md-4">
                     <div class="card feature-card h-100 text-center p-4">
                         <div class="card-body">
-                            <i class="fas fa-code icon-large mb-3"></i>
+                            <img src="{% static 'landing/images/open-source.svg' %}" alt="Control" class="feature-icon">
                             <h4 class="card-title">Control</h4>
                             <p class="card-text">
-                                EasyTalent Tú tienes el control. Úsalo como mejor te parezca. Sin límites. Sin asteriscos.
+                                EasyTalent. Tú tienes el control. Úsalo como mejor te parezca. Sin límites. Sin asteriscos.
                             </p>
                         </div>
                     </div>
@@ -166,7 +221,7 @@
                 <div class="col-md-4">
                     <div class="card feature-card h-100 text-center p-4">
                         <div class="card-body">
-                            <i class="fas fa-server icon-large mb-3"></i>
+                            <img src="{% static 'landing/images/host-yourself.svg' %}" alt="Soluciones para tu empresa" class="feature-icon">
                             <h4 class="card-title">Soluciones para tu empresa</h4>
                             <p class="card-text">
                                 EasyTalent es la solución perfecta para tu empresa. Ofrecemos todas las características que necesitas para gestionar tu personal de manera eficiente y efectiva.
@@ -188,7 +243,7 @@
                 <div class="col-md-6 col-lg-4">
                     <div class="card feature-card h-100">
                         <div class="card-body">
-                            <i class="fas fa-users icon-large mb-3"></i>
+                            <img src="{% static 'landing/images/horilla-employee-screenshot.webp' %}" alt="Gestión de Empleados" class="module-screenshot mb-3">
                             <h5 class="card-title">Gestión de Empleados</h5>
                             <p class="card-text">Centraliza la gestión de empleados con integración LDAP para sincronización de datos perfecta.</p>
                         </div>
@@ -197,7 +252,7 @@
                 <div class="col-md-6 col-lg-4">
                     <div class="card feature-card h-100">
                         <div class="card-body">
-                            <i class="fas fa-clock icon-large mb-3"></i>
+                            <img src="{% static 'landing/images/horilla-attendance-screenshot.webp' %}" alt="Control de Asistencia" class="module-screenshot mb-3">
                             <h5 class="card-title">Control de Asistencia</h5>
                             <p class="card-text">Automatiza el registro de entrada y salida con integración biométrica para gestión precisa.</p>
                         </div>
@@ -206,7 +261,7 @@
                 <div class="col-md-6 col-lg-4">
                     <div class="card feature-card h-100">
                         <div class="card-body">
-                            <i class="fas fa-calendar icon-large mb-3"></i>
+                            <img src="{% static 'landing/images/horilla-leave-screenshot.webp' %}" alt="Gestión de Permisos" class="module-screenshot mb-3">
                             <h5 class="card-title">Gestión de Permisos</h5>
                             <p class="card-text">Simplifica las solicitudes de permisos con flujos de aprobación personalizables.</p>
                         </div>
@@ -215,7 +270,7 @@
                 <div class="col-md-6 col-lg-4">
                     <div class="card feature-card h-100">
                         <div class="card-body">
-                            <i class="fas fa-money-bill-wave icon-large mb-3"></i>
+                            <img src="{% static 'landing/images/horilla-payroll-screenshot.webp' %}" alt="Nómina" class="module-screenshot mb-3">
                             <h5 class="card-title">Nómina</h5>
                             <p class="card-text">Gestiona contratos, asignaciones y deducciones con cálculos automáticos de impuestos.</p>
                         </div>
@@ -224,7 +279,7 @@
                 <div class="col-md-6 col-lg-4">
                     <div class="card feature-card h-100">
                         <div class="card-body">
-                            <i class="fas fa-chart-bar icon-large mb-3"></i>
+                            <img src="{% static 'landing/images/horilla-pms-screenshot.webp' %}" alt="Gestión del Rendimiento" class="module-screenshot mb-3">
                             <h5 class="card-title">Gestión del Rendimiento</h5>
                             <p class="card-text">OKRs y retroalimentación 360° para mejorar continuamente el rendimiento.</p>
                         </div>
@@ -233,7 +288,7 @@
                 <div class="col-md-6 col-lg-4">
                     <div class="card feature-card h-100">
                         <div class="card-body">
-                            <i class="fas fa-briefcase icon-large mb-3"></i>
+                            <img src="{% static 'landing/images/horilla-recruitment-screenshot.webp' %}" alt="Reclutamiento" class="module-screenshot mb-3">
                             <h5 class="card-title">Reclutamiento</h5>
                             <p class="card-text">Gestiona candidatos y procesos de reclutamiento con seguimiento en tiempo real.</p>
                         </div>
@@ -243,8 +298,35 @@
         </div>
     </section>
 
+    <!-- Mobile App Section -->
+    <section class="section-padding bg-light">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6">
+                    <h2 class="display-5 fw-bold mb-4">Experimenta RRHH Inteligente con EasyTalent</h2>
+                    <p class="lead mb-4">
+                        Gestiona asistencia, permisos, empleados y mucho más sin esfuerzo con EasyTalent HRMS. Tus tareas de RRHH, simplificadas y optimizadas sobre la marcha.
+                    </p>
+                    <div class="d-flex gap-3 flex-wrap">
+                        <a href="https://play.google.com/store/apps/details?id=com.cybrosys.horilla_project" class="btn btn-primary btn-lg d-flex align-items-center">
+                            <img src="{% static 'landing/images/google-play-store.png' %}" alt="Google Play Store" height="40" class="me-2">
+                            Para Android
+                        </a>
+                        <a href="https://apps.apple.com/in/app/horilla-mobile-app/id6744724397" class="btn btn-secondary btn-lg d-flex align-items-center">
+                            <img src="{% static 'landing/images/app-store.png' %}" alt="App Store" height="40" class="me-2">
+                            Para iOS
+                        </a>
+                    </div>
+                </div>
+                <div class="col-lg-6 text-center">
+                    <img src="{% static 'landing/images/horilla-app-mockup.png' %}" alt="EasyTalent Mobile App" class="app-mockup">
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- FAQ Section -->
-    <section id="faq" class="section-padding bg-light">
+    <section id="faq" class="section-padding">
         <div class="container">
             <div class="text-center mb-5">
                 <h2 class="display-5 fw-bold">Preguntas Frecuentes</h2>
@@ -295,16 +377,19 @@
     </section>
 
     <!-- CTA Section -->
-    <section class="section-padding bg-white text-dark">
+    <section class="section-padding text-white" style="background-color: var(--primary);">
         <div class="container text-center">
             <h2 class="display-5 fw-bold mb-4">{% trans "Controla Tu Empresa" %}</h2>
             <p class="lead mb-4">
                 Con el Software EasyTalent HRMS tienes total libertad para usarlo como mejor te parezca. Sin límites, sin asteriscos.
             </p>
             <div class="d-flex justify-content-center gap-3">
-                <a href="{% url 'login'%}" class="btn btn-primary btn-lg">
+                <a href="{% url 'login' %}" class="btn btn-dark btn-lg">
                     <i class="fas fa-rocket me-2"></i>{% trans "Comenzar Gratis" %}
                 </a>
+            </div>
+            <div class="mt-4">
+                <img src="{% static 'landing/images/free-open-source.svg' %}" alt="Free and Open Source" class="img-fluid" style="max-width: 400px;">
             </div>
         </div>
     </section>
@@ -314,7 +399,10 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-6">
-                    <h5><i class="text-primary"></i>EasyTalent</h5>
+                    <h5 class="d-flex align-items-center gap-2">
+                        <img src="{% static 'favicons/android-chrome-192x192.png' %}" alt="EasyTalent" height="30" width="30">
+                        EasyTalent
+                    </h5>
                     <p>Software de RRHH para empresas de todos los tamaños.</p>
                 </div>
                 <div class="col-md-6 text-md-end">
@@ -323,29 +411,30 @@
             </div>
         </div>
     </footer>
-        <!-- Bootstrap JS (única inclusión) -->
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-        <!-- Ionicons -->
-        <script type="module" src="{% static 'images/ionicons/ui_icons/ionicons/ionicons.esm.js' %}"></script>
-        <script nomodule src="https://cdn.jsdelivr.net/npm/ionicons@7.1.0/dist/ionicons.js"></script>
-    
-        <!-- SweetAlert2 -->
-        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    
-        <script>
-            // Smooth scrolling para enlaces internos (sin interferir con componentes Bootstrap)
-            document.querySelectorAll('a[href^="#"]:not([data-bs-toggle])').forEach(anchor => {
-                anchor.addEventListener('click', function (e) {
-                    const href = this.getAttribute('href');
-                    if (!href || href === '#') return; // ignora anchors vacíos
-                    const target = document.querySelector(href);
-                    if (target) {
-                        e.preventDefault();
-                        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                    }
-                });
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Ionicons -->
+    <script type="module" src="{% static 'images/ionicons/ui_icons/ionicons/ionicons.esm.js' %}"></script>
+    <script nomodule src="https://cdn.jsdelivr.net/npm/ionicons@7.1.0/dist/ionicons.js"></script>
+
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+        // Smooth scrolling para enlaces internos (sin interferir con componentes Bootstrap)
+        document.querySelectorAll('a[href^="#"]:not([data-bs-toggle])').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                const href = this.getAttribute('href');
+                if (!href || href === '#') return; // ignora anchors vacíos
+                const target = document.querySelector(href);
+                if (target) {
+                    e.preventDefault();
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
             });
-        </script>
+        });
+    </script>
 </body>
 </html>

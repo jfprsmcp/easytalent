@@ -1990,7 +1990,16 @@ def company_view(request):
     """
     This method used to view created companies
     """
-    companies = Company.objects.all()
+    # Filtrar companies por la empresa seleccionada en la sesión
+    selected_company = request.session.get("selected_company")
+    
+    if selected_company and selected_company != "all":
+        # Solo mostrar la empresa del usuario
+        companies = Company.objects.filter(id=selected_company)
+    else:
+        # Si no hay selected_company o es "all", mostrar todas
+        companies = Company.objects.all()
+    
     return render(
         request,
         "base/company/company.html",
@@ -3698,15 +3707,34 @@ def employee_permission_assign(request, pk=None):
         emp_id = id_part
     else:
         id_part = None
+    
+    # Filtrar por la empresa seleccionada en la sesión
+    selected_company = request.session.get("selected_company")
+    
     if emp_id:
         template = "tabs/group_permissions.html"
-        employees = Employee.objects.filter(id=emp_id)
+        # Solo mostrar el empleado si pertenece a la empresa del usuario
+        if selected_company and selected_company != "all":
+            employees = Employee.objects.filter(
+                id=emp_id,
+                employee_work_info__company_id=selected_company
+            )
+        else:
+            employees = Employee.objects.filter(id=emp_id)
         context["employee"] = employees.first()
     else:
-        employees = Employee.objects.filter(
-            employee_user_id__user_permissions__isnull=False
-        ).distinct()
+        # Filtrar empleados por company_id
+        if selected_company and selected_company != "all":
+            employees = Employee.objects.filter(
+                employee_work_info__company_id=selected_company,
+                employee_user_id__user_permissions__isnull=False
+            ).distinct()
+        else:
+            employees = Employee.objects.filter(
+                employee_user_id__user_permissions__isnull=False
+            ).distinct()
         context["show_assign"] = True
+    
     permissions = [
         {
             "app": app_name.capitalize().replace("_", " "),

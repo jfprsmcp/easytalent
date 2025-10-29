@@ -491,6 +491,19 @@ class AssignPermission(Form):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        
+        # Obtener el request desde thread_locals (patrón usado en Horilla)
+        request = getattr(_thread_locals, "request", None)
+        
+        # Filtrar empleados por la empresa seleccionada en la sesión
+        if request and hasattr(request, 'session'):
+            selected_company = request.session.get("selected_company")
+            if selected_company and selected_company != "all":
+                # Actualizar el queryset del campo employee para filtrar por company_id
+                self.fields['employee'].queryset = Employee.objects.filter(
+                    employee_work_info__company_id=selected_company
+                )
+        
         reload_queryset(self.fields)
 
     def clean(self):

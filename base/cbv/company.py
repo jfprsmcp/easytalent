@@ -69,6 +69,28 @@ class CompanyListView(HorillaListView):
     selected_instances_key_id = "selectedInstance"
     bulk_update_fields = ["country", "state", "city", "zip"]
 
+    def get_queryset(self):
+        """
+        Return the list of items for this view.
+        Filter by selected_company in session.
+        """
+        queryset = super().get_queryset()
+        
+        # Filtrar por la empresa seleccionada en la sesión
+        selected_company = self.request.session.get("selected_company")
+        
+        # Convertir selected_company a int si no es None ni "all"
+        if selected_company and selected_company != "all":
+            try:
+                company_id = int(selected_company)
+                # Solo mostrar la empresa del usuario
+                queryset = queryset.filter(id=company_id)
+            except (ValueError, TypeError):
+                # Si hay error en la conversión, no mostrar empresas
+                queryset = queryset.none()
+        
+        return queryset
+
     def get_bulk_form(self):
         """
         Bulk from generating method
@@ -121,7 +143,7 @@ class CompanyListView(HorillaListView):
     row_attrs = """
                 id="companyTr{get_delete_instance}"
                 """
-
+    
     header_attrs = {
         "company_icon_with_name": """ style="width:180px !important" """,
     }

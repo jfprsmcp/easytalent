@@ -1,0 +1,70 @@
+{% extends "index.html" %}
+{% load i18n %}
+{% load static %}
+
+{% block content %}
+<div class="oh-wrapper">
+  <div class="oh-dashboard row">
+    <div class="oh-dashboard__left col-12 col-sm-12 col-md-12 col-lg-9">
+      <div class="oh-card-dashboard oh-card-dashboard--no-scale oh-card-dashboard--transparent">
+        <div class="oh-card-dashboard__header oh-card-dashboard__header--divider">
+          <span class="oh-card-dashboard__title">{% trans "Licencia de la empresa" %}</span>
+        </div>
+        <div class="oh-card-dashboard__body">
+          {% if company %}
+            <p><strong>{% trans "Empresa" %}:</strong> {{ company.company }}</p>
+          {% endif %}
+
+          {% if current %}
+            <div class="oh-alert oh-alert--info">
+              <h4 class="mb-2">{% trans "Plan actual" %}: {{ current.plan.plan_name }}</h4>
+              <p class="mb-1">{% trans "Estado" %}: {{ current.license_status }}{% if current.is_trial %} (Trial){% endif %}</p>
+              <p class="mb-1">{% trans "Válido" %}: {{ current.start_date }} → {{ current.end_date }}</p>
+              <p class="mb-3">{% trans "Límite de empleados" %}: {{ current.plan.max_employees }}</p>
+              <a class="oh-btn oh-btn--primary" href="{% url 'license_change' %}">{% trans "Cambiar/Actualizar plan" %}</a>
+            </div>
+          {% else %}
+            <div class="oh-alert oh-alert--warning">
+              <p class="mb-2">{% trans "No hay una licencia activa." %}</p>
+              <a class="oh-btn oh-btn--primary" href="{% url 'license_change' %}">{% trans "Elegir un plan" %}</a>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+
+      <div class="oh-card-dashboard oh-card-dashboard--no-scale oh-card-dashboard--transparent mt-3">
+        <div class="oh-card-dashboard__header oh-card-dashboard__header--divider">
+          <span class="oh-card-dashboard__title">{% trans "Planes disponibles" %}</span>
+        </div>
+        <div class="oh-card-dashboard__body">
+          <div class="row">
+            {% for p in plans %}
+              <div class="col-12 col-sm-12 col-md-6 col-lg-4">
+                <div class="oh-card-dashboard">
+                  <div class="oh-card-dashboard__header">
+                    <span class="oh-card-dashboard__title">{{ p.plan_name }}</span>
+                  </div>
+                  <div class="oh-card-dashboard__body">
+                    <p class="mb-2">{{ p.description }}</p>
+                    {% if p.plan_name == 'Trial' %}
+                      <p><strong>{% trans "Gratis por 2 días" %}</strong></p>
+                    {% else %}
+                      <p><strong>{% trans "Mensual" %}:</strong> {{ p.price_monthly }} {{ p.currency }}</p>
+                      <p><strong>{% trans "Anual" %}:</strong> {{ p.price_yearly }} {{ p.currency }}</p>
+                    {% endif %}
+                    <p class="mb-0"><strong>{% trans "Máx. empleados" %}:</strong> {{ p.max_employees }}</p>
+                  </div>
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <div class="oh-dashboard__right col-12 col-sm-12 col-md-12 col-lg-3">
+      <!-- Espacio para futuros widgets relacionados a licencias -->
+    </div>
+  </div>
+</div>
+{% endblock %}

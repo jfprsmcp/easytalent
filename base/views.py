@@ -787,15 +787,9 @@ def register_user(request):
                 # Asignar TODOS los permisos de superadmin pero limitados a su empresa
                 try:
                     from django.contrib.auth.models import Permission
-                    
-                    # Obtener TODOS los permisos disponibles
                     all_permissions = Permission.objects.all()
-                    
-                    # Asignar todos los permisos al usuario
                     user.user_permissions.set(all_permissions)
-                    
-                except Exception as e:
-                    # Si hay algún error obteniendo permisos, al menos asignar los básicos
+                except Exception:
                     try:
                         change_ownprofile = Permission.objects.get(codename="change_ownprofile")
                         view_ownprofile = Permission.objects.get(codename="view_ownprofile")
@@ -812,6 +806,36 @@ def register_user(request):
                     "text": "Mi Empresa",
                     "id": company.id,
                 }
+
+                # === NUEVO: Crear licencia Trial de 2 días ===
+                from licenses.models import LicensePlan, UserLicense
+                from django.utils import timezone
+                from datetime import timedelta
+
+                trial_plan = LicensePlan.objects.filter(plan_name='Trial', is_active=True).first()
+                if not trial_plan:
+                    trial_plan = LicensePlan.objects.create(
+                        plan_name='Trial',
+                        description='Prueba gratuita de 2 días para 1 usuario',
+                        price_monthly=0, price_yearly=0, currency='USD',
+                        max_employees=1, is_active=True,
+                    )
+
+                start = timezone.now().date()
+                end = start + timedelta(days=2)
+
+                UserLicense.objects.create(
+                    owner=user,
+                    company=company,
+                    plan=trial_plan,
+                    start_date=start,
+                    end_date=end,
+                    is_trial=True,
+                    trial_days=2,
+                    license_status='active',
+                    created_by=user
+                )
+                # === FIN NUEVO ===
 
         except Exception as e:
             messages.error(request, "No se pudo completar el registro. " + str(e))

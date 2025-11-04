@@ -1,5 +1,5 @@
 from django.contrib.auth.models import Group
-from django.urls import path, re_path
+from django.urls import path, include, re_path
 from django.utils.translation import gettext_lazy as _
 
 from base import announcement, request_and_approve, views
@@ -216,6 +216,7 @@ urlpatterns = [
     path("send-otp", views.send_otp, name="send-otp"),
     path("logout", views.logout_user, name="logout"),
     path("settings", views.common_settings, name="settings"),
+    path("settings/licenses/", include("licenses.urls")),
     path(
         "settings/user-group-create/", views.user_group_table, name="user-group-create"
     ),

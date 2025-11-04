@@ -76,6 +76,7 @@ INSTALLED_APPS = [
     "payroll",
     "widget_tweaks",
     "django_apscheduler",
+    "licenses",
 ]
 APSCHEDULER_DATETIME_FORMAT = "N j, Y, f:s a"
 
@@ -94,6 +95,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    'licenses.middleware.LicenseMiddleware',
 ]
 
 ROOT_URLCONF = "horilla.urls"
@@ -111,6 +113,7 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
+                "licenses.context_processors.current_license",
             ],
         },
     },

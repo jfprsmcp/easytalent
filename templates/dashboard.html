@@ -138,6 +138,71 @@
 
 {% include "generic/components.html" %}
     <div class="oh-wrapper">
+    <!-- Banner de Licencia -->
+    {% if current_license %}
+    <!-- Modal de información de licencia -->
+    <div class="oh-modal" id="licenseInfoModal" role="dialog" aria-labelledby="licenseInfoModalLabel" aria-hidden="false"
+        x-data="{ open: true }" x-show="open" style="display: none;">
+        <div class="oh-modal__dialog" style="max-width: 600px;">
+            <div class="oh-modal__dialog-header">
+                <h2 class="oh-modal__dialog-title" id="licenseInfoModalLabel">
+                    {% trans "Información de Licencia" %}
+                </h2>
+                <button class="oh-modal__close" aria-label="Close" @click="open = false">
+                    <ion-icon name="close-outline"></ion-icon>
+                </button>
+            </div>
+            <div class="oh-modal__dialog-body">
+                <div class=" mb-3">
+                    <div class="row">
+                        <div class="col-12 mb-2">
+                            <strong>{% trans "Plan" %}:</strong> 
+                            <span>{{ current_license.plan.plan_name }}{% if current_license.is_trial %} (Trial){% endif %}</span>
+                        </div>
+                        <div class="col-12 mb-2">
+                            <strong>{% trans "Estado" %}:</strong> 
+                            <span class="badge {% if current_license.license_status == 'active' %}badge-success{% else %}badge-danger{% endif %}">
+                                {{ current_license.license_status }}
+                            </span>
+                        </div>
+                        <div class="col-12 mb-2">
+                            <strong>{% trans "Válido desde" %}:</strong> {{ current_license.start_date }}
+                        </div>
+                        <div class="col-12 mb-2">
+                            <strong>{% trans "Vence" %}:</strong> {{ current_license.end_date }}
+                        </div>
+                        <div class="col-12 mb-3">
+                            <strong>{% trans "Límite de empleados" %}:</strong> {{ current_license.plan.max_employees }}
+                        </div>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-end gap-2">
+                    <button class="oh-btn oh-btn--secondary" @click="open = false">
+                        {% trans "Cerrar" %}
+                    </button>
+                    <a href="{% url 'license_dashboard' %}" class="oh-btn oh-btn--primary">
+                        {% if current_license.license_status == 'active' %}
+                            {% trans "Ver detalles" %}
+                        {% else %}
+                            {% trans "Renovar plan" %}
+                        {% endif %}
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Abrir modal automáticamente al cargar la página
+        document.addEventListener('DOMContentLoaded', function() {
+            const modal = document.getElementById('licenseInfoModal');
+            if (modal) {
+                modal.classList.add('oh-modal--show');
+                modal.style.display = 'block';
+            }
+        });
+    </script>
+    {% endif %}
 
     <!-- back button -->
     <div class="d-none mt-5" id="back_button" style="width: 10%">

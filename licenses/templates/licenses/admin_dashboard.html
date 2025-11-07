@@ -1,0 +1,246 @@
+{% extends "index.html" %}
+{% load i18n %}
+{% load static %}
+{% load license_filters %}
+
+{% block content %}
+<div class="oh-wrapper">
+  <div class="oh-dashboard row">
+    <div class="oh-dashboard__left col-12 col-sm-12 col-md-12 col-lg-9">
+      <!-- Tarjetas de indicadores -->
+      <div class="oh-dashboard__cards row">
+        <div class="col-12 col-sm-12 col-md-6 col-lg-4">
+          <div class="oh-card-dashboard oh-card-dashboard--success">
+            <div class="oh-card-dashboard__header">
+              <span class="oh-card-dashboard__title">{% trans "Licencias Activas" %}</span>
+            </div>
+            <div class="oh-card-dashboard__body">
+              <div class="oh-card-dashboard__counts">
+                <span class="oh-card-dashboard__sign"><ion-icon name="checkmark-circle"></ion-icon></span>
+                <span class="oh-card-dashboard__count">{{ active_licenses }}</span>
+              </div>
+              <span class="oh-badge oh-card-dashboard__badge">
+                {% if total_licenses > 0 %}
+                  {{ active_licenses|mul:100|div:total_licenses|floatformat:0 }}%
+                {% else %}
+                  0%
+                {% endif %}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-12 col-sm-12 col-md-6 col-lg-4">
+          <div class="oh-card-dashboard oh-card-dashboard--neutral">
+            <div class="oh-card-dashboard__header">
+              <span class="oh-card-dashboard__title">{% trans "Total Licencias" %}</span>
+            </div>
+            <div class="oh-card-dashboard__body">
+              <div class="oh-card-dashboard__counts">
+                <span class="oh-card-dashboard__count">{{ total_licenses }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-12 col-sm-12 col-md-6 col-lg-4">
+          <div class="oh-card-dashboard oh-card-dashboard--danger">
+            <div class="oh-card-dashboard__header">
+              <span class="oh-card-dashboard__title">{% trans "Licencias Expiradas" %}</span>
+            </div>
+            <div class="oh-card-dashboard__body">
+              <div class="oh-card-dashboard__counts">
+                <span class="oh-card-dashboard__sign"><ion-icon name="warning"></ion-icon></span>
+                <span class="oh-card-dashboard__count">{{ expired_licenses }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-12 col-sm-12 col-md-6 col-lg-4">
+          <div class="oh-card-dashboard oh-card-dashboard--warning">
+            <div class="oh-card-dashboard__header">
+              <span class="oh-card-dashboard__title">{% trans "Licencias de Prueba" %}</span>
+            </div>
+            <div class="oh-card-dashboard__body">
+              <div class="oh-card-dashboard__counts">
+                <span class="oh-card-dashboard__sign"><ion-icon name="time"></ion-icon></span>
+                <span class="oh-card-dashboard__count">{{ trial_licenses }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-12 col-sm-12 col-md-6 col-lg-4">
+          <div class="oh-card-dashboard oh-card-dashboard--info">
+            <div class="oh-card-dashboard__header">
+              <span class="oh-card-dashboard__title">{% trans "Por Vencer (30 días)" %}</span>
+            </div>
+            <div class="oh-card-dashboard__body">
+              <div class="oh-card-dashboard__counts">
+                <span class="oh-card-dashboard__sign"><ion-icon name="calendar"></ion-icon></span>
+                <span class="oh-card-dashboard__count">{{ expiring_soon }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-12 col-sm-12 col-md-6 col-lg-4">
+          <div class="oh-card-dashboard oh-card-dashboard--neutral">
+            <div class="oh-card-dashboard__header">
+              <span class="oh-card-dashboard__title">{% trans "Empresas con Licencias" %}</span>
+            </div>
+            <div class="oh-card-dashboard__body">
+              <div class="oh-card-dashboard__counts">
+                <span class="oh-card-dashboard__sign"><ion-icon name="business"></ion-icon></span>
+                <span class="oh-card-dashboard__count">{{ companies_with_licenses }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Gráficas -->
+      <div class="oh-dashboard__movable-cards row mt-4">
+        <div class="col-12 col-sm-12 col-md-12 col-lg-6 oh-card-dashboard--moveable">
+          <div class="oh-card-dashboard oh-card-dashboard--no-scale oh-card-dashboard--transparent">
+            <div class="oh-card-dashboard__header oh-card-dashboard__header--divider">
+              <span class="oh-card-dashboard__title">{% trans "Distribución por Plan" %}</span>
+            </div>
+            <div class="oh-card-dashboard__body">
+              <canvas id="planChart"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-12 col-sm-12 col-md-12 col-lg-6 oh-card-dashboard--moveable">
+          <div class="oh-card-dashboard oh-card-dashboard--no-scale oh-card-dashboard--transparent">
+            <div class="oh-card-dashboard__header oh-card-dashboard__header--divider">
+              <span class="oh-card-dashboard__title">{% trans "Licencias por Estado" %}</span>
+            </div>
+            <div class="oh-card-dashboard__body">
+              <canvas id="statusChart"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-12 col-sm-12 col-md-12 col-lg-6 oh-card-dashboard--moveable">
+          <div class="oh-card-dashboard oh-card-dashboard--no-scale oh-card-dashboard--transparent">
+            <div class="oh-card-dashboard__header oh-card-dashboard__header--divider">
+              <span class="oh-card-dashboard__title">{% trans "Licencias Activas por Plan" %}</span>
+            </div>
+            <div class="oh-card-dashboard__body">
+              <canvas id="activePlanChart"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="oh-dashboard__right col-12 col-sm-12 col-md-12 col-lg-3">
+      <div class="oh-card-dashboard oh-card-dashboard--no-scale oh-card-dashboard--transparent">
+        <div class="oh-card-dashboard__header oh-card-dashboard__header--divider">
+          <span class="oh-card-dashboard__title">{% trans "Acciones Rápidas" %}</span>
+        </div>
+        <div class="oh-card-dashboard__body">
+          <a href="{% url 'admin_license_list' %}" class="oh-btn oh-btn--secondary w-100 mb-2">
+            <ion-icon name="list-outline"></ion-icon>
+            {% trans "Ver Todas las Licencias" %}
+          </a>
+          <a href="{% url 'admin_plan_list' %}" class="oh-btn oh-btn--secondary w-100 mb-2">
+            <ion-icon name="grid-outline"></ion-icon>
+            {% trans "Gestionar Planes" %}
+          </a>
+          <a href="{% url 'admin_plan_create' %}" class="oh-btn oh-btn--primary w-100">
+            <ion-icon name="add-circle-outline"></ion-icon>
+            {% trans "Crear Nuevo Plan" %}
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  // Gráfica de distribución por plan
+  const planCtx = document.getElementById('planChart').getContext('2d');
+  const planData = {
+    labels: [{% for item in licenses_by_plan %}'{{ item.plan__plan_name }}'{% if not forloop.last %},{% endif %}{% endfor %}],
+    datasets: [{
+      label: '{% trans "Licencias" %}',
+      data: [{% for item in licenses_by_plan %}{{ item.count }}{% if not forloop.last %},{% endif %}{% endfor %}],
+      backgroundColor: [
+        'rgba(54, 162, 235, 0.6)',
+        'rgba(255, 99, 132, 0.6)',
+        'rgba(255, 206, 86, 0.6)',
+        'rgba(75, 192, 192, 0.6)',
+        'rgba(153, 102, 255, 0.6)',
+      ]
+    }]
+  };
+  new Chart(planCtx, {
+    type: 'doughnut',
+    data: planData,
+    options: {
+      responsive: true,
+      maintainAspectRatio: true
+    }
+  });
+
+  // Gráfica de licencias por estado
+  const statusCtx = document.getElementById('statusChart').getContext('2d');
+  const statusData = {
+    labels: [{% for item in licenses_by_status %}'{{ item.license_status|title }}'{% if not forloop.last %},{% endif %}{% endfor %}],
+    datasets: [{
+      label: '{% trans "Cantidad" %}',
+      data: [{% for item in licenses_by_status %}{{ item.count }}{% if not forloop.last %},{% endif %}{% endfor %}],
+      backgroundColor: [
+        'rgba(75, 192, 192, 0.6)',
+        'rgba(255, 99, 132, 0.6)',
+        'rgba(255, 206, 86, 0.6)',
+        'rgba(153, 102, 255, 0.6)',
+      ]
+    }]
+  };
+  new Chart(statusCtx, {
+    type: 'bar',
+    data: statusData,
+    options: {
+      responsive: true,
+      maintainAspectRatio: true,
+      scales: {
+        y: {
+          beginAtZero: true
+        }
+      }
+    }
+  });
+
+  // Gráfica de licencias activas por plan
+  const activePlanCtx = document.getElementById('activePlanChart').getContext('2d');
+  const activePlanData = {
+    labels: [{% for item in active_by_plan %}'{{ item.plan__plan_name }}'{% if not forloop.last %},{% endif %}{% endfor %}],
+    datasets: [{
+      label: '{% trans "Licencias Activas" %}',
+      data: [{% for item in active_by_plan %}{{ item.count }}{% if not forloop.last %},{% endif %}{% endfor %}],
+      backgroundColor: 'rgba(54, 162, 235, 0.6)',
+      borderColor: 'rgba(54, 162, 235, 1)',
+      borderWidth: 1
+    }]
+  };
+  new Chart(activePlanCtx, {
+    type: 'bar',
+    data: activePlanData,
+    options: {
+      responsive: true,
+      maintainAspectRatio: true,
+      scales: {
+        y: {
+          beginAtZero: true
+        }
+      }
+    }
+  });
+</script>
+{% endblock %}

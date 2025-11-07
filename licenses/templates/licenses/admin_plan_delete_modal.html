@@ -1,0 +1,80 @@
+{% load i18n %}
+{% load static %}
+
+<div
+  class="oh-modal"
+  id="planDeleteModal{{ plan.id }}"
+  role="dialog"
+  aria-labelledby="planDeleteModalLabel{{ plan.id }}"
+  aria-hidden="true"
+>
+  <div class="oh-modal__dialog">
+    <div class="oh-modal__dialog-header">
+      <span class="oh-modal__dialog-title" id="planDeleteModalLabel{{ plan.id }}">
+        {% trans "Confirmar Eliminación" %}
+      </span>
+      <button
+        class="oh-modal__close"
+        aria-label="{% trans 'Cerrar' %}"
+        data-toggle="oh-modal-toggle"
+        data-target="#planDeleteModal{{ plan.id }}"
+      >
+        <ion-icon name="close-outline"></ion-icon>
+      </button>
+    </div>
+
+    <div class="oh-modal__dialog-body">
+      {% if licenses_count > 0 %}
+        <div class="oh-alert oh-alert--animated oh-alert--danger mb-3">
+          <p>{% trans "No se puede eliminar este plan porque tiene" %} {{ licenses_count }} {% trans "licencia(s) asociada(s)." %}</p>
+          <p class="mb-0">{% trans "Por favor, elimine o cambie las licencias asociadas antes de eliminar el plan." %}</p>
+        </div>
+      {% else %}
+        <p class="mb-3">{% trans "¿Está seguro de que desea eliminar este plan?" %}</p>
+      {% endif %}
+
+      <div class="oh-card oh-card-dashboard--transparent">
+        <div class="oh-card__body">
+          <div class="row">
+            <div class="col-12 col-md-6">
+              <p class="mb-2"><strong>{% trans "Nombre del Plan" %}:</strong> {{ plan.plan_name }}</p>
+              <p class="mb-2"><strong>{% trans "Descripción" %}:</strong> {{ plan.description|default:"-" }}</p>
+              <p class="mb-0">
+                <strong>{% trans "Activo" %}:</strong>
+                {% if plan.is_active %}
+                  <span class="badge badge-success">{% trans "Sí" %}</span>
+                {% else %}
+                  <span class="badge badge-danger">{% trans "No" %}</span>
+                {% endif %}
+              </p>
+            </div>
+            <div class="col-12 col-md-6">
+              <p class="mb-2"><strong>{% trans "Precio Mensual" %}:</strong> {{ plan.price_monthly|default:"-" }} {{ plan.currency }}</p>
+              <p class="mb-2"><strong>{% trans "Precio Anual" %}:</strong> {{ plan.price_yearly|default:"-" }} {{ plan.currency }}</p>
+              <p class="mb-0"><strong>{% trans "Máx. Empleados" %}:</strong> {{ plan.max_employees }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="oh-modal__dialog-footer d-flex justify-content-end gap-2">
+      <button
+        type="button"
+        class="oh-btn oh-btn--secondary"
+        data-toggle="oh-modal-toggle"
+        data-target="#planDeleteModal{{ plan.id }}"
+      >
+        {% trans "Cancelar" %}
+      </button>
+      {% if licenses_count == 0 %}
+        <form method="post" action="{% url 'admin_plan_delete' plan.id %}">
+          {% csrf_token %}
+          <button type="submit" class="oh-btn oh-btn--danger">
+            {% trans "Eliminar" %}
+          </button>
+        </form>
+      {% endif %}
+    </div>
+  </div>
+</div>

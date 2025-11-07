@@ -1,0 +1,218 @@
+{% extends "index.html" %}
+{% load i18n %}
+{% load static %}
+
+{% block content %}
+<div class="oh-wrapper">
+  {% if messages %}
+    <div class="oh-alert-container">
+      {% for message in messages %}
+        <div class="oh-alert oh-alert--animated {{ message.tags }}">{{ message }}</div>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  <div class="oh-header">
+    <div class="oh-header__left">
+      <h1 class="oh-header__title">{% trans "Gestión de Licencias" %}</h1>
+    </div>
+    <div class="oh-header__right">
+      <a href="{% url 'license_admin_dashboard' %}" class="oh-btn oh-btn--secondary">
+        <ion-icon name="bar-chart-outline"></ion-icon>
+        {% trans "Dashboard" %}
+      </a>
+    </div>
+  </div>
+
+  <!-- Filtros -->
+  <div class="oh-card mt-3">
+    <div class="oh-card__body">
+      <form method="get" class="row">
+        <div class="col-12 col-md-3">
+          <input type="text" name="search" class="oh-input w-100" 
+                 placeholder="{% trans 'Buscar...' %}" 
+                 value="{{ search }}">
+        </div>
+        <div class="col-12 col-md-2">
+          <select name="status" class="oh-select w-100">
+            <option value="">{% trans "Todos los estados" %}</option>
+            <option value="active" {% if status_filter == 'active' %}selected{% endif %}>{% trans "Activa" %}</option>
+            <option value="expired" {% if status_filter == 'expired' %}selected{% endif %}>{% trans "Expirada" %}</option>
+            <option value="suspended" {% if status_filter == 'suspended' %}selected{% endif %}>{% trans "Suspendida" %}</option>
+            <option value="cancelled" {% if status_filter == 'cancelled' %}selected{% endif %}>{% trans "Cancelada" %}</option>
+          </select>
+        </div>
+        <div class="col-12 col-md-2">
+          <select name="plan" class="oh-select w-100">
+            <option value="">{% trans "Todos los planes" %}</option>
+            {% for plan in plans %}
+              <option value="{{ plan.id }}" {% if plan_filter == plan.id|stringformat:"s" %}selected{% endif %}>{{ plan.plan_name }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="col-12 col-md-2">
+          <select name="is_active" class="oh-select w-100">
+            <option value="">{% trans "Todas" %}</option>
+            <option value="true" {% if is_active_filter == 'true' %}selected{% endif %}>{% trans "Activas" %}</option>
+            <option value="false" {% if is_active_filter == 'false' %}selected{% endif %}>{% trans "Inactivas" %}</option>
+          </select>
+        </div>
+        <div class="col-12 col-md-3">
+          <button type="submit" class="oh-btn oh-btn--secondary w-100">
+            <ion-icon name="filter-outline"></ion-icon>
+            {% trans "Filtrar" %}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Tabla de licencias -->
+  {% if licenses %}
+    <div class="oh-table_sticky--wrapper mt-3">
+      <div class="oh-sticky-table">
+        <div class="oh-sticky-table__table oh-table--sortable">
+          <div class="oh-sticky-table__thead">
+            <div class="oh-sticky-table__tr">
+              <div class="oh-sticky-table__th">{% trans "ID" %}</div>
+              <div class="oh-sticky-table__th">{% trans "Creado" %}</div>
+              <div class="oh-sticky-table__th">{% trans "Plan" %}</div>
+              <div class="oh-sticky-table__th">{% trans "Usuario" %}</div>
+              <div class="oh-sticky-table__th">{% trans "Empresa" %}</div>
+              <div class="oh-sticky-table__th">{% trans "Activa" %}</div>
+              <div class="oh-sticky-table__th">{% trans "Fecha Inicio" %}</div>
+              <div class="oh-sticky-table__th">{% trans "Fecha Fin" %}</div>
+              <div class="oh-sticky-table__th">{% trans "Es Prueba" %}</div>
+              <div class="oh-sticky-table__th">{% trans "Días de Prueba" %}</div>
+              <div class="oh-sticky-table__th">{% trans "Estado" %}</div>
+              <div class="oh-sticky-table__th">{% trans "Recordatorio" %}</div>
+              <div class="oh-sticky-table__th oh-sticky-table__right">{% trans "Acciones" %}</div>
+            </div>
+          </div>
+          <div class="oh-sticky-table__tbody">
+            {% for license in licenses %}
+              <div class="oh-sticky-table__tr">
+                <div class="oh-sticky-table__td">{{ license.id }}</div>
+                <div class="oh-sticky-table__td dateformat_changer">{{ license.created_at|date:"Y-m-d H:i" }}</div>
+                <div class="oh-sticky-table__td">
+                  <span class="oh-badge {% if license.plan.plan_name == 'Basic' %}oh-badge--info{% elif license.plan.plan_name == 'Pro' %}oh-badge--warning{% elif license.plan.plan_name == 'Enterprise' %}oh-badge--danger{% else %}oh-badge--secondary{% endif %}">
+                    {{ license.plan.plan_name }}
+                  </span>
+                </div>
+                <div class="oh-sticky-table__td">
+                  <div class="oh-profile oh-profile--md">
+                    <div class="oh-profile__avatar mr-1">
+                      <img src="https://ui-avatars.com/api/?name={{ license.owner.get_full_name|default:license.owner.username }}&background=random" 
+                           class="oh-profile__image" alt="{{ license.owner.get_full_name }}">
+                    </div>
+                    <span class="oh-profile__name oh-text--dark">
+                      {{ license.owner.get_full_name|default:license.owner.username }}
+                    </span>
+                  </div>
+                </div>
+                <div class="oh-sticky-table__td">{{ license.company.company }}</div>
+                <div class="oh-sticky-table__td">
+                  {% if license.is_active %}
+                    <span class="oh-badge oh-badge--success">{% trans "Sí" %}</span>
+                  {% else %}
+                    <span class="oh-badge oh-badge--danger">{% trans "No" %}</span>
+                  {% endif %}
+                </div>
+                <div class="oh-sticky-table__td dateformat_changer">{{ license.start_date }}</div>
+                <div class="oh-sticky-table__td dateformat_changer">{{ license.end_date }}</div>
+                <div class="oh-sticky-table__td">
+                  {% if license.is_trial %}
+                    <span class="oh-badge oh-badge--warning">{% trans "Sí" %}</span>
+                  {% else %}
+                    <span class="oh-badge oh-badge--secondary">{% trans "No" %}</span>
+                  {% endif %}
+                </div>
+                <div class="oh-sticky-table__td">{{ license.trial_days|default:"0" }}</div>
+                <div class="oh-sticky-table__td">
+                  <span class="oh-badge 
+                    {% if license.license_status == 'active' %}oh-badge--success
+                    {% elif license.license_status == 'expired' %}oh-badge--danger
+                    {% elif license.license_status == 'suspended' %}oh-badge--warning
+                    {% else %}oh-badge--secondary{% endif %}">
+                    {{ license.license_status|title }}
+                  </span>
+                </div>
+                <div class="oh-sticky-table__td">
+                  {% if license.renewal_reminder_sent %}
+                    <ion-icon name="checkmark-circle" class="text-success"></ion-icon>
+                  {% else %}
+                    <ion-icon name="close-circle" class="text-secondary"></ion-icon>
+                  {% endif %}
+                </div>
+                <div class="oh-sticky-table__td oh-sticky-table__right">
+                  <div class="oh-btn-group">
+                    <a href="{% url 'admin_license_edit' license.id %}" 
+                       class="oh-btn oh-btn--light-bkg w-100" 
+                       title="{% trans 'Editar' %}">
+                      <ion-icon name="create-outline"></ion-icon>
+                    </a>
+                    <button
+                      type="button"
+                      class="oh-btn oh-btn--danger-outline oh-btn--light-bkg w-100"
+                      title="{% trans 'Eliminar' %}"
+                      data-toggle="oh-modal-toggle"
+                      data-target="#licenseDeleteModal{{ license.id }}"
+                    >
+                      <ion-icon name="trash-outline"></ion-icon>
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <!-- Incluir el modal de eliminación para cada licencia -->
+              {% include 'licenses/admin_license_delete_modal.html' with license=license %}
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Paginación -->
+    <div class="oh-pagination">
+      <span class="oh-pagination__page">
+        {% trans "Página" %} {{ licenses.number }} {% trans "de" %} {{ licenses.paginator.num_pages }}.
+      </span>
+      <nav class="oh-pagination__nav">
+        <div class="oh-pagination__input-container me-3">
+          <span class="oh-pagination__label me-1">{% trans "Página" %}</span>
+          <input type="number" name="page" class="oh-pagination__input" 
+                 value="{{ licenses.number }}" min="1" max="{{ licenses.paginator.num_pages }}" 
+                 onchange="window.location.href='?page=' + this.value + '&search={{ search }}&status={{ status_filter }}&plan={{ plan_filter }}&is_active={{ is_active_filter }}'">
+          <span class="oh-pagination__label">{% trans "de" %} {{ licenses.paginator.num_pages }}</span>
+        </div>
+        <ul class="oh-pagination__items">
+          {% if licenses.has_previous %}
+            <li class="oh-pagination__item oh-pagination__item--wide">
+              <a href="?page=1&search={{ search }}&status={{ status_filter }}&plan={{ plan_filter }}&is_active={{ is_active_filter }}" 
+                 class="oh-pagination__link">{% trans "Primera" %}</a>
+            </li>
+            <li class="oh-pagination__item oh-pagination__item--wide">
+              <a href="?page={{ licenses.previous_page_number }}&search={{ search }}&status={{ status_filter }}&plan={{ plan_filter }}&is_active={{ is_active_filter }}" 
+                 class="oh-pagination__link">{% trans "Anterior" %}</a>
+            </li>
+          {% endif %}
+          {% if licenses.has_next %}
+            <li class="oh-pagination__item oh-pagination__item--wide">
+              <a href="?page={{ licenses.next_page_number }}&search={{ search }}&status={{ status_filter }}&plan={{ plan_filter }}&is_active={{ is_active_filter }}" 
+                 class="oh-pagination__link">{% trans "Siguiente" %}</a>
+            </li>
+            <li class="oh-pagination__item oh-pagination__item--wide">
+              <a href="?page={{ licenses.paginator.num_pages }}&search={{ search }}&status={{ status_filter }}&plan={{ plan_filter }}&is_active={{ is_active_filter }}" 
+                 class="oh-pagination__link">{% trans "Última" %}</a>
+            </li>
+          {% endif %}
+        </ul>
+      </nav>
+    </div>
+  {% else %}
+    <div class="oh-404 mt-3">
+      <img src="{% static 'images/ui/no-results.png' %}" class="oh-404__image mb-4" style="width: 150px; height: 150px" />
+      <h5 class="oh-404__subtitle">{% trans "No se encontraron licencias" %}</h5>
+    </div>
+  {% endif %}
+</div>
+{% endblock %}

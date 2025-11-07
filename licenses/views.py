@@ -3,8 +3,16 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.utils import timezone
 from django.db import transaction
+from django.db.models import Count, Q
+from django.http import JsonResponse
+from django.core.paginator import Paginator
 from .models import UserLicense, LicensePlan
-from .forms import ChangePlanForm
+from .forms import ChangePlanForm, UserLicenseEditForm, LicensePlanForm
+from django.contrib.auth import get_user_model
+from base.models import Company
+from .decorators import superuser_required  # Agregar este import
+
+User = get_user_model()
 
 def _get_selected_company(request):
     cid = request.session.get('selected_company')
@@ -15,6 +23,7 @@ def _get_selected_company(request):
 
 @login_required
 def license_dashboard(request):
+    """Dashboard de licencias para usuarios normales (NO superusers)"""
     company = _get_selected_company(request)
     current = None
     if company:
@@ -29,6 +38,7 @@ def license_dashboard(request):
 @login_required
 @transaction.atomic
 def change_plan(request):
+    """Cambiar plan para usuarios normales (NO superusers)"""
     company = _get_selected_company(request)
     if not company:
         messages.error(request, 'No hay empresa seleccionada.')
@@ -44,19 +54,16 @@ def change_plan(request):
             start = timezone.now().date()
             if cycle == 'monthly':
                 from datetime import timedelta
-                # Aproximación: 30 días
                 end = start + timedelta(days=30)
             else:
                 from datetime import timedelta
                 end = start + timedelta(days=365)
 
-            # Desactivar licencia actual
             if current:
                 current.is_active = False
                 current.license_status = 'cancelled'
                 current.save(update_fields=['is_active', 'license_status'])
 
-            # Crear nueva licencia
             UserLicense.objects.create(
                 owner=request.user,
                 company=company,
@@ -73,8 +80,276 @@ def change_plan(request):
     else:
         form = ChangePlanForm()
 
+    plans = LicensePlan.objects.filter(is_active=True).order_by('price_monthly')
+
     return render(request, 'licenses/change_plan.html', {
         'company': company,
         'current': current,
         'form': form,
+        'plans': plans,
+    })
+
+
+# ========== PANEL DE ADMINISTRACIÓN ==========
+# Todas las funciones de abajo son SOLO para superusers
+
+@login_required
+@superuser_required  # Agregar este decorador
+def admin_dashboard(request):
+    """Panel principal de administración de licencias - SOLO para superusers"""
+    # Estadísticas generales
+    total_licenses = UserLicense.objects.count()
+    active_licenses = UserLicense.objects.filter(is_active=True).count()
+    expired_licenses = UserLicense.objects.filter(license_status='expired').count()
+    trial_licenses = UserLicense.objects.filter(is_trial=True).count()
+    
+    # Estadísticas por plan
+    licenses_by_plan = UserLicense.objects.values('plan__plan_name').annotate(
+        count=Count('id')
+    ).order_by('-count')
+    
+    # Usuarios por plan (activos)
+    active_by_plan = UserLicense.objects.filter(is_active=True).values(
+        'plan__plan_name'
+    ).annotate(count=Count('id')).order_by('-count')
+    
+    # Licencias por estado
+    licenses_by_status = UserLicense.objects.values('license_status').annotate(
+        count=Count('id')
+    ).order_by('-count')
+    
+    # Licencias próximas a vencer (últimos 30 días)
+    from datetime import timedelta
+    upcoming_expiry = timezone.now().date() + timedelta(days=30)
+    expiring_soon = UserLicense.objects.filter(
+        end_date__lte=upcoming_expiry,
+        end_date__gte=timezone.now().date(),
+        is_active=True
+    ).count()
+    
+    # Total de empresas con licencias
+    companies_with_licenses = Company.objects.filter(licenses__isnull=False).distinct().count()
+    
+    context = {
+        'total_licenses': total_licenses,
+        'active_licenses': active_licenses,
+        'expired_licenses': expired_licenses,
+        'trial_licenses': trial_licenses,
+        'expiring_soon': expiring_soon,
+        'companies_with_licenses': companies_with_licenses,
+        'licenses_by_plan': list(licenses_by_plan),
+        'active_by_plan': list(active_by_plan),
+        'licenses_by_status': list(licenses_by_status),
+    }
+    
+    return render(request, 'licenses/admin_dashboard.html', context)
+
+
+@login_required
+@superuser_required  # Agregar este decorador
+def license_list(request):
+    """Listado de todas las licencias de usuarios - SOLO para superusers"""
+    licenses = UserLicense.objects.select_related('owner', 'company', 'plan', 'created_by', 'modified_by').all()
+    
+    # Filtros
+    search = request.GET.get('search', '')
+    status_filter = request.GET.get('status', '')
+    plan_filter = request.GET.get('plan', '')
+    is_active_filter = request.GET.get('is_active', '')
+    
+    if search:
+        licenses = licenses.filter(
+            Q(owner__first_name__icontains=search) |
+            Q(owner__last_name__icontains=search) |
+            Q(owner__email__icontains=search) |
+            Q(company__company__icontains=search) |
+            Q(plan__plan_name__icontains=search)
+        )
+    
+    if status_filter:
+        licenses = licenses.filter(license_status=status_filter)
+    
+    if plan_filter:
+        licenses = licenses.filter(plan_id=plan_filter)
+    
+    if is_active_filter == 'true':
+        licenses = licenses.filter(is_active=True)
+    elif is_active_filter == 'false':
+        licenses = licenses.filter(is_active=False)
+    
+    # Ordenamiento
+    order_by = request.GET.get('order_by', '-created_at')
+    licenses = licenses.order_by(order_by)
+    
+    # Paginación
+    paginator = Paginator(licenses, 20)
+    page = request.GET.get('page', 1)
+    licenses_page = paginator.get_page(page)
+    
+    plans = LicensePlan.objects.filter(is_active=True).order_by('plan_name')
+    
+    context = {
+        'licenses': licenses_page,
+        'plans': plans,
+        'search': search,
+        'status_filter': status_filter,
+        'plan_filter': plan_filter,
+        'is_active_filter': is_active_filter,
+        'order_by': order_by,
+    }
+    
+    return render(request, 'licenses/admin_license_list.html', context)
+
+
+@login_required
+@superuser_required  # Agregar este decorador
+@transaction.atomic
+def license_edit(request, license_id):
+    """Editar una licencia de usuario - SOLO para superusers"""
+    license_obj = get_object_or_404(UserLicense, id=license_id)
+    
+    if request.method == 'POST':
+        form = UserLicenseEditForm(request.POST, instance=license_obj)
+        if form.is_valid():
+            license_obj = form.save(commit=False)
+            license_obj.modified_by = request.user
+            license_obj.save()
+            messages.success(request, 'La licencia ha sido actualizada correctamente.')
+            return redirect('admin_license_list')
+    else:
+        form = UserLicenseEditForm(instance=license_obj)
+    
+    return render(request, 'licenses/admin_license_edit.html', {
+        'form': form,
+        'license': license_obj,
+    })
+
+
+@login_required
+@superuser_required  # Agregar este decorador
+@transaction.atomic
+def license_delete(request, license_id):
+    """Eliminar una licencia de usuario - SOLO para superusers"""
+    license_obj = get_object_or_404(UserLicense, id=license_id)
+    
+    if request.method == 'POST':
+        license_obj.delete()
+        messages.success(request, 'La licencia ha sido eliminada correctamente.')
+        return redirect('admin_license_list')
+    
+    return render(request, 'licenses/admin_license_delete.html', {
+        'license': license_obj,
+    })
+
+
+@login_required
+@superuser_required  # Agregar este decorador
+def plan_list(request):
+    """Listado de todos los planes de licencia - SOLO para superusers"""
+    plans = LicensePlan.objects.select_related('created_by', 'modified_by').all()
+    
+    # Filtros
+    search = request.GET.get('search', '')
+    is_active_filter = request.GET.get('is_active', '')
+    
+    if search:
+        plans = plans.filter(
+            Q(plan_name__icontains=search) |
+            Q(description__icontains=search)
+        )
+    
+    if is_active_filter == 'true':
+        plans = plans.filter(is_active=True)
+    elif is_active_filter == 'false':
+        plans = plans.filter(is_active=False)
+    
+    # Ordenamiento
+    order_by = request.GET.get('order_by', '-created_at')
+    plans = plans.order_by(order_by)
+    
+    # Paginación
+    paginator = Paginator(plans, 20)
+    page = request.GET.get('page', 1)
+    plans_page = paginator.get_page(page)
+    
+    context = {
+        'plans': plans_page,
+        'search': search,
+        'is_active_filter': is_active_filter,
+        'order_by': order_by,
+    }
+    
+    return render(request, 'licenses/admin_plan_list.html', context)
+
+
+@login_required
+@superuser_required  # Agregar este decorador
+@transaction.atomic
+def plan_create(request):
+    """Crear un nuevo plan de licencia - SOLO para superusers"""
+    if request.method == 'POST':
+        form = LicensePlanForm(request.POST)
+        if form.is_valid():
+            plan = form.save(commit=False)
+            plan.created_by = request.user
+            plan.save()
+            messages.success(request, 'El plan ha sido creado correctamente.')
+            return redirect('admin_plan_list')
+    else:
+        form = LicensePlanForm()
+    
+    return render(request, 'licenses/admin_plan_form.html', {
+        'form': form,
+        'action': 'Crear',
+    })
+
+
+@login_required
+@superuser_required  # Agregar este decorador
+@transaction.atomic
+def plan_edit(request, plan_id):
+    """Editar un plan de licencia - SOLO para superusers"""
+    plan = get_object_or_404(LicensePlan, id=plan_id)
+    
+    if request.method == 'POST':
+        form = LicensePlanForm(request.POST, instance=plan)
+        if form.is_valid():
+            plan = form.save(commit=False)
+            plan.modified_by = request.user
+            plan.save()
+            messages.success(request, 'El plan ha sido actualizado correctamente.')
+            return redirect('admin_plan_list')
+    else:
+        form = LicensePlanForm(instance=plan)
+    
+    return render(request, 'licenses/admin_plan_form.html', {
+        'form': form,
+        'plan': plan,
+        'action': 'Editar',
+    })
+
+
+@login_required
+@superuser_required  # Agregar este decorador
+@transaction.atomic
+def plan_delete(request, plan_id):
+    """Eliminar un plan de licencia - SOLO para superusers"""
+    plan = get_object_or_404(LicensePlan, id=plan_id)
+    
+    if request.method == 'POST':
+        # Verificar si hay licencias usando este plan
+        licenses_count = UserLicense.objects.filter(plan=plan).count()
+        if licenses_count > 0:
+            messages.error(request, f'No se puede eliminar el plan porque tiene {licenses_count} licencia(s) asociada(s).')
+            return redirect('admin_plan_list')
+        
+        plan.delete()
+        messages.success(request, 'El plan ha sido eliminado correctamente.')
+        return redirect('admin_plan_list')
+    
+    licenses_count = UserLicense.objects.filter(plan=plan).count()
+    
+    return render(request, 'licenses/admin_plan_delete.html', {
+        'plan': plan,
+        'licenses_count': licenses_count,
     })

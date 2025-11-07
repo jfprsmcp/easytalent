@@ -1,313 +1,321 @@
-{% load static basefilters horillafilters employee_filter i18n %} {% load tz %} {% now "Y-m-d" as current_date %}
-{% include 'generic/components.html' %}
-{% load accessibility_filters %}
-<link href="https://fonts.googleapis.com/css2?family=Lobster&display=swap" rel="stylesheet">
+{% load static basefilters horillafilters employee_filter i18n %} 
+{% load tz %} 
+{% now "Y-m-d" as current_date %}
 
-<div id="mainNav"></div>
-<!-- End of Navigation -->
-<style>
-    .oh-card-dashboard--moveable {
-        padding: 0 10px 20px 10px;
-    }
+{# Si es superuser, mostrar el admin dashboard de licencias #}
+{% if request.user.is_superuser %}
+    {% include 'licenses/admin_dashboard.html' %}
+{% else %}
+    {# Dashboard normal para usuarios de empresa #}
+    {% include 'generic/components.html' %}
+    {% load accessibility_filters %}
+    <link href="https://fonts.googleapis.com/css2?family=Lobster&display=swap" rel="stylesheet">
 
-    .oh-card-dashboard:not(.tile) {
-        cursor: default;
-        min-height: 425px;
-    }
+    <div id="mainNav"></div>
+    <!-- End of Navigation -->
+    <style>
+        .oh-card-dashboard--moveable {
+            padding: 0 10px 20px 10px;
+        }
 
-    .oh-dashboard__movable-cards {
-        padding-right: 0;
-    }
+        .oh-card-dashboard:not(.tile) {
+            cursor: default;
+            min-height: 425px;
+        }
 
-    .oh-card-dashboard--moveable {
-        padding-right: 0;
-        padding-bottom: 10px;
-    }
+        .oh-dashboard__movable-cards {
+            padding-right: 0;
+        }
 
-    .progress {
-        height: 20px;
-        width: 110px;
-        background-color: lightgrey;
-        border: 2px solid #27C20C;
-        border-radius: 5px;
-        overflow: hidden;
-    }
+        .oh-card-dashboard--moveable {
+            padding-right: 0;
+            padding-bottom: 10px;
+        }
 
-    .progress-bar {
-        height: 100%;
-        background-color: #27C20C;
-        /* Set your desired progress bar color */
-    }
+        .progress {
+            height: 20px;
+            width: 110px;
+            background-color: lightgrey;
+            border: 2px solid #27C20C;
+            border-radius: 5px;
+            overflow: hidden;
+        }
 
-    .progress-text {
-        width: 100%;
-        text-align: center;
-    }
+        .progress-bar {
+            height: 100%;
+            background-color: #27C20C;
+            /* Set your desired progress bar color */
+        }
 
-    .oh-modal_close--custom {
-        border: none;
-        background: none;
-        font-size: 1.5rem;
-        opacity: 0.7;
-        position: absolute;
-        top: 25px;
-        right: 15px;
-    }
+        .progress-text {
+            width: 100%;
+            text-align: center;
+        }
 
-    .container-heading {
-        font-size: 18px;
-        font-weight: bold;
-        padding: 10px;
-    }
+        .oh-modal_close--custom {
+            border: none;
+            background: none;
+            font-size: 1.5rem;
+            opacity: 0.7;
+            position: absolute;
+            top: 25px;
+            right: 15px;
+        }
 
-    .oh-kanban-card__title {
-        display: block;
-        margin-bottom: 10px;
-        padding: 10px;
-        border: 1px solid hsl(8deg 77% 56% / 40%);
-        border-radius: 18px;
-        margin-right: 10px;
-        background-color: hsl(24.23deg 100% 58.24% / 52.94%);
-    }
+        .container-heading {
+            font-size: 18px;
+            font-weight: bold;
+            padding: 10px;
+        }
 
-    .announcement_title {
-        margin-bottom: 10px;
-        padding: 8px;
-        margin-right: 10px;
-        text-decoration: none;
-    }
+        .oh-kanban-card__title {
+            display: block;
+            margin-bottom: 10px;
+            padding: 10px;
+            border: 1px solid hsl(8deg 77% 56% / 40%);
+            border-radius: 18px;
+            margin-right: 10px;
+            background-color: hsl(24.23deg 100% 58.24% / 52.94%);
+        }
 
-    .page-wrapper {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        /* Center the modal */
-        width: 80%;
-        /* Adjust the width of the modal */
-        height: 80%;
-        /* Adjust the height of the modal */
-        overflow: hidden;
-        z-index: 1001;
-        background: transparent;
-        /* Ensure background is transparent */
-        display: flex;
-        justify-content: center;
-        align-items: center;
+        .announcement_title {
+            margin-bottom: 10px;
+            padding: 8px;
+            margin-right: 10px;
+            text-decoration: none;
+        }
 
-    }
+        .page-wrapper {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            /* Center the modal */
+            width: 80%;
+            /* Adjust the width of the modal */
+            height: 80%;
+            /* Adjust the height of the modal */
+            overflow: hidden;
+            z-index: 1001;
+            background: transparent;
+            /* Ensure background is transparent */
+            display: flex;
+            justify-content: center;
+            align-items: center;
 
-    .blurred-background {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-size: cover;
-        filter: blur(5px);
-        opacity: 2;
-        /* Adjust opacity level */
-        z-index: 1000;
-        /* Ensure it's behind the canvas */
-    }
-</style>
+        }
 
-<!-- leave allocation reject modal -->
-<div class="oh-modal" id="rejectModal" role="dialog" aria-labelledby="rejectDialogModal" aria-hidden="true">
-    <div class="oh-modal__dialog" id="rejectTarget"></div>
-  </div>
+        .blurred-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            filter: blur(5px);
+            opacity: 2;
+            /* Adjust opacity level */
+            z-index: 1000;
+            /* Ensure it's behind the canvas */
+        }
+    </style>
 
-  <!-- end of modal -->
-
-<!-- activity view modal for attendance activity col -->
-
-<div class="oh-modal" id="activityViewModal" role="dialog" aria-hidden="true" style="z-index:1100;">
-    <div class="oh-modal__dialog" style="max-width: 900px;">
-      <div class="oh-modal__dialog-header">
-        <h3 class="oh-main__titlebar-title fw-bold ">{% trans " Activities" %}</h3>
-        <button class="oh-modal__close--custom" aria-label="Close"
-        onclick="$(this).parents().closest('.oh-modal--show').toggleClass('oh-modal--show');">
-        <ion-icon name="close-outline"></ion-icon>
-        </button>
+    <!-- leave allocation reject modal -->
+    <div class="oh-modal" id="rejectModal" role="dialog" aria-labelledby="rejectDialogModal" aria-hidden="true">
+        <div class="oh-modal__dialog" id="rejectTarget"></div>
       </div>
-      <div class="oh-modal__dialog-body" id="activityViewModalBody" style="overflow-x:auto;"></div>
-    </div>
-  </div>
 
-  <!-- end of modal -->
+      <!-- end of modal -->
 
-{% include "generic/components.html" %}
-    <div class="oh-wrapper">
-    <!-- Banner de Licencia -->
-    {% if current_license or messages %}
-        <!-- Modal de información de licencia -->
-        <div class="oh-modal oh-modal--show" id="licenseInfoModal" role="dialog" aria-labelledby="licenseInfoModalLabel">
-            <div class="oh-modal__dialog" style="max-width: 600px;">
-                <div class="oh-modal__dialog-header">
-                    <h2 class="oh-modal__dialog-title" id="licenseInfoModalLabel">
-                        {% trans "Información de Licencia" %}
-                    </h2>
-                    <button class="oh-modal__close" aria-label="Close" 
-                            onclick="document.getElementById('licenseInfoModal').classList.remove('oh-modal--show')">
-                        <ion-icon name="close-outline"></ion-icon>
-                    </button>
-                </div>
-                <div class="oh-modal__dialog-body">
-                    <!-- Mensajes del middleware (errores y advertencias sobre licencia) -->
-                    {% for message in messages %}
-                        {% if 'licencia' in message|lower or 'license' in message|lower or 'vence' in message|lower or 'expirado' in message|lower or 'expired' in message|lower or 'activa' in message|lower or 'active' in message|lower %}
-                            <div class="oh-alert oh-alert--animated mb-3 {% if message.tags == 'error' %}oh-alert--danger{% elif message.tags == 'warning' %}oh-alert--warning{% else %}oh-alert--info{% endif %}">
-                                {{ message }}
+    <!-- activity view modal for attendance activity col -->
+
+    <div class="oh-modal" id="activityViewModal" role="dialog" aria-hidden="true" style="z-index:1100;">
+        <div class="oh-modal__dialog" style="max-width: 900px;">
+          <div class="oh-modal__dialog-header">
+            <h3 class="oh-main__titlebar-title fw-bold ">{% trans " Activities" %}</h3>
+            <button class="oh-modal__close--custom" aria-label="Close"
+            onclick="$(this).parents().closest('.oh-modal--show').toggleClass('oh-modal--show');">
+            <ion-icon name="close-outline"></ion-icon>
+            </button>
+          </div>
+          <div class="oh-modal__dialog-body" id="activityViewModalBody" style="overflow-x:auto;"></div>
+        </div>
+      </div>
+
+      <!-- end of modal -->
+
+    {% include "generic/components.html" %}
+        <div class="oh-wrapper">
+        <!-- Banner de Licencia -->
+        {% if current_license or messages %}
+            <!-- Modal de información de licencia -->
+            <div class="oh-modal oh-modal--show" id="licenseInfoModal" role="dialog" aria-labelledby="licenseInfoModalLabel">
+                <div class="oh-modal__dialog" style="max-width: 600px;">
+                    <div class="oh-modal__dialog-header">
+                        <h2 class="oh-modal__dialog-title" id="licenseInfoModalLabel">
+                            {% trans "Información de Licencia" %}
+                        </h2>
+                        <button class="oh-modal__close" aria-label="Close" 
+                                onclick="document.getElementById('licenseInfoModal').classList.remove('oh-modal--show')">
+                            <ion-icon name="close-outline"></ion-icon>
+                        </button>
+                    </div>
+                    <div class="oh-modal__dialog-body">
+                        <!-- Mensajes del middleware (errores y advertencias sobre licencia) -->
+                        {% for message in messages %}
+                            {% if 'licencia' in message|lower or 'license' in message|lower or 'vence' in message|lower or 'expirado' in message|lower or 'expired' in message|lower or 'activa' in message|lower or 'active' in message|lower %}
+                                <div class="oh-alert oh-alert--animated mb-3 {% if message.tags == 'error' %}oh-alert--danger{% elif message.tags == 'warning' %}oh-alert--warning{% else %}oh-alert--info{% endif %}">
+                                    {{ message }}
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+
+                        <!-- Información de la licencia -->
+                        {% if current_license %}
+                            <div class="mb-3">
+                                <div class="row">
+                                    <div class="col-12 mb-2">
+                                        <strong>{% trans "Plan" %}:</strong> 
+                                        <span>{{ current_license.plan.plan_name }}{% if current_license.is_trial %} (Trial){% endif %}</span>
+                                    </div>
+                                    <div class="col-12 mb-2">
+                                        <strong>{% trans "Estado" %}:</strong> 
+                                        <span class="badge {% if current_license.license_status == 'active' %}badge-success{% else %}badge-danger{% endif %}">
+                                            {{ current_license.license_status }}
+                                        </span>
+                                    </div>
+                                    <div class="col-12 mb-2">
+                                        <strong>{% trans "Válido desde" %}:</strong> {{ current_license.start_date }}
+                                    </div>
+                                    <div class="col-12 mb-2">
+                                        <strong>{% trans "Vence" %}:</strong> {{ current_license.end_date }}
+                                    </div>
+                                    <div class="col-12 mb-3">
+                                        <strong>{% trans "Límite de empleados" %}:</strong> {{ current_license.plan.max_employees }}
+                                    </div>
+                                </div>
+                            </div>
+                        {% else %}
+                            <!-- Mensaje cuando no hay licencia registrada -->
+                            <div class="mb-3">
+                                <p>{% trans "No hay una licencia registrada para tu empresa." %}</p>
                             </div>
                         {% endif %}
-                    {% endfor %}
 
-                    <!-- Información de la licencia -->
-                    {% if current_license %}
-                        <div class="mb-3">
-                            <div class="row">
-                                <div class="col-12 mb-2">
-                                    <strong>{% trans "Plan" %}:</strong> 
-                                    <span>{{ current_license.plan.plan_name }}{% if current_license.is_trial %} (Trial){% endif %}</span>
-                                </div>
-                                <div class="col-12 mb-2">
-                                    <strong>{% trans "Estado" %}:</strong> 
-                                    <span class="badge {% if current_license.license_status == 'active' %}badge-success{% else %}badge-danger{% endif %}">
-                                        {{ current_license.license_status }}
-                                    </span>
-                                </div>
-                                <div class="col-12 mb-2">
-                                    <strong>{% trans "Válido desde" %}:</strong> {{ current_license.start_date }}
-                                </div>
-                                <div class="col-12 mb-2">
-                                    <strong>{% trans "Vence" %}:</strong> {{ current_license.end_date }}
-                                </div>
-                                <div class="col-12 mb-3">
-                                    <strong>{% trans "Límite de empleados" %}:</strong> {{ current_license.plan.max_employees }}
-                                </div>
-                            </div>
+                        <div class="d-flex justify-content-end gap-2">
+                            <button class="oh-btn oh-btn--secondary" 
+                                    onclick="document.getElementById('licenseInfoModal').classList.remove('oh-modal--show')">
+                                {% trans "Cerrar" %}
+                            </button>
+                            <a href="{% url 'license_dashboard' %}" class="oh-btn oh-btn--primary">
+                                {% if current_license and current_license.license_status == 'active' %}
+                                    {% trans "Ver detalles" %}
+                                {% else %}
+                                    {% trans "Renovar/Elegir plan" %}
+                                {% endif %}
+                            </a>
                         </div>
-                    {% else %}
-                        <!-- Mensaje cuando no hay licencia registrada -->
-                        <div class="mb-3">
-                            <p>{% trans "No hay una licencia registrada para tu empresa." %}</p>
-                        </div>
-                    {% endif %}
-
-                    <div class="d-flex justify-content-end gap-2">
-                        <button class="oh-btn oh-btn--secondary" 
-                                onclick="document.getElementById('licenseInfoModal').classList.remove('oh-modal--show')">
-                            {% trans "Cerrar" %}
-                        </button>
-                        <a href="{% url 'license_dashboard' %}" class="oh-btn oh-btn--primary">
-                            {% if current_license and current_license.license_status == 'active' %}
-                                {% trans "Ver detalles" %}
-                            {% else %}
-                                {% trans "Renovar/Elegir plan" %}
-                            {% endif %}
-                        </a>
                     </div>
                 </div>
             </div>
+
+            <script>
+                // Asegurar que el modal se muestre al cargar
+                document.addEventListener('DOMContentLoaded', function() {
+                    const modal = document.getElementById('licenseInfoModal');
+                    if (modal) {
+                        modal.classList.add('oh-modal--show');
+                    }
+                });
+            </script>
+        {% endif %}
+
+        <!-- back button -->
+        <div class="d-none mt-5" id="back_button" style="width: 10%">
+            <a href="{% url 'home-page' %}" class="oh-btn oh-btn--secondary oh-btn--shadow ms-3">
+                <ion-icon class="me-2 md hydrated" name="arrow-back-outline" role="img"
+                    aria-label="arrow-back-outline"></ion-icon>{% trans "Back" %}</a>
         </div>
-
-        <script>
-            // Asegurar que el modal se muestre al cargar
-            document.addEventListener('DOMContentLoaded', function() {
-                const modal = document.getElementById('licenseInfoModal');
-                if (modal) {
-                    modal.classList.add('oh-modal--show');
-                }
-            });
-        </script>
-    {% endif %}
-
-    <!-- back button -->
-    <div class="d-none mt-5" id="back_button" style="width: 10%">
-        <a href="{% url 'home-page' %}" class="oh-btn oh-btn--secondary oh-btn--shadow ms-3">
-            <ion-icon class="me-2 md hydrated" name="arrow-back-outline" role="img"
-                aria-label="arrow-back-outline"></ion-icon>{% trans "Back" %}</a>
-    </div>
-    <!-- end of back button -->
-    <div class="oh-dashboard row" id="dashboard" style="padding-bottom: 3.5rem;">
+        <!-- end of back button -->
+        <div class="oh-dashboard row" id="dashboard" style="padding-bottom: 3.5rem;">
 
 
-        <div class="oh-dashboard__left col-12 col-sm-12 col-md-12 col-lg-9">
-            <div class="oh-dashboard__cards row">
-                {% if perms.employee.view_employee %}
-                    {% if "recruitment"|app_installed %}
+            <div class="oh-dashboard__left col-12 col-sm-12 col-md-12 col-lg-9">
+                <div class="oh-dashboard__cards row">
+                    {% if perms.employee.view_employee %}
+                        {% if "recruitment"|app_installed %}
+                            <div class="col-12 col-sm-12 col-md-6 col-lg-4">
+                                <div class="oh-card-dashboard oh-card-dashboard--success tile">
+                                    <a href="{% url 'candidate-view' %}?joining_date={{current_date}}"
+                                        style="text-decoration: none">
+                                        <div class="oh-card-dashboard__header">
+                                            <span class="oh-card-dashboard__title">{% trans "New Joining Today" %}</span>
+                                        </div>
+                                        <div class="oh-card-dashboard__body">
+                                            <div class="oh-card-dashboard__counts">
+                                                <span class="oh-card-dashboard__count" hx-get="{% url 'joining-today-count' %}" hx-trigger="load">
+                                                    <div style="height: 67px;"></div>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="col-12 col-sm-12 col-md-6 col-lg-4">
+                                <div class="oh-card-dashboard oh-card-dashboard oh-card-dashboard--warning tile">
+                                    <a href="{% url 'candidate-view' %}?scheduled_from={{first_day_of_week}}&scheduled_till={{last_day_of_week}}"
+                                        style="text-decoration: none">
+                                        <div class="oh-card-dashboard__header">
+                                            <span class="oh-card-dashboard__title">{% trans "New Joining This Week" %}</span>
+                                        </div>
+                                        <div class="oh-card-dashboard__body">
+                                            <div class="oh-card-dashboard__counts">
+                                                <span class="oh-card-dashboard__count" hx-get="{% url 'joining-week-count' %}" hx-trigger="load">
+                                                    <div style="height: 67px;"></div>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+                        {% endif %}
                         <div class="col-12 col-sm-12 col-md-6 col-lg-4">
-                            <div class="oh-card-dashboard oh-card-dashboard--success tile">
-                                <a href="{% url 'candidate-view' %}?joining_date={{current_date}}"
-                                    style="text-decoration: none">
+                            <a href="{% url 'employee-view' %}" style="text-decoration: none">
+                                <div class="oh-card-dashboard oh-card-dashboard--neutral tile">
                                     <div class="oh-card-dashboard__header">
-                                        <span class="oh-card-dashboard__title">{% trans "New Joining Today" %}</span>
+                                        <span class="oh-card-dashboard__title">{% trans "Total Strength" %}</span>
                                     </div>
                                     <div class="oh-card-dashboard__body">
                                         <div class="oh-card-dashboard__counts">
-                                            <span class="oh-card-dashboard__count" hx-get="{% url 'joining-today-count' %}" hx-trigger="load">
+                                            <span class="oh-card-dashboard__count" hx-get="{% url 'total-employees-count' %}"
+                                                hx-trigger="load">
                                                 <div style="height: 67px;"></div>
                                             </span>
                                         </div>
                                     </div>
-                                </a>
-                            </div>
+                                </div>
+                            </a>
                         </div>
-                        <div class="col-12 col-sm-12 col-md-6 col-lg-4">
-                            <div class="oh-card-dashboard oh-card-dashboard oh-card-dashboard--warning tile">
-                                <a href="{% url 'candidate-view' %}?scheduled_from={{first_day_of_week}}&scheduled_till={{last_day_of_week}}"
-                                    style="text-decoration: none">
-                                    <div class="oh-card-dashboard__header">
-                                        <span class="oh-card-dashboard__title">{% trans "New Joining This Week" %}</span>
-                                    </div>
-                                    <div class="oh-card-dashboard__body">
-                                        <div class="oh-card-dashboard__counts">
-                                            <span class="oh-card-dashboard__count" hx-get="{% url 'joining-week-count' %}" hx-trigger="load">
-                                                <div style="height: 67px;"></div>
+                        {% endif %}
+                        <div class="oh-dashboard__movable-cards row mt-4" id="tileContainer">
+                            {% if "attendance"|app_installed %}
+                                {% if not 'offline_employees' in charts %}
+                                    {% if perms.employee.view_employee or request.user|is_reportingmanager %}
+                                <div class="col-12 col-sm-12 col-md-12 col-lg-6 oh-card-dashboard--moveable dashboardChart"
+                                    id="notInYetId">
+                                    <div class="oh-card-dashboard oh-card-dashboard--no-scale oh-card-dashboard--transparent" style="height:425px">
+                                        <div class="oh-card-dashboard__header oh-card-dashboard__header--divider">
+                                            <span class="oh-card-dashboard__title">{% trans "Offline Employees" %}</span>
+                                            <span class="float-end chart_close_button " role="button" data-chart="offline_employees" hx-post="{% url 'dashboard-components-toggle' %}?chart_id=offline_employees" hx-target="#notInYetId" hx-swap="outerHTML">
+                                                <i class="material-icons fw-lighter fs-5">close</i>
                                             </span>
                                         </div>
-                                    </div>
-                                </a>
-                            </div>
-                        </div>
-                    {% endif %}
-                    <div class="col-12 col-sm-12 col-md-6 col-lg-4">
-                        <a href="{% url 'employee-view' %}" style="text-decoration: none">
-                            <div class="oh-card-dashboard oh-card-dashboard--neutral tile">
-                                <div class="oh-card-dashboard__header">
-                                    <span class="oh-card-dashboard__title">{% trans "Total Strength" %}</span>
-                                </div>
-                                <div class="oh-card-dashboard__body">
-                                    <div class="oh-card-dashboard__counts">
-                                        <span class="oh-card-dashboard__count" hx-get="{% url 'total-employees-count' %}"
-                                            hx-trigger="load">
-                                            <div style="height: 67px;"></div>
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
-                        </a>
-                    </div>
-                    {% endif %}
-                    <div class="oh-dashboard__movable-cards row mt-4" id="tileContainer">
-                        {% if "attendance"|app_installed %}
-                            {% if not 'offline_employees' in charts %}
-                                {% if perms.employee.view_employee or request.user|is_reportingmanager %}
-                            <div class="col-12 col-sm-12 col-md-12 col-lg-6 oh-card-dashboard--moveable dashboardChart"
-                                id="notInYetId">
-                                <div class="oh-card-dashboard oh-card-dashboard--no-scale oh-card-dashboard--transparent" style="height:425px">
-                                    <div class="oh-card-dashboard__header oh-card-dashboard__header--divider">
-                                        <span class="oh-card-dashboard__title">{% trans "Offline Employees" %}</span>
-                                        <span class="float-end chart_close_button " role="button" data-chart="offline_employees" hx-post="{% url 'dashboard-components-toggle' %}?chart_id=offline_employees" hx-target="#notInYetId" hx-swap="outerHTML">
-                                            <i class="material-icons fw-lighter fs-5">close</i>
-                                        </span>
-                                    </div>
-                                    <div class=" oh-card-dashboard__body" id="notInYetIdBody"  style="height:80%">
-                                        <div class="oh-sticky-table h-100" hx-get="{% url 'not-in-yet' %}" hx-trigger="load" style="border: none;">
+                                        <div class=" oh-card-dashboard__body" id="notInYetIdBody"  style="height:80%">
+                                            <div class="oh-sticky-table h-100" hx-get="{% url 'not-in-yet' %}" hx-trigger="load" style="border: none;">
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
                                     {% comment %} <div class="col-12 col-sm-12 col-md-12 col-lg-6 oh-card-dashboard--moveable dashboardChart"
                                         id="notInYetId" hx-get="{% url 'not-in-yet' %}" hx-trigger="load">
                                         {% include "dashboard/not_in_yet.html" %}
@@ -1439,4 +1447,5 @@
 <script>
     runDriver()
 </script>
+{% endif %}
 {% endif %}

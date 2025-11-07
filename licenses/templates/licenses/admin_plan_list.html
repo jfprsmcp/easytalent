@@ -1,0 +1,185 @@
+{% extends "index.html" %}
+{% load i18n %}
+{% load static %}
+
+{% block content %}
+<div class="oh-wrapper">
+  {% if messages %}
+    <div class="oh-alert-container">
+      {% for message in messages %}
+        <div class="oh-alert oh-alert--animated {{ message.tags }}">{{ message }}</div>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  <div class="oh-header">
+    <div class="oh-header__left">
+      <h1 class="oh-header__title">{% trans "Gestión de Planes" %}</h1>
+    </div>
+    <div class="oh-header__right">
+      <a href="{% url 'admin_plan_create' %}" class="oh-btn oh-btn--primary">
+        <ion-icon name="add-circle-outline"></ion-icon>
+        {% trans "Crear Plan" %}
+      </a>
+      <a href="{% url 'license_admin_dashboard' %}" class="oh-btn oh-btn--secondary">
+        <ion-icon name="bar-chart-outline"></ion-icon>
+        {% trans "Dashboard" %}
+      </a>
+    </div>
+  </div>
+
+  <!-- Filtros -->
+  <div class="oh-card mt-3">
+    <div class="oh-card__body">
+      <form method="get" class="row">
+        <div class="col-12 col-md-4">
+          <input type="text" name="search" class="oh-input w-100" 
+                 placeholder="{% trans 'Buscar plan...' %}" 
+                 value="{{ search }}">
+        </div>
+        <div class="col-12 col-md-3">
+          <select name="is_active" class="oh-select w-100">
+            <option value="">{% trans "Todos" %}</option>
+            <option value="true" {% if is_active_filter == 'true' %}selected{% endif %}>{% trans "Activos" %}</option>
+            <option value="false" {% if is_active_filter == 'false' %}selected{% endif %}>{% trans "Inactivos" %}</option>
+          </select>
+        </div>
+        <div class="col-12 col-md-3">
+          <button type="submit" class="oh-btn oh-btn--secondary w-100">
+            <ion-icon name="filter-outline"></ion-icon>
+            {% trans "Filtrar" %}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Tabla de planes -->
+  {% if plans %}
+    <div class="oh-table_sticky--wrapper mt-3">
+      <div class="oh-sticky-table">
+        <div class="oh-sticky-table__table oh-table--sortable">
+          <div class="oh-sticky-table__thead">
+            <div class="oh-sticky-table__tr">
+              <div class="oh-sticky-table__th">{% trans "ID" %}</div>
+              <div class="oh-sticky-table__th">{% trans "Creado" %}</div>
+              <div class="oh-sticky-table__th">{% trans "Activo" %}</div>
+              <div class="oh-sticky-table__th">{% trans "Nombre del Plan" %}</div>
+              <div class="oh-sticky-table__th">{% trans "Descripción" %}</div>
+              <div class="oh-sticky-table__th">{% trans "Precio Mensual" %}</div>
+              <div class="oh-sticky-table__th">{% trans "Precio Anual" %}</div>
+              <div class="oh-sticky-table__th">{% trans "Moneda" %}</div>
+              <div class="oh-sticky-table__th">{% trans "Máx. Empleados" %}</div>
+              <div class="oh-sticky-table__th">{% trans "Creado por" %}</div>
+              <div class="oh-sticky-table__th">{% trans "Modificado por" %}</div>
+              <div class="oh-sticky-table__th oh-sticky-table__right">{% trans "Acciones" %}</div>
+            </div>
+          </div>
+          <div class="oh-sticky-table__tbody">
+            {% for plan in plans %}
+              <div class="oh-sticky-table__tr">
+                <div class="oh-sticky-table__td">{{ plan.id }}</div>
+                <div class="oh-sticky-table__td dateformat_changer">{{ plan.created_at|date:"Y-m-d H:i" }}</div>
+                <div class="oh-sticky-table__td">
+                  {% if plan.is_active %}
+                    <span class="badge badge-success">{% trans "Sí" %}</span>
+                  {% else %}
+                    <span class="badge badge-danger">{% trans "No" %}</span>
+                  {% endif %}
+                </div>
+                <div class="oh-sticky-table__td">
+                  <span class="badge {% if plan.plan_name == 'Basic' %}badge-info{% elif plan.plan_name == 'Pro' %}badge-warning{% elif plan.plan_name == 'Enterprise' %}badge-danger{% else %}badge-secondary{% endif %}">
+                    {{ plan.plan_name }}
+                  </span>
+                </div>
+                <div class="oh-sticky-table__td">{{ plan.description|truncatewords:10|default:"-" }}</div>
+                <div class="oh-sticky-table__td">{{ plan.price_monthly|default:"-" }} {{ plan.currency }}</div>
+                <div class="oh-sticky-table__td">{{ plan.price_yearly|default:"-" }} {{ plan.currency }}</div>
+                <div class="oh-sticky-table__td">{{ plan.currency }}</div>
+                <div class="oh-sticky-table__td">{{ plan.max_employees }}</div>
+                <div class="oh-sticky-table__td">
+                  {% if plan.created_by %}
+                    {{ plan.created_by.get_full_name|default:plan.created_by.username }}
+                  {% else %}
+                    -
+                  {% endif %}
+                </div>
+                <div class="oh-sticky-table__td">
+                  {% if plan.modified_by %}
+                    {{ plan.modified_by.get_full_name|default:plan.modified_by.username }}
+                  {% else %}
+                    -
+                  {% endif %}
+                </div>
+                <div class="oh-sticky-table__td oh-sticky-table__right">
+                  <div class="oh-btn-group">
+                    <a href="{% url 'admin_plan_edit' plan.id %}" 
+                       class="oh-btn oh-btn--light-bkg w-100" 
+                       title="{% trans 'Editar' %}">
+                      <ion-icon name="create-outline"></ion-icon>
+                    </a>
+                    <button
+                      type="button"
+                      class="oh-btn oh-btn--danger-outline oh-btn--light-bkg w-100"
+                      title="{% trans 'Eliminar' %}"
+                      data-toggle="oh-modal-toggle"
+                      data-target="#planDeleteModal{{ plan.id }}"
+                    >
+                      <ion-icon name="trash-outline"></ion-icon>
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <!-- Modal de eliminación para cada plan -->
+              {% include 'licenses/admin_plan_delete_modal.html' with plan=plan licenses_count=plan.user_licenses.count %}
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Paginación -->
+    <div class="oh-pagination">
+      <span class="oh-pagination__page">
+        {% trans "Página" %} {{ plans.number }} {% trans "de" %} {{ plans.paginator.num_pages }}.
+      </span>
+      <nav class="oh-pagination__nav">
+        <div class="oh-pagination__input-container me-3">
+          <span class="oh-pagination__label me-1">{% trans "Página" %}</span>
+          <input type="number" name="page" class="oh-pagination__input" 
+                 value="{{ plans.number }}" min="1" max="{{ plans.paginator.num_pages }}" 
+                 onchange="window.location.href='?page=' + this.value + '&search={{ search }}&is_active={{ is_active_filter }}'">
+          <span class="oh-pagination__label">{% trans "de" %} {{ plans.paginator.num_pages }}</span>
+        </div>
+        <ul class="oh-pagination__items">
+          {% if plans.has_previous %}
+            <li class="oh-pagination__item oh-pagination__item--wide">
+              <a href="?page=1&search={{ search }}&is_active={{ is_active_filter }}" 
+                 class="oh-pagination__link">{% trans "Primera" %}</a>
+            </li>
+            <li class="oh-pagination__item oh-pagination__item--wide">
+              <a href="?page={{ plans.previous_page_number }}&search={{ search }}&is_active={{ is_active_filter }}" 
+                 class="oh-pagination__link">{% trans "Anterior" %}</a>
+            </li>
+          {% endif %}
+          {% if plans.has_next %}
+            <li class="oh-pagination__item oh-pagination__item--wide">
+              <a href="?page={{ plans.next_page_number }}&search={{ search }}&is_active={{ is_active_filter }}" 
+                 class="oh-pagination__link">{% trans "Siguiente" %}</a>
+            </li>
+            <li class="oh-pagination__item oh-pagination__item--wide">
+              <a href="?page={{ plans.paginator.num_pages }}&search={{ search }}&is_active={{ is_active_filter }}" 
+                 class="oh-pagination__link">{% trans "Última" %}</a>
+            </li>
+          {% endif %}
+        </ul>
+      </nav>
+    </div>
+  {% else %}
+    <div class="oh-404 mt-3">
+      <img src="{% static 'images/ui/no-results.png' %}" class="oh-404__image mb-4" style="width: 150px; height: 150px" />
+      <h5 class="oh-404__subtitle">{% trans "No se encontraron planes" %}</h5>
+    </div>
+  {% endif %}
+</div>
+{% endblock %}

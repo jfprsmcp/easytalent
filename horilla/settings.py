@@ -96,6 +96,7 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     'licenses.middleware.LicenseMiddleware',
+    'licenses.middleware.SuperuserRestrictionMiddleware',  # NUEVO - Agregar después de LicenseMiddleware
 ]
 
 ROOT_URLCONF = "horilla.urls"

@@ -105,3 +105,64 @@ class LicenseMiddleware:
         if not request.session.get(key, False):
             messages.add_message(request, level, message)
             request.session[key] = True
+
+
+from django.urls import resolve, reverse, NoReverseMatch
+
+class SuperuserRestrictionMiddleware:
+    def __init__(self, get_response):
+        self.get_response = get_response
+
+        # Rutas completas (nombre reversado → path absoluto)
+        auth_named_urls = [
+            "login", "logout",
+            "password_change", "password_change_done",
+            "password_reset", "password_reset_done",
+            "password_reset_confirm", "password_reset_complete",
+        ]
+        resolved_paths = set()
+        for name in auth_named_urls:
+            try:
+                resolved_paths.add(reverse(name))
+            except NoReverseMatch:
+                pass
+
+        self.allowed_exact_paths = {
+            "/",
+            "/dashboard/",
+            "/licenses/admin/",
+            "/settings/",
+        } | resolved_paths  # unimos los paths resueltos
+
+        # Prefijos que siempre deben quedar libres para superusers
+        self.allowed_prefixes = (
+            "/licenses/admin/",
+            "/settings/",
+            "/accounts/",           # ← añade todo el árbol de cuentas
+            "/static/",
+            "/media/",
+            "/api/",
+        )
+
+    def __call__(self, request):
+        if (
+            request.user.is_authenticated
+            and request.user.is_superuser
+            and not request.path.startswith("/admin/")  # Django admin original
+        ):
+            # Paths exactos permitidos (ej. /accounts/logout/, /accounts/password_change/)
+            if request.path in self.allowed_exact_paths:
+                return self.get_response(request)
+
+            # Prefijos permitidos (ej. /accounts/…)
+            if any(request.path.startswith(prefix) for prefix in self.allowed_prefixes):
+                return self.get_response(request)
+
+            # Todo lo demás redirige al dashboard de licencias
+            messages.warning(
+                request,
+                "Como superadministrador, solo puedes acceder a la gestión de licencias y configuraciones.",
+            )
+            return redirect("license_admin_dashboard")
+
+        return self.get_response(request)

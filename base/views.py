@@ -1153,6 +1153,10 @@ def home(request):
     """
     This method is used to render index page
     """
+    # Si es superuser, mostrar el admin dashboard de licencias
+    if request.user.is_superuser:
+        from licenses.views import admin_dashboard
+        return admin_dashboard(request)
 
     today = datetime.today()
     today_weekday = today.weekday()

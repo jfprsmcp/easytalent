@@ -1,0 +1,64 @@
+{% load i18n %}
+{% load static %}
+
+<div
+  class="oh-modal"
+  id="licenseDeleteModal{{ license.id }}"
+  role="dialog"
+  aria-labelledby="licenseDeleteModalLabel{{ license.id }}"
+  aria-hidden="true"
+>
+  <div class="oh-modal__dialog">
+    <div class="oh-modal__dialog-header">
+      <span class="oh-modal__dialog-title" id="licenseDeleteModalLabel{{ license.id }}">
+        {% trans "Confirmar Eliminación" %}
+      </span>
+      <button
+        class="oh-modal__close"
+        aria-label="{% trans 'Cerrar' %}"
+        data-toggle="oh-modal-toggle"
+        data-target="#licenseDeleteModal{{ license.id }}"
+      >
+        <ion-icon name="close-outline"></ion-icon>
+      </button>
+    </div>
+
+    <div class="oh-modal__dialog-body">
+      <p class="mb-3">{% trans "¿Está seguro de que desea eliminar esta licencia?" %}</p>
+
+      <div class="oh-card oh-card-dashboard--transparent">
+        <div class="oh-card__body">
+          <div class="row">
+            <div class="col-12 col-md-6">
+              <p class="mb-2"><strong>{% trans "Plan" %}:</strong> {{ license.plan.plan_name }}</p>
+              <p class="mb-2"><strong>{% trans "Usuario" %}:</strong> {{ license.owner.get_full_name|default:license.owner.username }}</p>
+              <p class="mb-0"><strong>{% trans "Empresa" %}:</strong> {{ license.company.company }}</p>
+            </div>
+            <div class="col-12 col-md-6">
+              <p class="mb-2"><strong>{% trans "Estado" %}:</strong> {{ license.license_status|title }}</p>
+              <p class="mb-2"><strong>{% trans "Fecha Inicio" %}:</strong> {{ license.start_date }}</p>
+              <p class="mb-0"><strong>{% trans "Fecha Fin" %}:</strong> {{ license.end_date }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="oh-modal__dialog-footer d-flex justify-content-end gap-2">
+      <button
+        type="button"
+        class="oh-btn oh-btn--secondary"
+        data-toggle="oh-modal-toggle"
+        data-target="#licenseDeleteModal{{ license.id }}"
+      >
+        {% trans "Cancelar" %}
+      </button>
+      <form method="post" action="{% url 'admin_license_delete' license.id %}">
+        {% csrf_token %}
+        <button type="submit" class="oh-btn oh-btn--danger">
+          {% trans "Eliminar" %}
+        </button>
+      </form>
+    </div>
+  </div>
+</div>

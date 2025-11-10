@@ -21,12 +21,10 @@
               <p class="mb-1">{% trans "Estado" %}: {{ current.license_status }}{% if current.is_trial %} (Trial){% endif %}</p>
               <p class="mb-1">{% trans "Válido" %}: {{ current.start_date }} → {{ current.end_date }}</p>
               <p class="mb-3">{% trans "Límite de empleados" %}: {{ current.plan.max_employees }}</p>
-              <a class="oh-btn oh-btn--primary" href="{% url 'license_change' %}">{% trans "Cambiar/Actualizar plan" %}</a>
             </div>
           {% else %}
             <div class="mb-3">
               <p class="mb-2">{% trans "No hay una licencia activa." %}</p>
-              <a class="oh-btn oh-btn--primary" href="{% url 'license_change' %}">{% trans "Elegir un plan" %}</a>
             </div>
           {% endif %}
         </div>

@@ -74,12 +74,10 @@
         <div class="oh-sticky-table__table oh-table--sortable">
           <div class="oh-sticky-table__thead">
             <div class="oh-sticky-table__tr">
-              <div class="oh-sticky-table__th">{% trans "ID" %}</div>
               <div class="oh-sticky-table__th">{% trans "Creado" %}</div>
               <div class="oh-sticky-table__th">{% trans "Plan" %}</div>
               <div class="oh-sticky-table__th">{% trans "Usuario" %}</div>
               <div class="oh-sticky-table__th">{% trans "Empresa" %}</div>
-              <div class="oh-sticky-table__th">{% trans "Activa" %}</div>
               <div class="oh-sticky-table__th">{% trans "Fecha Inicio" %}</div>
               <div class="oh-sticky-table__th">{% trans "Fecha Fin" %}</div>
               <div class="oh-sticky-table__th">{% trans "Es Prueba" %}</div>
@@ -92,7 +90,6 @@
           <div class="oh-sticky-table__tbody">
             {% for license in licenses %}
               <div class="oh-sticky-table__tr">
-                <div class="oh-sticky-table__td">{{ license.id }}</div>
                 <div class="oh-sticky-table__td dateformat_changer">{{ license.created_at|date:"Y-m-d H:i" }}</div>
                 <div class="oh-sticky-table__td">
                   <span class="oh-badge {% if license.plan.plan_name == 'Basic' %}oh-badge--info{% elif license.plan.plan_name == 'Pro' %}oh-badge--warning{% elif license.plan.plan_name == 'Enterprise' %}oh-badge--danger{% else %}oh-badge--secondary{% endif %}">
@@ -111,20 +108,13 @@
                   </div>
                 </div>
                 <div class="oh-sticky-table__td">{{ license.company.company }}</div>
-                <div class="oh-sticky-table__td">
-                  {% if license.is_active %}
-                    <span class="oh-badge oh-badge--success">{% trans "Sí" %}</span>
-                  {% else %}
-                    <span class="oh-badge oh-badge--danger">{% trans "No" %}</span>
-                  {% endif %}
-                </div>
                 <div class="oh-sticky-table__td dateformat_changer">{{ license.start_date }}</div>
                 <div class="oh-sticky-table__td dateformat_changer">{{ license.end_date }}</div>
                 <div class="oh-sticky-table__td">
                   {% if license.is_trial %}
                     <span class="oh-badge oh-badge--warning">{% trans "Sí" %}</span>
                   {% else %}
-                    <span class="oh-badge oh-badge--secondary">{% trans "No" %}</span>
+                    <span class="oh-badge oh-badge--secondary">No</span>
                   {% endif %}
                 </div>
                 <div class="oh-sticky-table__td">{{ license.trial_days|default:"0" }}</div>

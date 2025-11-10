@@ -146,8 +146,8 @@
 
     {% include "generic/components.html" %}
         <div class="oh-wrapper">
-        <!-- Banner de Licencia -->
-        {% if current_license or messages %}
+        <!-- Modal de Licencia - Solo se muestra si no es superuser y cumple las condiciones -->
+        {% if show_license_modal and not request.user.is_superuser %}
             <!-- Modal de información de licencia -->
             <div class="oh-modal oh-modal--show" id="licenseInfoModal" role="dialog" aria-labelledby="licenseInfoModalLabel">
                 <div class="oh-modal__dialog" style="max-width: 600px;">
@@ -156,40 +156,76 @@
                             {% trans "Información de Licencia" %}
                         </h2>
                         <button class="oh-modal__close" aria-label="Close" 
-                                onclick="document.getElementById('licenseInfoModal').classList.remove('oh-modal--show')">
+                                onclick="document.getElementById('licenseInfoModal').classList.remove('oh-modal--show');">
                             <ion-icon name="close-outline"></ion-icon>
                         </button>
                     </div>
                     <div class="oh-modal__dialog-body">
-                        <!-- Mensajes del middleware (errores y advertencias sobre licencia) -->
-                        {% for message in messages %}
-                            {% if 'licencia' in message|lower or 'license' in message|lower or 'vence' in message|lower or 'expirado' in message|lower or 'expired' in message|lower or 'activa' in message|lower or 'active' in message|lower %}
-                                <div class="oh-alert oh-alert--animated mb-3 {% if message.tags == 'error' %}oh-alert--danger{% elif message.tags == 'warning' %}oh-alert--warning{% else %}oh-alert--info{% endif %}">
-                                    {{ message }}
-                                </div>
-                            {% endif %}
-                        {% endfor %}
-
                         <!-- Información de la licencia -->
                         {% if current_license %}
+                            {% if license_days_left is not None and license_days_left < 0 or current_license.license_status in 'expired,suspended,cancelled' or not current_license.is_active %}
+                                <!-- Licencia expirada o inactiva -->
+                                <div class="mb-3">
+                                    <p class="mb-0">
+                                        {% trans "Tu licencia ha expirado o está inactiva. Por favor, renueva tu plan para continuar usando el servicio." %}
+                                    </p>
+                                </div>
+                            {% elif license_days_left == 1 %}
+                                <!-- Falta 1 día para expirar -->
+                                <div class="mb-3">
+                                    <p class="mb-0">
+                                        {% trans "⚠️ Tu licencia vence mañana. Por favor, renueva tu plan para evitar la interrupción del servicio." %}
+                                    </p>
+                                </div>
+                            {% endif %}
+                            
                             <div class="mb-3">
                                 <div class="row">
                                     <div class="col-12 mb-2">
                                         <strong>{% trans "Plan" %}:</strong> 
-                                        <span>{{ current_license.plan.plan_name }}{% if current_license.is_trial %} (Trial){% endif %}</span>
-                                    </div>
-                                    <div class="col-12 mb-2">
-                                        <strong>{% trans "Estado" %}:</strong> 
-                                        <span class="badge {% if current_license.license_status == 'active' %}badge-success{% else %}badge-danger{% endif %}">
-                                            {{ current_license.license_status }}
+                                        <span>
+                                            {% if current_license.is_trial %}
+                                                {% trans "Prueba" %}
+                                            {% elif current_license.plan.plan_name == 'Basic' %}
+                                                {% trans "Básico" %}
+                                            {% elif current_license.plan.plan_name == 'Pro' %}
+                                                {% trans "Pro" %}
+                                            {% elif current_license.plan.plan_name == 'Enterprise' %}
+                                                {% trans "Empresa" %}
+                                            {% else %}
+                                                {{ current_license.plan.plan_name }}
+                                            {% endif %}
                                         </span>
                                     </div>
                                     <div class="col-12 mb-2">
-                                        <strong>{% trans "Válido desde" %}:</strong> {{ current_license.start_date }}
+                                        <strong>{% trans "Estado" %}:</strong> 
+                                        <span class="badge {% if current_license.license_status == 'active' and license_days_left > 1 %}badge-success{% else %}badge-danger{% endif %}">
+                                            {% if current_license.license_status == 'active' %}
+                                                {% trans "Activo" %}
+                                            {% elif current_license.license_status == 'expired' %}
+                                                {% trans "Expirado" %}
+                                            {% elif current_license.license_status == 'suspended' %}
+                                                {% trans "Suspendido" %}
+                                            {% elif current_license.license_status == 'cancelled' %}
+                                                {% trans "Cancelado" %}
+                                            {% else %}
+                                                {{ current_license.license_status }}
+                                            {% endif %}
+                                        </span>
                                     </div>
+                                    {% if current_license.start_date %}
                                     <div class="col-12 mb-2">
-                                        <strong>{% trans "Vence" %}:</strong> {{ current_license.end_date }}
+                                        <strong>{% trans "Válido desde" %}:</strong> {{ current_license.start_date|date:"d/m/Y" }}
                                     </div>
+                                    {% endif %}
+                                    {% if current_license.end_date %}
+                                    <div class="col-12 mb-2">
+                                        <strong>{% trans "Vence" %}:</strong> {{ current_license.end_date|date:"d/m/Y" }}
+                                        {% if license_days_left is not None and license_days_left >= 0 %}
+                                            <span class="ml-2">({{ license_days_left }} {% trans "día" %}{% if license_days_left != 1 %}s{% endif %} {% trans "restantes" %})</span>
+                                        {% endif %}
+                                    </div>
+                                    {% endif %}
                                     <div class="col-12 mb-3">
                                         <strong>{% trans "Límite de empleados" %}:</strong> {{ current_license.plan.max_employees }}
                                     </div>
@@ -198,20 +234,20 @@
                         {% else %}
                             <!-- Mensaje cuando no hay licencia registrada -->
                             <div class="mb-3">
-                                <p>{% trans "No hay una licencia registrada para tu empresa." %}</p>
+                                <p class="mb-0">{% trans "No hay una licencia registrada para tu empresa. Por favor, elige un plan para continuar." %}</p>
                             </div>
                         {% endif %}
 
                         <div class="d-flex justify-content-end gap-2">
                             <button class="oh-btn oh-btn--secondary" 
-                                    onclick="document.getElementById('licenseInfoModal').classList.remove('oh-modal--show')">
+                                    onclick="document.getElementById('licenseInfoModal').classList.remove('oh-modal--show');">
                                 {% trans "Cerrar" %}
                             </button>
                             <a href="{% url 'license_dashboard' %}" class="oh-btn oh-btn--primary">
-                                {% if current_license and current_license.license_status == 'active' %}
+                                {% if current_license and current_license.license_status == 'active' and license_days_left > 1 %}
                                     {% trans "Ver detalles" %}
                                 {% else %}
-                                    {% trans "Renovar/Elegir plan" %}
+                                    {% trans "Ver detalles" %}
                                 {% endif %}
                             </a>
                         </div>

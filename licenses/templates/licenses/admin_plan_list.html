@@ -61,7 +61,6 @@
         <div class="oh-sticky-table__table oh-table--sortable">
           <div class="oh-sticky-table__thead">
             <div class="oh-sticky-table__tr">
-              <div class="oh-sticky-table__th">{% trans "ID" %}</div>
               <div class="oh-sticky-table__th">{% trans "Creado" %}</div>
               <div class="oh-sticky-table__th">{% trans "Activo" %}</div>
               <div class="oh-sticky-table__th">{% trans "Nombre del Plan" %}</div>
@@ -78,7 +77,6 @@
           <div class="oh-sticky-table__tbody">
             {% for plan in plans %}
               <div class="oh-sticky-table__tr">
-                <div class="oh-sticky-table__td">{{ plan.id }}</div>
                 <div class="oh-sticky-table__td dateformat_changer">{{ plan.created_at|date:"Y-m-d H:i" }}</div>
                 <div class="oh-sticky-table__td">
                   {% if plan.is_active %}

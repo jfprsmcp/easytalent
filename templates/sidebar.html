@@ -64,7 +64,7 @@ function initializeSummernote(candId,searchWords,) {
 
 <div
   class="oh-sidebar"
-  style="position: -webkit-sticky; position: sticky; top: 0;height:100vh; overflow-x:hidden;"
+  style="position: -webkit-sticky; position: sticky; top: 0;height:100vh; overflow-x:hidden; display: flex; flex-direction: column;"
 >
 <div class="oh-sidebar__company" style="padding: 14px">
     {% if request.session.selected_company_instance %}
@@ -88,6 +88,31 @@ function initializeSummernote(candId,searchWords,) {
       <a href="#" class="oh-sidebar__company-link" style="font-size: 10px"
       >{% trans request.session.selected_company_instance.text %}</a
       >
+      {% if current_license and current_license.plan and not request.user.is_superuser %}
+        <div class="mt-1">
+          {% if current_license.is_trial %}
+            <span class="oh-badge oh-badge--secondary font-bold" style="font-size: 9px;">
+              {% trans "Prueba" %}
+            </span>
+          {% elif current_license.plan.plan_name == 'Basic' %}
+            <span class="oh-badge oh-badge--secondary font-bold" style="font-size: 9px;">
+              {% trans "Básico" %}
+            </span>
+          {% elif current_license.plan.plan_name == 'Pro' %}
+            <span class="oh-badge oh-badge--secondary font-bold" style="font-size: 9px;">
+              {% trans "Pro" %}
+            </span>
+          {% elif current_license.plan.plan_name == 'Enterprise' %}
+            <span class="oh-badge oh-badge--secondary font-bold" style="font-size: 9px;">
+              {% trans "Empresa" %}
+            </span>
+          {% else %}
+            <span class="oh-badge oh-badge--secondary font-bold" style="font-size: 9px;">
+              {{ current_license.plan.plan_name }}
+            </span>
+          {% endif %}
+        </div>
+      {% endif %}
     </div>
     {% else %}
     <span class="mr-3">
@@ -110,10 +135,35 @@ function initializeSummernote(candId,searchWords,) {
       <a href="#" class="oh-sidebar__company-link" style="font-size: 10px"
       >{% trans "My Company" %}</a
       >
+      {% if current_license and current_license.plan and not request.user.is_superuser %}
+        <div class="mt-1">
+          {% if current_license.is_trial %}
+            <span class="oh-badge oh-badge--secondary font-bold" style="font-size: 9px;">
+              {% trans "Prueba" %}
+            </span>
+          {% elif current_license.plan.plan_name == 'Basic' %}
+            <span class="oh-badge oh-badge--secondary font-bold" style="font-size: 9px;">
+              {% trans "Básico" %}
+            </span>
+          {% elif current_license.plan.plan_name == 'Pro' %}
+            <span class="oh-badge oh-badge--secondary font-bold" style="font-size: 9px;">
+              {% trans "Pro" %}
+            </span>
+          {% elif current_license.plan.plan_name == 'Enterprise' %}
+            <span class="oh-badge oh-badge--secondary font-bold" style="font-size: 9px;">
+              {% trans "Empresa" %}
+            </span>
+          {% else %}
+            <span class="oh-badge oh-badge--secondary font-bold" style="font-size: 9px;">
+              {{ current_license.plan.plan_name }}
+            </span>
+          {% endif %}
+        </div>
+      {% endif %}
     </div>
     {% endif %}
   </div>
-  <div class="oh-sidebar__menu">
+  <div class="oh-sidebar__menu" style="flex: 1; overflow-y: auto;">
     <ul class="oh-sidebar__menu-items">
       <li
         class="oh-sidebar__menu-item"
@@ -306,6 +356,38 @@ function initializeSummernote(candId,searchWords,) {
       {% endif %}
     </ul>
   </div>
+  
+  <!-- Información de Días y Horas Restantes -->
+  {% if current_license and current_license.plan and license_days_left is not None and not request.user.is_superuser %}
+    <div style="padding: 8px 14px; border-top: 1px solid rgba(255, 255, 255, 0.1); margin-top: auto;">
+      <div class="d-flex flex-column" style="gap: 6px;">
+        <div class="d-flex justify-content-between align-items-center">
+          <span style="font-size: 10px; color: rgba(255, 255, 255, 0.7);">
+            {% trans "Días restantes" %}:
+          </span>
+          <span class="oh-badge oh-badge--secondary font-bold" style="font-size: 8px; padding: 2px 6px;">
+            {% if license_days_left < 0 %}
+              {% trans "Expirado" %}
+            {% elif license_days_left == 0 %}
+              {% trans "Hoy expira" %}
+            {% else %}
+              {{ license_days_left }} {% trans "día" %}{% if license_days_left != 1 %}s{% endif %}
+            {% endif %}
+          </span>
+        </div>
+        {% if license_hours_left is not None and license_days_left >= 0 %}
+          <div class="d-flex justify-content-between align-items-center">
+            <span style="font-size: 10px; color: rgba(255, 255, 255, 0.7);">
+              {% trans "Horas restantes" %}:
+            </span>
+            <span class="oh-badge oh-badge--secondary font-bold" style="font-size: 8px; padding: 2px 6px;">
+              {{ license_hours_left }} {% trans "hora" %}{% if license_hours_left != 1 %}s{% endif %}
+            </span>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  {% endif %}
 </div>
 <style>
   .highlight-selected{

@@ -46,6 +46,20 @@
         <div class="col-12 col-sm-12 col-md-6 col-lg-4">
           <div class="oh-card-dashboard oh-card-dashboard--danger">
             <div class="oh-card-dashboard__header">
+              <span class="oh-card-dashboard__title">{% trans "Licencias Inactivas/Canceladas" %}</span>
+            </div>
+            <div class="oh-card-dashboard__body">
+              <div class="oh-card-dashboard__counts">
+                <span class="oh-card-dashboard__sign"><ion-icon name="close-circle"></ion-icon></span>
+                <span class="oh-card-dashboard__count">{{ inactive_or_cancelled }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-12 col-sm-12 col-md-6 col-lg-4">
+          <div class="oh-card-dashboard oh-card-dashboard--danger">
+            <div class="oh-card-dashboard__header">
               <span class="oh-card-dashboard__title">{% trans "Licencias Expiradas" %}</span>
             </div>
             <div class="oh-card-dashboard__body">
@@ -94,6 +108,82 @@
               <div class="oh-card-dashboard__counts">
                 <span class="oh-card-dashboard__sign"><ion-icon name="business"></ion-icon></span>
                 <span class="oh-card-dashboard__count">{{ companies_with_licenses }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-12 col-sm-12 col-md-6 col-lg-4">
+          <div class="oh-card-dashboard oh-card-dashboard--primary">
+            <div class="oh-card-dashboard__header">
+              <span class="oh-card-dashboard__title">{% trans "Nuevos Usuarios (30 días)" %}</span>
+            </div>
+            <div class="oh-card-dashboard__body">
+              <div class="oh-card-dashboard__counts">
+                <span class="oh-card-dashboard__sign"><ion-icon name="person-add"></ion-icon></span>
+                <span class="oh-card-dashboard__count">{{ new_users }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tarjetas de usuarios por plan -->
+      <div class="oh-dashboard__cards row mt-4">
+        <div class="col-12">
+          <h5 class="mb-3">{% trans "Usuarios Activos por Plan" %}</h5>
+        </div>
+        <div class="col-12 col-sm-12 col-md-6 col-lg-3">
+          <div class="oh-card-dashboard oh-card-dashboard--warning">
+            <div class="oh-card-dashboard__header">
+              <span class="oh-card-dashboard__title">{% trans "Plan Trial" %}</span>
+            </div>
+            <div class="oh-card-dashboard__body">
+              <div class="oh-card-dashboard__counts">
+                <span class="oh-card-dashboard__sign"><ion-icon name="hourglass"></ion-icon></span>
+                <span class="oh-card-dashboard__count">{{ trial_users }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-12 col-sm-12 col-md-6 col-lg-3">
+          <div class="oh-card-dashboard oh-card-dashboard--info">
+            <div class="oh-card-dashboard__header">
+              <span class="oh-card-dashboard__title">{% trans "Plan Basic" %}</span>
+            </div>
+            <div class="oh-card-dashboard__body">
+              <div class="oh-card-dashboard__counts">
+                <span class="oh-card-dashboard__sign"><ion-icon name="star"></ion-icon></span>
+                <span class="oh-card-dashboard__count">{{ basic_users }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-12 col-sm-12 col-md-6 col-lg-3">
+          <div class="oh-card-dashboard oh-card-dashboard--primary">
+            <div class="oh-card-dashboard__header">
+              <span class="oh-card-dashboard__title">{% trans "Plan Pro" %}</span>
+            </div>
+            <div class="oh-card-dashboard__body">
+              <div class="oh-card-dashboard__counts">
+                <span class="oh-card-dashboard__sign"><ion-icon name="diamond"></ion-icon></span>
+                <span class="oh-card-dashboard__count">{{ pro_users }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-12 col-sm-12 col-md-6 col-lg-3">
+          <div class="oh-card-dashboard oh-card-dashboard--danger">
+            <div class="oh-card-dashboard__header">
+              <span class="oh-card-dashboard__title">{% trans "Plan Enterprise" %}</span>
+            </div>
+            <div class="oh-card-dashboard__body">
+              <div class="oh-card-dashboard__counts">
+                <span class="oh-card-dashboard__sign"><ion-icon name="business"></ion-icon></span>
+                <span class="oh-card-dashboard__count">{{ enterprise_users }}</span>
               </div>
             </div>
           </div>

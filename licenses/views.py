@@ -97,13 +97,53 @@ def change_plan(request):
 @superuser_required  # Agregar este decorador
 def admin_dashboard(request):
     """Panel principal de administración de licencias - SOLO para superusers"""
+    from datetime import timedelta
+    from django.contrib.auth import get_user_model
+    
+    User = get_user_model()
+    
     # Estadísticas generales
     total_licenses = UserLicense.objects.count()
     active_licenses = UserLicense.objects.filter(is_active=True).count()
+    inactive_licenses = UserLicense.objects.filter(is_active=False).count()
+    cancelled_licenses = UserLicense.objects.filter(license_status='cancelled').count()
     expired_licenses = UserLicense.objects.filter(license_status='expired').count()
     trial_licenses = UserLicense.objects.filter(is_trial=True).count()
     
-    # Estadísticas por plan
+    # Licencias no activas o canceladas (combinado)
+    inactive_or_cancelled = UserLicense.objects.filter(
+        Q(is_active=False) | Q(license_status='cancelled')
+    ).count()
+    
+    # Nuevos usuarios (últimos 30 días)
+    thirty_days_ago = timezone.now() - timedelta(days=30)
+    new_users = User.objects.filter(
+        date_joined__gte=thirty_days_ago,
+        is_superuser=False  # Excluir superusers del conteo
+    ).count()
+    
+    # Usuarios con planes específicos (licencias activas)
+    trial_users = UserLicense.objects.filter(
+        plan__plan_name__iexact='Trial',
+        is_active=True
+    ).count()
+    
+    basic_users = UserLicense.objects.filter(
+        plan__plan_name__iexact='Basic',
+        is_active=True
+    ).count()
+    
+    pro_users = UserLicense.objects.filter(
+        plan__plan_name__iexact='Pro',
+        is_active=True
+    ).count()
+    
+    enterprise_users = UserLicense.objects.filter(
+        plan__plan_name__iexact='Enterprise',
+        is_active=True
+    ).count()
+    
+    # Estadísticas por plan (todas las licencias)
     licenses_by_plan = UserLicense.objects.values('plan__plan_name').annotate(
         count=Count('id')
     ).order_by('-count')
@@ -119,7 +159,6 @@ def admin_dashboard(request):
     ).order_by('-count')
     
     # Licencias próximas a vencer (últimos 30 días)
-    from datetime import timedelta
     upcoming_expiry = timezone.now().date() + timedelta(days=30)
     expiring_soon = UserLicense.objects.filter(
         end_date__lte=upcoming_expiry,
@@ -133,8 +172,16 @@ def admin_dashboard(request):
     context = {
         'total_licenses': total_licenses,
         'active_licenses': active_licenses,
+        'inactive_licenses': inactive_licenses,
+        'cancelled_licenses': cancelled_licenses,
+        'inactive_or_cancelled': inactive_or_cancelled,
         'expired_licenses': expired_licenses,
         'trial_licenses': trial_licenses,
+        'new_users': new_users,
+        'trial_users': trial_users,
+        'basic_users': basic_users,
+        'pro_users': pro_users,
+        'enterprise_users': enterprise_users,
         'expiring_soon': expiring_soon,
         'companies_with_licenses': companies_with_licenses,
         'licenses_by_plan': list(licenses_by_plan),

@@ -832,48 +832,6 @@
 
     </footer>
 
-  <!-- Chat Button -->
-  <a href="#" id="chat-button" class="chat-button d-flex align-items-center justify-content-center" title="Abrir Chat">
-    <i class="bi bi-chat-dots-fill"></i>
-    <span class="chat-pulse"></span>
-  </a>
-
-  <!-- Chat Widget (oculto por defecto) -->
-  <div id="chat-widget" class="chat-widget">
-    <div class="chat-widget-header">
-      <div class="d-flex align-items-center">
-        <div class="chat-avatar me-2">
-          <i class="bi bi-person-circle"></i>
-        </div>
-        <div>
-          <h6 class="mb-0">Soporte EasyTalent</h6>
-          <small class="text-muted">En línea</small>
-        </div>
-      </div>
-      <button type="button" class="btn-close-chat" id="close-chat">
-        <i class="bi bi-x-lg"></i>
-      </button>
-    </div>
-    <div class="chat-widget-body" id="chat-messages">
-      <div class="chat-message bot-message">
-        <div class="message-content">
-          <p>¡Hola! 👋 ¿En qué puedo ayudarte hoy?</p>
-        </div>
-        <small class="message-time">Ahora</small>
-      </div>
-    </div>
-    <div class="chat-widget-footer">
-      <form id="chat-form">
-        <div class="input-group">
-          <input type="text" class="form-control" id="chat-input" placeholder="Escribe tu mensaje..." autocomplete="off">
-          <button type="submit" class="btn btn-primary" id="chat-send">
-            <i class="bi bi-send-fill"></i>
-          </button>
-        </div>
-      </form>
-    </div>
-  </div>
-
   <!-- Scroll Top -->
   <a href="#" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
 
@@ -894,198 +852,7 @@
     <!-- SweetAlert2 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-  <style>
-    /* Chat Button Styles */
-    .chat-button {
-      position: fixed;
-      bottom: 100px;
-      right: 30px;
-      width: 60px;
-      height: 60px;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      border-radius: 50%;
-      color: white;
-      font-size: 24px;
-      z-index: 999;
-      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
-      transition: all 0.3s ease;
-      text-decoration: none;
-    }
-
-    .chat-button:hover {
-      transform: scale(1.1);
-      box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
-      color: white;
-    }
-
-    .chat-pulse {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      border-radius: 50%;
-      background: rgba(102, 126, 234, 0.6);
-      animation: pulse 2s infinite;
-    }
-
-    @keyframes pulse {
-      0% {
-        transform: scale(1);
-        opacity: 1;
-      }
-      100% {
-        transform: scale(1.5);
-        opacity: 0;
-      }
-    }
-
-    /* Chat Widget Styles */
-    .chat-widget {
-      position: fixed;
-      bottom: 180px;
-      right: 30px;
-      width: 350px;
-      height: 500px;
-      background: white;
-      border-radius: 15px;
-      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
-      z-index: 1000;
-      display: none;
-      flex-direction: column;
-      overflow: hidden;
-    }
-
-    .chat-widget.active {
-      display: flex;
-      animation: slideUp 0.3s ease;
-    }
-
-    @keyframes slideUp {
-      from {
-        opacity: 0;
-        transform: translateY(20px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    .chat-widget-header {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: white;
-      padding: 15px 20px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .chat-avatar {
-      font-size: 32px;
-    }
-
-    .btn-close-chat {
-      background: none;
-      border: none;
-      color: white;
-      font-size: 20px;
-      cursor: pointer;
-      padding: 5px;
-      transition: transform 0.2s;
-    }
-
-    .btn-close-chat:hover {
-      transform: rotate(90deg);
-    }
-
-    .chat-widget-body {
-      flex: 1;
-      padding: 20px;
-      overflow-y: auto;
-      background: #f8f9fa;
-    }
-
-    .chat-message {
-      margin-bottom: 15px;
-      animation: fadeIn 0.3s ease;
-    }
-
-    @keyframes fadeIn {
-      from {
-        opacity: 0;
-        transform: translateY(10px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    .bot-message .message-content {
-      background: white;
-      padding: 12px 15px;
-      border-radius: 15px 15px 15px 5px;
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    }
-
-    .user-message {
-      text-align: right;
-    }
-
-    .user-message .message-content {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: white;
-      padding: 12px 15px;
-      border-radius: 15px 15px 5px 15px;
-      display: inline-block;
-    }
-
-    .message-time {
-      display: block;
-      font-size: 11px;
-      color: #6c757d;
-      margin-top: 5px;
-    }
-
-    .chat-widget-footer {
-      padding: 15px;
-      background: white;
-      border-top: 1px solid #e9ecef;
-    }
-
-    .chat-widget-footer .input-group {
-      display: flex;
-    }
-
-    .chat-widget-footer .form-control {
-      border-radius: 25px 0 0 25px;
-      border-right: none;
-    }
-
-    .chat-widget-footer .btn {
-      border-radius: 0 25px 25px 0;
-      border-left: none;
-    }
-
-    /* Responsive */
-    @media (max-width: 768px) {
-      .chat-widget {
-        width: calc(100% - 40px);
-        right: 20px;
-        bottom: 100px;
-        height: 400px;
-      }
-
-      .chat-button {
-        right: 20px;
-        bottom: 80px;
-        width: 55px;
-        height: 55px;
-        font-size: 20px;
-      }
-    }
-  </style>
-
-    <script>
+  <script>
     // Typed.js animation para el company-badge
     document.addEventListener('DOMContentLoaded', function() {
       const typed = new Typed('#typed-badge', {
@@ -1105,102 +872,22 @@
       });
     });
 
-    // Chat Widget Functionality
-    document.addEventListener('DOMContentLoaded', function() {
-      const chatButton = document.getElementById('chat-button');
-      const chatWidget = document.getElementById('chat-widget');
-      const closeChat = document.getElementById('close-chat');
-      const chatForm = document.getElementById('chat-form');
-      const chatInput = document.getElementById('chat-input');
-      const chatMessages = document.getElementById('chat-messages');
-
-      // Abrir chat
-      chatButton.addEventListener('click', function(e) {
-        e.preventDefault();
-        chatWidget.classList.add('active');
-        chatInput.focus();
-      });
-
-      // Cerrar chat
-      closeChat.addEventListener('click', function() {
-        chatWidget.classList.remove('active');
-      });
-
-      // Enviar mensaje
-      chatForm.addEventListener('submit', function(e) {
-                    e.preventDefault();
-        const message = chatInput.value.trim();
-        
-        if (message) {
-          // Agregar mensaje del usuario
-          addMessage(message, 'user');
-          chatInput.value = '';
-
-          // Simular respuesta del bot después de un delay
-          setTimeout(function() {
-            const botResponses = [
-              'Gracias por tu mensaje. Nuestro equipo te responderá pronto.',
-              'Entendido. ¿Hay algo más en lo que pueda ayudarte?',
-              'Perfecto. Un agente de soporte se pondrá en contacto contigo.',
-              'Gracias por contactarnos. ¿Necesitas información sobre algún módulo específico?'
-            ];
-            const randomResponse = botResponses[Math.floor(Math.random() * botResponses.length)];
-            addMessage(randomResponse, 'bot');
-          }, 1000);
-        }
-      });
-
-      function addMessage(text, type) {
-        const messageDiv = document.createElement('div');
-        messageDiv.className = `chat-message ${type}-message`;
-        
-        const now = new Date();
-        const timeString = now.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
-        
-        messageDiv.innerHTML = `
-          <div class="message-content">
-            <p class="mb-0">${text}</p>
-          </div>
-          <small class="message-time">${timeString}</small>
-        `;
-        
-        chatMessages.appendChild(messageDiv);
-        chatMessages.scrollTop = chatMessages.scrollHeight;
-      }
-
-      // Cerrar chat al hacer clic fuera
-      document.addEventListener('click', function(e) {
-        if (!chatWidget.contains(e.target) && !chatButton.contains(e.target)) {
-          if (chatWidget.classList.contains('active')) {
-            // Opcional: descomentar para cerrar al hacer clic fuera
-            // chatWidget.classList.remove('active');
-          }
-                }
-            });
-        });
-
     // WhatsApp Contact Form Logic
     document.getElementById('contactForm').addEventListener('submit', function (e) {
       e.preventDefault();
 
-      // Get form values
       const firstName = document.getElementById('firstName').value;
       const lastName = document.getElementById('lastName').value;
       const phoneNumber = document.getElementById('phoneNumber').value;
       const message = document.getElementById('message').value;
 
-      // WhatsApp number of the company
-      const companyWhatsAppNumber = '1234567890'; // Replace with the company's WhatsApp number
-
-      // Construct WhatsApp URL
+      const companyWhatsAppNumber = '1234567890'; // Cambia por el número real
       const whatsappURL = `https://wa.me/${companyWhatsAppNumber}?text=${encodeURIComponent(
         `Hola, mi nombre es ${firstName} ${lastName}. Mi número es ${phoneNumber}. ${message}`
       )}`;
 
-      // Redirect to WhatsApp
       window.open(whatsappURL, '_blank');
-      
-      // Show success message
+
       Swal.fire({
         icon: 'success',
         title: '¡Mensaje enviado!',
@@ -1209,7 +896,24 @@
         showConfirmButton: false
       });
     });
-    </script>
+  </script>
+
+  <script>
+    (function(d,t) {
+      var BASE_URL = "https://www.easycontact.top";
+      var g = d.createElement(t), s = d.getElementsByTagName(t)[0];
+      g.src = BASE_URL + "/packs/js/sdk.js";
+      g.defer = true;
+      g.async = true;
+      s.parentNode.insertBefore(g, s);
+      g.onload = function() {
+        window.chatwootSDK.run({
+          websiteToken: "562p8Li5cAc5iQXNmTgyfHRV",
+          baseUrl: BASE_URL
+        });
+      };
+    })(document, "script");
+  </script>
 </body>
 
 </html>

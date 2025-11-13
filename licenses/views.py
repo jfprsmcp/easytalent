@@ -149,13 +149,21 @@ def admin_dashboard(request):
 @superuser_required  # Agregar este decorador
 def license_list(request):
     """Listado de todas las licencias de usuarios - SOLO para superusers"""
-    licenses = UserLicense.objects.select_related('owner', 'company', 'plan', 'created_by', 'modified_by').all()
+    # Por defecto, mostrar solo licencias activas
+    licenses = UserLicense.objects.select_related('owner', 'company', 'plan', 'created_by', 'modified_by').filter(is_active=True)
     
     # Filtros
     search = request.GET.get('search', '')
     status_filter = request.GET.get('status', '')
     plan_filter = request.GET.get('plan', '')
     is_active_filter = request.GET.get('is_active', '')
+    
+    # Si se especifica explícitamente el filtro is_active, aplicar el filtro
+    if is_active_filter == 'true':
+        licenses = licenses.filter(is_active=True)
+    elif is_active_filter == 'false':
+        # Si se pide ver inactivos, cambiar el queryset base
+        licenses = UserLicense.objects.select_related('owner', 'company', 'plan', 'created_by', 'modified_by').filter(is_active=False)
     
     if search:
         licenses = licenses.filter(
@@ -171,11 +179,6 @@ def license_list(request):
     
     if plan_filter:
         licenses = licenses.filter(plan_id=plan_filter)
-    
-    if is_active_filter == 'true':
-        licenses = licenses.filter(is_active=True)
-    elif is_active_filter == 'false':
-        licenses = licenses.filter(is_active=False)
     
     # Ordenamiento
     order_by = request.GET.get('order_by', '-created_at')
@@ -229,11 +232,15 @@ def license_edit(request, license_id):
 @superuser_required  # Agregar este decorador
 @transaction.atomic
 def license_delete(request, license_id):
-    """Eliminar una licencia de usuario - SOLO para superusers"""
+    """Eliminar una licencia de usuario - SOLO para superusers (eliminación lógica)"""
     license_obj = get_object_or_404(UserLicense, id=license_id)
     
     if request.method == 'POST':
-        license_obj.delete()
+        # Eliminación lógica: marcar como inactivo
+        license_obj.is_active = False
+        license_obj.license_status = 'cancelled'
+        license_obj.modified_by = request.user
+        license_obj.save(update_fields=['is_active', 'license_status', 'modified_by'])
         messages.success(request, 'La licencia ha sido eliminada correctamente.')
         return redirect('admin_license_list')
     
@@ -246,22 +253,25 @@ def license_delete(request, license_id):
 @superuser_required  # Agregar este decorador
 def plan_list(request):
     """Listado de todos los planes de licencia - SOLO para superusers"""
-    plans = LicensePlan.objects.select_related('created_by', 'modified_by').all()
+    # Por defecto, mostrar solo planes activos
+    plans = LicensePlan.objects.select_related('created_by', 'modified_by').filter(is_active=True)
     
     # Filtros
     search = request.GET.get('search', '')
     is_active_filter = request.GET.get('is_active', '')
+    
+    # Si se especifica explícitamente el filtro is_active, aplicar el filtro
+    if is_active_filter == 'true':
+        plans = plans.filter(is_active=True)
+    elif is_active_filter == 'false':
+        # Si se pide ver inactivos, cambiar el queryset base
+        plans = LicensePlan.objects.select_related('created_by', 'modified_by').filter(is_active=False)
     
     if search:
         plans = plans.filter(
             Q(plan_name__icontains=search) |
             Q(description__icontains=search)
         )
-    
-    if is_active_filter == 'true':
-        plans = plans.filter(is_active=True)
-    elif is_active_filter == 'false':
-        plans = plans.filter(is_active=False)
     
     # Ordenamiento
     order_by = request.GET.get('order_by', '-created_at')
@@ -333,21 +343,25 @@ def plan_edit(request, plan_id):
 @superuser_required  # Agregar este decorador
 @transaction.atomic
 def plan_delete(request, plan_id):
-    """Eliminar un plan de licencia - SOLO para superusers"""
+    """Eliminar un plan de licencia - SOLO para superusers (eliminación lógica)"""
     plan = get_object_or_404(LicensePlan, id=plan_id)
     
     if request.method == 'POST':
-        # Verificar si hay licencias usando este plan
-        licenses_count = UserLicense.objects.filter(plan=plan).count()
+        # Verificar si hay licencias activas usando este plan
+        licenses_count = UserLicense.objects.filter(plan=plan, is_active=True).count()
         if licenses_count > 0:
-            messages.error(request, f'No se puede eliminar el plan porque tiene {licenses_count} licencia(s) asociada(s).')
+            messages.error(request, f'No se puede eliminar el plan porque tiene {licenses_count} licencia(s) activa(s) asociada(s).')
             return redirect('admin_plan_list')
         
-        plan.delete()
+        # Eliminación lógica: marcar como inactivo
+        plan.is_active = False
+        plan.modified_by = request.user
+        plan.save(update_fields=['is_active', 'modified_by'])
         messages.success(request, 'El plan ha sido eliminado correctamente.')
         return redirect('admin_plan_list')
     
-    licenses_count = UserLicense.objects.filter(plan=plan).count()
+    # Contar solo licencias activas
+    licenses_count = UserLicense.objects.filter(plan=plan, is_active=True).count()
     
     return render(request, 'licenses/admin_plan_delete.html', {
         'plan': plan,

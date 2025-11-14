@@ -99,6 +99,7 @@ def admin_dashboard(request):
     """Panel principal de administración de licencias - SOLO para superusers"""
     from datetime import timedelta
     from django.contrib.auth import get_user_model
+    from licenses.models import LicensePlan
     
     User = get_user_model()
     
@@ -122,33 +123,27 @@ def admin_dashboard(request):
         is_superuser=False  # Excluir superusers del conteo
     ).count()
     
-    # Usuarios con planes específicos (licencias activas)
-    trial_users = UserLicense.objects.filter(
-        plan__plan_name__iexact='Trial',
-        is_active=True
-    ).count()
+    # Obtener todos los planes activos y contar usuarios por cada plan (dinámico)
+    plans_with_users = []
+    all_plans = LicensePlan.objects.filter(is_active=True).order_by('plan_name')
     
-    basic_users = UserLicense.objects.filter(
-        plan__plan_name__iexact='Basic',
-        is_active=True
-    ).count()
-    
-    pro_users = UserLicense.objects.filter(
-        plan__plan_name__iexact='Pro',
-        is_active=True
-    ).count()
-    
-    enterprise_users = UserLicense.objects.filter(
-        plan__plan_name__iexact='Enterprise',
-        is_active=True
-    ).count()
+    for plan in all_plans:
+        user_count = UserLicense.objects.filter(
+            plan=plan,
+            is_active=True
+        ).count()
+        plans_with_users.append({
+            'plan': plan,
+            'plan_name': plan.plan_name,
+            'user_count': user_count,
+        })
     
     # Estadísticas por plan (todas las licencias)
     licenses_by_plan = UserLicense.objects.values('plan__plan_name').annotate(
         count=Count('id')
     ).order_by('-count')
     
-    # Usuarios por plan (activos)
+    # Usuarios por plan (activos) - para gráficas
     active_by_plan = UserLicense.objects.filter(is_active=True).values(
         'plan__plan_name'
     ).annotate(count=Count('id')).order_by('-count')
@@ -178,10 +173,7 @@ def admin_dashboard(request):
         'expired_licenses': expired_licenses,
         'trial_licenses': trial_licenses,
         'new_users': new_users,
-        'trial_users': trial_users,
-        'basic_users': basic_users,
-        'pro_users': pro_users,
-        'enterprise_users': enterprise_users,
+        'plans_with_users': plans_with_users,  # Nueva variable dinámica
         'expiring_soon': expiring_soon,
         'companies_with_licenses': companies_with_licenses,
         'licenses_by_plan': list(licenses_by_plan),

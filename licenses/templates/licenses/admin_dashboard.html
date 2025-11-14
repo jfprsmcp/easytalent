@@ -128,66 +128,44 @@
         </div>
       </div>
 
-      <!-- Tarjetas de usuarios por plan -->
+      <!-- Tarjetas de usuarios por plan (DINÁMICO) -->
       <div class="oh-dashboard__cards row mt-4">
         <div class="col-12">
           <h5 class="mb-3">{% trans "Usuarios Activos por Plan" %}</h5>
         </div>
+        {% for plan_data in plans_with_users %}
         <div class="col-12 col-sm-12 col-md-6 col-lg-3">
-          <div class="oh-card-dashboard oh-card-dashboard--warning">
+          <div class="oh-card-dashboard oh-card-dashboard--{% cycle 'warning' 'info' 'primary' 'danger' 'success' %}">
             <div class="oh-card-dashboard__header">
-              <span class="oh-card-dashboard__title">{% trans "Plan Trial" %}</span>
+              <span class="oh-card-dashboard__title">{% trans "Plan" %} {{ plan_data.plan_name }}</span>
             </div>
             <div class="oh-card-dashboard__body">
               <div class="oh-card-dashboard__counts">
-                <span class="oh-card-dashboard__sign"><ion-icon name="hourglass"></ion-icon></span>
-                <span class="oh-card-dashboard__count">{{ trial_users }}</span>
+                <span class="oh-card-dashboard__sign">
+                  {% if plan_data.plan_name|lower == 'trial' %}
+                    <ion-icon name="hourglass"></ion-icon>
+                  {% elif plan_data.plan_name|lower == 'basic' %}
+                    <ion-icon name="star"></ion-icon>
+                  {% elif plan_data.plan_name|lower == 'pro' %}
+                    <ion-icon name="diamond"></ion-icon>
+                  {% elif plan_data.plan_name|lower == 'enterprise' %}
+                    <ion-icon name="business"></ion-icon>
+                  {% else %}
+                    <ion-icon name="card"></ion-icon>
+                  {% endif %}
+                </span>
+                <span class="oh-card-dashboard__count">{{ plan_data.user_count }}</span>
               </div>
             </div>
           </div>
         </div>
-
-        <div class="col-12 col-sm-12 col-md-6 col-lg-3">
-          <div class="oh-card-dashboard oh-card-dashboard--info">
-            <div class="oh-card-dashboard__header">
-              <span class="oh-card-dashboard__title">{% trans "Plan Basic" %}</span>
-            </div>
-            <div class="oh-card-dashboard__body">
-              <div class="oh-card-dashboard__counts">
-                <span class="oh-card-dashboard__sign"><ion-icon name="star"></ion-icon></span>
-                <span class="oh-card-dashboard__count">{{ basic_users }}</span>
-              </div>
-            </div>
+        {% empty %}
+        <div class="col-12">
+          <div class="alert alert-info">
+            {% trans "No hay planes activos disponibles" %}
           </div>
         </div>
-
-        <div class="col-12 col-sm-12 col-md-6 col-lg-3">
-          <div class="oh-card-dashboard oh-card-dashboard--primary">
-            <div class="oh-card-dashboard__header">
-              <span class="oh-card-dashboard__title">{% trans "Plan Pro" %}</span>
-            </div>
-            <div class="oh-card-dashboard__body">
-              <div class="oh-card-dashboard__counts">
-                <span class="oh-card-dashboard__sign"><ion-icon name="diamond"></ion-icon></span>
-                <span class="oh-card-dashboard__count">{{ pro_users }}</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="col-12 col-sm-12 col-md-6 col-lg-3">
-          <div class="oh-card-dashboard oh-card-dashboard--danger">
-            <div class="oh-card-dashboard__header">
-              <span class="oh-card-dashboard__title">{% trans "Plan Enterprise" %}</span>
-            </div>
-            <div class="oh-card-dashboard__body">
-              <div class="oh-card-dashboard__counts">
-                <span class="oh-card-dashboard__sign"><ion-icon name="business"></ion-icon></span>
-                <span class="oh-card-dashboard__count">{{ enterprise_users }}</span>
-              </div>
-            </div>
-          </div>
-        </div>
+        {% endfor %}
       </div>
 
       <!-- Gráficas -->

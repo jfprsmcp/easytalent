@@ -514,6 +514,62 @@
 
     </section><!-- /Call To Action Section -->
 
+    <!-- Clients Section -->
+    <section id="clients" class="clients section">
+
+      <div class="container" data-aos="fade-up" data-aos-delay="100">
+
+        <div class="swiper init-swiper">
+          <script type="application/json" class="swiper-config">
+            {
+              "loop": true,
+              "speed": 600,
+              "autoplay": {
+                "delay": 5000
+              },
+              "slidesPerView": "auto",
+              "pagination": {
+                "el": ".swiper-pagination",
+                "type": "bullets",
+                "clickable": true
+              },
+              "breakpoints": {
+                "320": {
+                  "slidesPerView": 2,
+                  "spaceBetween": 40
+                },
+                "480": {
+                  "slidesPerView": 3,
+                  "spaceBetween": 60
+                },
+                "640": {
+                  "slidesPerView": 4,
+                  "spaceBetween": 80
+                },
+                "992": {
+                  "slidesPerView": 6,
+                  "spaceBetween": 120
+                }
+              }
+            }
+          </script>
+          <div class="swiper-wrapper align-items-center">
+            <div class="swiper-slide"><img src="{% static 'landing/images/assets/img/clients/client-1.png' %}" class="img-fluid" alt=""></div>
+            <div class="swiper-slide"><img src="{% static 'landing/images/assets/img/clients/client-2.png' %}" class="img-fluid" alt=""></div>
+            <div class="swiper-slide"><img src="{% static 'landing/images/assets/img/clients/client-3.png' %}" class="img-fluid" alt=""></div>
+            <div class="swiper-slide"><img src="{% static 'landing/images/assets/img/clients/client-4.png' %}" class="img-fluid" alt=""></div>
+            <div class="swiper-slide"><img src="{% static 'landing/images/assets/img/clients/client-5.png' %}" class="img-fluid" alt=""></div>
+            <div class="swiper-slide"><img src="{% static 'landing/images/assets/img/clients/client-6.png' %}" class="img-fluid" alt=""></div>
+            <div class="swiper-slide"><img src="{% static 'landing/images/assets/img/clients/client-7.png' %}" class="img-fluid" alt=""></div>
+            <div class="swiper-slide"><img src="{% static 'landing/images/assets/img/clients/client-8.png' %}" class="img-fluid" alt=""></div>
+          </div>
+          <div class="swiper-pagination"></div>
+        </div>
+
+      </div>
+
+    </section><!-- /Clients Section -->
+
     <!-- Pricing Section -->
     <section id="pricing" class="pricing section light-background">
 
@@ -733,13 +789,52 @@
 
       <div class="container" data-aos="fade-up" data-aos-delay="100">
 
-        <div class="row g-4 g-lg-5 justify-content-center">
-          <div class="col-lg-8">
+        <div class="row g-4 g-lg-5">
+          <div class="col-lg-5">
+            <div class="info-box" data-aos="fade-up" data-aos-delay="200">
+              <h3>Información de Contacto</h3>
+              <p>Estamos ubicados en Santa Cruz, Bolivia. Contáctanos para más información sobre nuestros servicios.</p>
+
+              <div class="info-item" data-aos="fade-up" data-aos-delay="300">
+                <div class="icon-box">
+                  <i class="bi bi-geo-alt"></i>
+                </div>
+                <div class="content">
+                  <h4>Nuestra Ubicación</h4>
+                  <p>Avenida Roca y Coronado</p>
+                  <p>Entre 2do y 3er anillo, Calle Postrevalle</p>
+                  <p>Santa Cruz, Bolivia</p>
+                </div>
+              </div>
+
+              <div class="info-item" data-aos="fade-up" data-aos-delay="400">
+                <div class="icon-box">
+                  <i class="bi bi-telephone"></i>
+                </div>
+                <div class="content">
+                  <h4>Número de Teléfono</h4>
+                  <p>+591 75661556</p>
+                </div>
+              </div>
+
+              <div class="info-item" data-aos="fade-up" data-aos-delay="500">
+                <div class="icon-box">
+                  <i class="bi bi-envelope"></i>
+                </div>
+                <div class="content">
+                  <h4>Correo Electrónico</h4>
+                  <p>EasyTalent@gmail.com</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-7">
             <div class="contact-form" data-aos="fade-up" data-aos-delay="300">
               <h3>Ponte en Contacto</h3>
               <p>Completa el formulario y te contactaremos por WhatsApp.</p>
 
-              <form id="contactForm" class="php-email-form" data-aos="fade-up" data-aos-delay="200">
+              <form id="contactForm" data-aos="fade-up" data-aos-delay="200">
                 <div class="row gy-4">
 
                   <div class="col-md-6">
@@ -759,10 +854,6 @@
                   </div>
 
                   <div class="col-12 text-center">
-                    <div class="loading">Cargando</div>
-                    <div class="error-message"></div>
-                    <div class="sent-message">Tu mensaje ha sido enviado. ¡Gracias!</div>
-
                     <button type="submit" class="btn">Enviar Mensaje</button>
                   </div>
 
@@ -881,7 +972,7 @@
       const phoneNumber = document.getElementById('phoneNumber').value;
       const message = document.getElementById('message').value;
 
-      const companyWhatsAppNumber = '1234567890'; // Cambia por el número real
+      const companyWhatsAppNumber = '59175661556'; // Número de EasyTalent (sin espacios ni +)
       const whatsappURL = `https://wa.me/${companyWhatsAppNumber}?text=${encodeURIComponent(
         `Hola, mi nombre es ${firstName} ${lastName}. Mi número es ${phoneNumber}. ${message}`
       )}`;

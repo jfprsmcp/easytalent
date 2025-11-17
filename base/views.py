@@ -910,14 +910,9 @@ def register_user(request):
             messages.error(request, "Ya existe un empleado con este correo electrónico.")
             return redirect("register")
 
-        # Validate unique company name
-        from base.models import Company
-        if Company.objects.filter(company=company_name).exists():
-            messages.error(request, "El nombre de la empresa ya está registrado. Por favor, elige otro.")
-            return redirect("register")
-
         # Atomic create of User, Company (by name) and Employee
         from django.db import transaction
+        from base.models import Company
         from employee.models import Department, EmployeeType
         from datetime import date
 
@@ -935,16 +930,18 @@ def register_user(request):
                 user.is_superuser = False  # NO hacer superuser
                 user.save()
 
-                # Create Company with default values
-                company = Company.objects.create(
+                # Create or get Company by name with default values
+                company, created = Company.objects.get_or_create(
                     company=company_name,
-                    address="",
-                    country="Bolivia",  # País por defecto
-                    state="",
-                    city="Santa Cruz",  # Ciudad por defecto
-                    zip="",
-                    hq=True,  # Marcar como HQ para que sea la empresa principal
-                    icon="base/icon/horilla-logo.png",  # Icono por defecto
+                    defaults={
+                        "address": "",
+                        "country": "Bolivia",  # País por defecto
+                        "state": "",
+                        "city": "Santa Cruz",  # Ciudad por defecto
+                        "zip": "",
+                        "hq": True,  # Marcar como HQ para que sea la empresa principal
+                        "icon": "base/icon/horilla-logo.png",  # Icono por defecto
+                    },
                 )
 
                 # Create Employee with default values

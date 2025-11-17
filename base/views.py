@@ -607,6 +607,214 @@ def landing_page(request):
     return render(request, 'landing/landing_page.html')
 
 
+def module_detail(request, module_slug):
+    """
+    Vista para mostrar el detalle de un módulo específico
+    """
+    modules = {
+        'gestion-empleados': {
+            'title': 'Gestión de Empleados',
+            'image': 'landing/images/horilla-employee-screenshot.webp',
+            'description': 'Centraliza toda la información de tus empleados en un solo lugar.',
+            'content': '''
+                <p>EasyTalent te permite gestionar perfiles completos, historiales laborales, documentos, y mucho más. 
+                Con integración LDAP, sincroniza automáticamente los datos de tus empleados desde tu directorio activo.</p>
+                <h4>Características principales:</h4>
+                <ul>
+                    <li>Perfiles completos de empleados con toda su información</li>
+                    <li>Historial laboral y documentos digitalizados</li>
+                    <li>Integración LDAP para sincronización automática</li>
+                    <li>Organigrama interactivo de la empresa</li>
+                    <li>Gestión de departamentos y cargos</li>
+                    <li>Documentos y certificaciones</li>
+                    <li>Información de contacto y emergencias</li>
+                </ul>
+            ''',
+            'icon': 'bi-people-fill',
+            'color': 'orange'
+        },
+        'control-asistencia': {
+            'title': 'Control de Asistencia',
+            'image': 'landing/images/horilla-attendance-screenshot.webp',
+            'description': 'Automatiza el registro de entrada y salida de tus empleados.',
+            'content': '''
+                <p>Compatible con dispositivos biométricos, permite un seguimiento preciso de las horas trabajadas, 
+                ausencias y tardanzas. Genera reportes detallados para una gestión eficiente.</p>
+                <h4>Características principales:</h4>
+                <ul>
+                    <li>Registro automático de entrada y salida</li>
+                    <li>Integración con dispositivos biométricos</li>
+                    <li>Control de horas trabajadas y extras</li>
+                    <li>Reportes de asistencia detallados</li>
+                    <li>Gestión de horarios y turnos</li>
+                    <li>Validación de asistencia</li>
+                    <li>Notificaciones de ausencias</li>
+                </ul>
+            ''',
+            'icon': 'bi-clock-history',
+            'color': 'blue'
+        },
+        'gestion-permisos': {
+            'title': 'Gestión de Permisos',
+            'image': 'landing/images/horilla-leave-screenshot.webp',
+            'description': 'Simplifica las solicitudes de permisos con flujos de aprobación personalizables.',
+            'content': '''
+                <p>Gestiona todos los tipos de permisos y licencias de tus empleados de manera eficiente. 
+                Sistema de aprobación flexible que se adapta a las necesidades de tu empresa.</p>
+                <h4>Características principales:</h4>
+                <ul>
+                    <li>Solicitudes de permisos digitales</li>
+                    <li>Flujos de aprobación personalizables</li>
+                    <li>Diferentes tipos de permisos y licencias</li>
+                    <li>Calendario de ausencias</li>
+                    <li>Asignación de días de vacaciones</li>
+                    <li>Reportes de permisos</li>
+                    <li>Notificaciones automáticas</li>
+                </ul>
+            ''',
+            'icon': 'bi-calendar-check',
+            'color': 'green'
+        },
+        'nomina': {
+            'title': 'Nómina',
+            'image': 'landing/images/horilla-payroll-screenshot.webp',
+            'description': 'Simplifica la gestión de nóminas con cálculos automáticos.',
+            'content': '''
+                <p>Gestiona contratos, asignaciones y deducciones con cálculos automáticos de impuestos. 
+                Genera recibos de pago y reportes financieros completos.</p>
+                <h4>Características principales:</h4>
+                <ul>
+                    <li>Cálculo automático de nóminas</li>
+                    <li>Gestión de contratos y asignaciones</li>
+                    <li>Cálculo de impuestos y deducciones</li>
+                    <li>Generación de recibos de pago</li>
+                    <li>Reportes financieros completos</li>
+                    <li>Gestión de bonificaciones</li>
+                    <li>Historial de pagos</li>
+                </ul>
+            ''',
+            'icon': 'bi-cash-stack',
+            'color': 'red'
+        },
+        'gestion-rendimiento': {
+            'title': 'Gestión del Rendimiento',
+            'image': 'landing/images/horilla-pms-screenshot.webp',
+            'description': 'OKRs y retroalimentación 360° para mejorar continuamente el rendimiento.',
+            'content': '''
+                <p>Evalúa y mejora el rendimiento de tus empleados con objetivos claros y retroalimentación continua. 
+                Sistema completo de gestión del rendimiento con OKRs y evaluaciones 360°.</p>
+                <h4>Características principales:</h4>
+                <ul>
+                    <li>Gestión de OKRs (Objetivos y Resultados Clave)</li>
+                    <li>Evaluaciones 360°</li>
+                    <li>Retroalimentación continua</li>
+                    <li>Planes de desarrollo individual</li>
+                    <li>Métricas de rendimiento</li>
+                    <li>Reportes de evaluación</li>
+                    <li>Seguimiento de objetivos</li>
+                </ul>
+            ''',
+            'icon': 'bi-graph-up-arrow',
+            'color': 'orange'
+        },
+        'reclutamiento': {
+            'title': 'Reclutamiento',
+            'image': 'landing/images/horilla-recruitment-screenshot.webp',
+            'description': 'Gestiona candidatos y procesos de reclutamiento con seguimiento en tiempo real.',
+            'content': '''
+                <p>Optimiza tu proceso de reclutamiento desde la publicación de vacantes hasta la contratación. 
+                Gestiona candidatos, entrevistas y ofertas de manera eficiente.</p>
+                <h4>Características principales:</h4>
+                <ul>
+                    <li>Gestión de vacantes y ofertas de trabajo</li>
+                    <li>Base de datos de candidatos</li>
+                    <li>Seguimiento de procesos de selección</li>
+                    <li>Gestión de entrevistas</li>
+                    <li>Evaluación de candidatos</li>
+                    <li>Reportes de reclutamiento</li>
+                    <li>Integración con portales de empleo</li>
+                </ul>
+            ''',
+            'icon': 'bi-person-badge',
+            'color': 'blue'
+        },
+        'desembarco': {
+            'title': 'Desembarco',
+            'image': 'landing/images/horilla-offboarding-screenshot.webp',
+            'description': 'Gestiona el proceso de salida de empleados de manera eficiente y organizada.',
+            'content': '''
+                <p>Asegura que todas las tareas necesarias se completen, desde la devolución de equipos hasta 
+                la finalización de documentos legales. Proceso estructurado y completo.</p>
+                <h4>Características principales:</h4>
+                <ul>
+                    <li>Proceso de salida estructurado</li>
+                    <li>Checklist de tareas de salida</li>
+                    <li>Devolución de activos y equipos</li>
+                    <li>Finalización de documentos</li>
+                    <li>Encuestas de salida</li>
+                    <li>Seguimiento del proceso</li>
+                    <li>Archivo de información</li>
+                </ul>
+            ''',
+            'icon': 'bi-box-arrow-right',
+            'color': 'red'
+        },
+        'soporte': {
+            'title': 'Soporte',
+            'image': 'landing/images/horilla-helpdesk-screenshot.webp',
+            'description': 'Sistema de tickets y gestión de solicitudes de soporte para resolver problemas rápidamente.',
+            'content': '''
+                <p>Gestiona todas las solicitudes de soporte de manera organizada. Sistema de tickets que permite 
+                un seguimiento eficiente y una resolución rápida de problemas.</p>
+                <h4>Características principales:</h4>
+                <ul>
+                    <li>Sistema de tickets</li>
+                    <li>Gestión de solicitudes de soporte</li>
+                    <li>Asignación de tickets</li>
+                    <li>Seguimiento de estado</li>
+                    <li>Base de conocimientos</li>
+                    <li>Reportes de soporte</li>
+                    <li>Notificaciones automáticas</li>
+                </ul>
+            ''',
+            'icon': 'bi-headset',
+            'color': 'orange'
+        },
+        'activos': {
+            'title': 'Gestión de Activos',
+            'image': 'landing/images/horilla-assets-screenshot.webp',
+            'description': 'Gestiona y rastrea los activos de la empresa asignados a empleados y departamentos.',
+            'content': '''
+                <p>Mantén un control completo sobre los activos de tu empresa. Rastrea equipos, herramientas y recursos 
+                asignados a empleados y departamentos, con historial completo de movimientos y mantenimientos.</p>
+                <h4>Características principales:</h4>
+                <ul>
+                    <li>Inventario completo de activos</li>
+                    <li>Asignación a empleados y departamentos</li>
+                    <li>Historial de movimientos</li>
+                    <li>Gestión de mantenimientos</li>
+                    <li>Reportes de activos</li>
+                    <li>Seguimiento de estado</li>
+                    <li>Valoración de activos</li>
+                </ul>
+            ''',
+            'icon': 'bi-briefcase',
+            'color': 'blue'
+        }
+    }
+    
+    module = modules.get(module_slug)
+    
+    if not module:
+        from django.http import Http404
+        raise Http404("Módulo no encontrado")
+    
+    return render(request, 'landing/module_detail.html', {
+        'module': module,
+        'module_slug': module_slug
+    })
+
+
 def login_user(request):
     """
     Handles user login and authentication.
@@ -702,9 +910,14 @@ def register_user(request):
             messages.error(request, "Ya existe un empleado con este correo electrónico.")
             return redirect("register")
 
+        # Validate unique company name
+        from base.models import Company
+        if Company.objects.filter(company=company_name).exists():
+            messages.error(request, "El nombre de la empresa ya está registrado. Por favor, elige otro.")
+            return redirect("register")
+
         # Atomic create of User, Company (by name) and Employee
         from django.db import transaction
-        from base.models import Company
         from employee.models import Department, EmployeeType
         from datetime import date
 
@@ -722,18 +935,16 @@ def register_user(request):
                 user.is_superuser = False  # NO hacer superuser
                 user.save()
 
-                # Create or get Company by name with default values
-                company, created = Company.objects.get_or_create(
+                # Create Company with default values
+                company = Company.objects.create(
                     company=company_name,
-                    defaults={
-                        "address": "",
-                        "country": "Bolivia",  # País por defecto
-                        "state": "",
-                        "city": "Santa Cruz",  # Ciudad por defecto
-                        "zip": "",
-                        "hq": True,  # Marcar como HQ para que sea la empresa principal
-                        "icon": "base/icon/horilla-logo.png",  # Icono por defecto
-                    },
+                    address="",
+                    country="Bolivia",  # País por defecto
+                    state="",
+                    city="Santa Cruz",  # Ciudad por defecto
+                    zip="",
+                    hq=True,  # Marcar como HQ para que sea la empresa principal
+                    icon="base/icon/horilla-logo.png",  # Icono por defecto
                 )
 
                 # Create Employee with default values

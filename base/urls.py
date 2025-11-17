@@ -63,6 +63,8 @@ from horilla_audit.models import AuditTag
 
 urlpatterns = [
     path("", views.landing_page, name="landing-page"),
+    
+    path("module/<str:module_slug>/", views.module_detail, name="module-detail"),
     path("dashboard/", views.home, name="home-page"),
     path(
         "employee/work-type-request-view/",

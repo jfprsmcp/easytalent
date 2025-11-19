@@ -1,8 +1,25 @@
 from django.db import models
 from django.contrib.auth import get_user_model
 from django.utils import timezone
+import json
 
 User = get_user_model()
+
+# Lista de módulos disponibles (debe coincidir con SIDEBARS en horilla_apps.py)
+AVAILABLE_MODULES = [
+    'recruitment',      # Reclutamiento
+    'onboarding',       # Incorporación
+    'employee',        # Empleados
+    'attendance',      # Asistencia
+    'leave',           # Permisos
+    'payroll',         # Nómina
+    'pms',             # Rendimiento
+    'offboarding',     # Desembarco
+    'asset',           # Activos
+    'helpdesk',        # Soporte
+    'project',          # Proyectos
+    'report',          # Reportes
+]
 
 class LicensePlan(models.Model):
     """
@@ -13,7 +30,7 @@ class LicensePlan(models.Model):
     is_active = models.BooleanField(default=True)
 
     # Información del Plan
-    plan_name = models.CharField(max_length=100)  # 'Basic', 'Pro', 'Enterprise', 'Trial'
+    plan_name = models.CharField(max_length=100)
     description = models.TextField(blank=True, null=True)
     price_monthly = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
     price_yearly = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
@@ -21,6 +38,12 @@ class LicensePlan(models.Model):
 
     # Límites del Plan
     max_employees = models.IntegerField()
+    
+    # NUEVO: Módulos permitidos (JSONField con lista de strings)
+    allowed_modules = models.JSONField(
+        default=list,
+        help_text="Lista de módulos permitidos para este plan. Ejemplo: ['employee', 'attendance', 'leave']"
+    )
 
     # Control de Acceso
     created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='+')
@@ -33,6 +56,16 @@ class LicensePlan(models.Model):
 
     def __str__(self):
         return f"{self.plan_name} ({'Activo' if self.is_active else 'Inactivo'})"
+    
+    def has_module(self, module_name):
+        """Verifica si el plan tiene acceso a un módulo"""
+        if not self.allowed_modules:
+            return False
+        return module_name in self.allowed_modules
+    
+    def get_allowed_modules(self):
+        """Retorna la lista de módulos permitidos"""
+        return self.allowed_modules if self.allowed_modules else []
 
 
 class UserLicense(models.Model):
@@ -83,3 +116,12 @@ class UserLicense(models.Model):
             self.license_status = 'expired'
             self.is_active = False
             self.save(update_fields=['license_status', 'is_active'])
+
+    # Agregar método helper para verificar módulos
+    def has_module_access(self, module_name):
+        """Verifica si la licencia permite acceso a un módulo"""
+        if not self.is_active or self.license_status != 'active':
+            return False
+        if self.is_expired:
+            return False
+        return self.plan.has_module(module_name)

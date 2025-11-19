@@ -113,7 +113,7 @@ class SuperuserRestrictionMiddleware:
     def __init__(self, get_response):
         self.get_response = get_response
 
-        # Rutas completas (nombre reversado → path absoluto)
+        # Rutas completas (nombre reversado → path absoluto) para autenticación
         auth_named_urls = [
             "login", "logout",
             "password_change", "password_change_done",
@@ -127,21 +127,45 @@ class SuperuserRestrictionMiddleware:
             except NoReverseMatch:
                 pass
 
+        # Rutas exactas permitidas para superusers
         self.allowed_exact_paths = {
             "/",
             "/dashboard/",
-            "/licenses/admin/",
-            "/settings/",
+            "/change-password",      # Cambio de contraseña
+            "/change-username",       # Cambio de nombre de usuario
+            "/logout",               # Cerrar sesión
+            "/two-factor",           # Autenticación de dos factores
+            "/send-otp",             # Envío de OTP
         } | resolved_paths  # unimos los paths resueltos
 
-        # Prefijos que siempre deben quedar libres para superusers
+        # Prefijos permitidos (solo los necesarios)
         self.allowed_prefixes = (
-            "/licenses/admin/",
-            "/settings/",
-            "/accounts/",           # ← añade todo el árbol de cuentas
+            "/licenses/admin/",      # Panel de administración de licencias
+            "/settings/licenses/",   # Solo configuraciones de licencias
+            "/employee-profile/",    # Perfil del empleado/usuario
+            "/accounts/",            # Autenticación de Django
             "/static/",
             "/media/",
             "/api/",
+            "/inbox/notifications/", # Notificaciones
+            "/jsi18n/",              # Internacionalización JS
+        )
+        
+        # Prefijos explícitamente bloqueados para superusers
+        self.blocked_prefixes = (
+            "/settings/",            # Bloquear configuraciones generales (excepto licenses)
+            "/employee/",            # Módulo de empleados
+            "/attendance/",          # Módulo de asistencia
+            "/leave/",               # Módulo de permisos
+            "/payroll/",             # Módulo de nómina
+            "/recruitment/",         # Módulo de reclutamiento
+            "/onboarding/",          # Módulo de incorporación
+            "/offboarding/",         # Módulo de desembarco
+            "/pms/",                 # Módulo de rendimiento
+            "/asset/",               # Módulo de activos
+            "/helpdesk/",            # Módulo de soporte
+            "/project/",             # Módulo de proyectos
+            "/report/",              # Módulo de reportes
         )
 
     def __call__(self, request):
@@ -150,18 +174,32 @@ class SuperuserRestrictionMiddleware:
             and request.user.is_superuser
             and not request.path.startswith("/admin/")  # Django admin original
         ):
-            # Paths exactos permitidos (ej. /accounts/logout/, /accounts/password_change/)
+            # Paths exactos permitidos (ej. /change-password, /change-username, /logout)
             if request.path in self.allowed_exact_paths:
                 return self.get_response(request)
 
-            # Prefijos permitidos (ej. /accounts/…)
+            # Verificar si la ruta está bloqueada
+            if any(request.path.startswith(prefix) for prefix in self.blocked_prefixes):
+                # Permitir solo /settings/licenses/ dentro de /settings/
+                if request.path.startswith("/settings/licenses/"):
+                    return self.get_response(request)
+                # Todo lo demás dentro de /settings/ está bloqueado
+                messages.warning(
+                    request,
+                    "Como superadministrador, solo puedes acceder a la gestión de licencias y planes, "
+                    "así como a tu perfil y configuración de cuenta.",
+                )
+                return redirect("license_admin_dashboard")
+
+            # Prefijos permitidos (ej. /licenses/admin/, /employee-profile/, /accounts/…)
             if any(request.path.startswith(prefix) for prefix in self.allowed_prefixes):
                 return self.get_response(request)
 
             # Todo lo demás redirige al dashboard de licencias
             messages.warning(
                 request,
-                "Como superadministrador, solo puedes acceder a la gestión de licencias y configuraciones.",
+                "Como superadministrador, solo puedes acceder a la gestión de licencias y planes, "
+                "así como a tu perfil y configuración de cuenta.",
             )
             return redirect("license_admin_dashboard")
 

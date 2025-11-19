@@ -134,30 +134,70 @@ class UserLicenseEditForm(forms.ModelForm):
 
 class LicensePlanForm(forms.ModelForm):
     """Formulario para crear/editar planes de licencia"""
-    is_active = forms.BooleanField(
+    
+    # Campo para seleccionar módulos
+    allowed_modules = forms.MultipleChoiceField(
+        choices=[
+            ('recruitment', 'Reclutamiento'),
+            ('onboarding', 'Incorporación'),
+            ('employee', 'Empleados'),
+            ('attendance', 'Asistencia'),
+            ('leave', 'Permisos'),
+            ('payroll', 'Nómina'),
+            ('pms', 'Rendimiento'),
+            ('offboarding', 'Desembarco'),
+            ('asset', 'Activos'),
+            ('helpdesk', 'Soporte'),
+            ('project', 'Proyectos'),
+            ('report', 'Reportes'),
+        ],
+        widget=forms.CheckboxSelectMultiple(attrs={'class': 'form-check-input'}),
         required=False,
-        initial=True,
-        widget=forms.CheckboxInput(attrs={'class': 'oh-switch__checkbox'}),
-        label=_("Activo")
+        label=_("Módulos Permitidos"),
+        help_text=_("Selecciona los módulos que estarán disponibles en este plan")
     )
-
+    
     class Meta:
         model = LicensePlan
         fields = [
             'plan_name', 'description', 'price_monthly', 'price_yearly',
-            'currency', 'max_employees', 'is_active'
+            'currency', 'max_employees', 'allowed_modules', 'is_active'
         ]
         widgets = {
-            'plan_name': forms.TextInput(attrs={'class': 'oh-input w-100'}),
-            'description': forms.Textarea(attrs={'class': 'oh-input w-100', 'rows': 3}),
-            'price_monthly': forms.NumberInput(attrs={'class': 'oh-input w-100', 'step': '0.01'}),
-            'price_yearly': forms.NumberInput(attrs={'class': 'oh-input w-100', 'step': '0.01'}),
-            'currency': forms.TextInput(attrs={'class': 'oh-input w-100', 'maxlength': 3}),
-            'max_employees': forms.NumberInput(attrs={'class': 'oh-input w-100'}),
+            'plan_name': forms.TextInput(attrs={'class': 'oh-input'}),
+            'description': forms.Textarea(attrs={'class': 'oh-input', 'rows': 3}),
+            'price_monthly': forms.NumberInput(attrs={'class': 'oh-input', 'step': '0.01'}),
+            'price_yearly': forms.NumberInput(attrs={'class': 'oh-input', 'step': '0.01'}),
+            'currency': forms.TextInput(attrs={'class': 'oh-input'}),  # Cambiar de Select a TextInput
+            'max_employees': forms.NumberInput(attrs={'class': 'oh-input'}),
+            'is_active': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
         }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        
+        # Si hay una instancia (edición), establecer los valores iniciales
+        if self.instance and self.instance.pk:
+            # Convertir la lista JSON a lista de strings para el MultipleChoiceField
+            if self.instance.allowed_modules:
+                self.initial['allowed_modules'] = self.instance.allowed_modules
+            else:
+                self.initial['allowed_modules'] = []
+            
+            # Asegurar que currency tenga su valor inicial
+            if self.instance.currency:
+                self.initial['currency'] = self.instance.currency
+        
         for field_name, field in self.fields.items():
             if isinstance(field.widget, forms.TextInput) or isinstance(field.widget, forms.NumberInput):
                 field.widget.attrs.setdefault("class", "oh-input w-100")
+    
+    def save(self, commit=True):
+        instance = super().save(commit=False)
+        # Convertir la lista del formulario a JSON (lista de strings)
+        allowed_modules = self.cleaned_data.get('allowed_modules', [])
+        instance.allowed_modules = allowed_modules if allowed_modules else []
+        
+        if commit:
+            instance.save()
+        return instance

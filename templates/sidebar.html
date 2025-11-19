@@ -236,7 +236,7 @@ function initializeSummernote(candId,searchWords,) {
       </li>
       {% endfor %}
 
-      {% if request.user|config_perms %}
+      {% if request.user|config_perms and not request.user.is_superuser %}
       <li
         class="oh-sidebar__menu-item"
         x-data="{ isOpen: getOpenState('configNav') }"

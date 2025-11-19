@@ -69,6 +69,7 @@
               <div class="oh-sticky-table__th">{% trans "Precio Anual" %}</div>
               <div class="oh-sticky-table__th">{% trans "Moneda" %}</div>
               <div class="oh-sticky-table__th">{% trans "Máx. Empleados" %}</div>
+              <div class="oh-sticky-table__th">{% trans "Módulos Permitidos" %}</div>
               <div class="oh-sticky-table__th">{% trans "Creado por" %}</div>
               <div class="oh-sticky-table__th">{% trans "Modificado por" %}</div>
               <div class="oh-sticky-table__th oh-sticky-table__right">{% trans "Acciones" %}</div>
@@ -80,13 +81,13 @@
                 <div class="oh-sticky-table__td dateformat_changer">{{ plan.created_at|date:"Y-m-d H:i" }}</div>
                 <div class="oh-sticky-table__td">
                   {% if plan.is_active %}
-                    <span class="badge badge-success">{% trans "Sí" %}</span>
+                    <span class="">{% trans "Sí" %}</span>
                   {% else %}
-                    <span class="badge badge-danger">{% trans "No" %}</span>
+                    <span class="">{% trans "No" %}</span>
                   {% endif %}
                 </div>
                 <div class="oh-sticky-table__td">
-                  <span class="badge {% if plan.plan_name == 'Basic' %}badge-info{% elif plan.plan_name == 'Pro' %}badge-warning{% elif plan.plan_name == 'Enterprise' %}badge-danger{% else %}badge-secondary{% endif %}">
+                  <span class="">
                     {{ plan.plan_name }}
                   </span>
                 </div>
@@ -95,6 +96,19 @@
                 <div class="oh-sticky-table__td">{{ plan.price_yearly|default:"-" }} {{ plan.currency }}</div>
                 <div class="oh-sticky-table__td">{{ plan.currency }}</div>
                 <div class="oh-sticky-table__td">{{ plan.max_employees }}</div>
+                <div class="oh-sticky-table__td">
+                  {% if plan.allowed_modules %}
+                    <div class="d-flex flex-column gap-1">
+                      {% for module in plan.allowed_modules %}
+                        <span style="font-size: 10px;">
+                          {{ module|title }}
+                        </span>
+                      {% endfor %}
+                    </div>
+                  {% else %}
+                    <span class="text-muted">-</span>
+                  {% endif %}
+                </div>
                 <div class="oh-sticky-table__td">
                   {% if plan.created_by %}
                     {{ plan.created_by.get_full_name|default:plan.created_by.username }}

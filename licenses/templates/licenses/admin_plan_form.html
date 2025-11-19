@@ -118,6 +118,35 @@
           </div>
         </div>
 
+        <!-- Campo de Módulos Permitidos -->
+        <div class="row mt-3">
+          <div class="col-12">
+            <div class="oh-input-group">
+              <label class="oh-label" for="{{ form.allowed_modules.id_for_label }}">
+                {{ form.allowed_modules.label }}
+              </label>
+              {% if form.allowed_modules.help_text %}
+                <small class="form-text text-muted">{{ form.allowed_modules.help_text }}</small>
+              {% endif %}
+              <div class="row mt-2">
+                {% for choice in form.allowed_modules %}
+                  <div class="col-12 col-md-6 col-lg-4 mb-2">
+                    <div class="form-check">
+                      {{ choice.tag }}
+                      <label class="form-check-label" for="{{ choice.id_for_label }}">
+                        {{ choice.choice_label }}
+                      </label>
+                    </div>
+                  </div>
+                {% endfor %}
+              </div>
+              {% if form.allowed_modules.errors %}
+                <div class="oh-input-group__error">{{ form.allowed_modules.errors }}</div>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+
         <div class="d-flex justify-content-end gap-2 mt-4">
           <a href="{% url 'admin_plan_list' %}" class="oh-btn oh-btn--secondary">
             {% trans "Cancelar" %}

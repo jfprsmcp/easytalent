@@ -37,9 +37,32 @@ def sidebar(request):
     if not request.user.is_anonymous:
         request.MENUS = []
         MENUS = request.MENUS
+        
+        # IMPORTANTE: Superusers NO deben ver módulos de empresa
+        # Solo pueden gestionar licencias y planes
+        if request.user.is_superuser:
+            allowed_modules = []  # Lista vacía = no mostrar ningún módulo
+        else:
+            # Obtener módulos permitidos para usuarios normales
+            from licenses.utils import get_allowed_modules_for_company
+            cid = request.session.get('selected_company')
+            if cid:
+                from base.models import Company
+                company = Company.objects.filter(id=cid).first()
+                if company:
+                    allowed_modules = get_allowed_modules_for_company(company)
+                else:
+                    allowed_modules = []
+            else:
+                allowed_modules = []
 
         for app in base_dir_apps:
             if apps.is_installed(app):
+                # Verificar si el módulo está permitido
+                # Si allowed_modules está vacío (superuser), no mostrar ningún módulo
+                if app not in allowed_modules:
+                    continue  # Saltar este módulo si no está permitido
+                
                 try:
                     sidebar = importlib.import_module(app + ".sidebar")
 

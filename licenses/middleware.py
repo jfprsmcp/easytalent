@@ -21,6 +21,7 @@ class LicenseMiddleware:
             '/health/', '/notifications',
             '/inbox/notifications/',
             '/favicon', '/robots.txt', '/sitemap',
+            '/module/',  # Rutas públicas de detalle de módulos
         )
         # Ruta donde sí queremos mostrar recordatorios
         self.dashboard_prefixes = (
@@ -33,6 +34,10 @@ class LicenseMiddleware:
 
         # Excluir rutas públicas y de recursos
         if any(path.startswith(p) for p in self.allow_prefixes):
+            return self.get_response(request)
+
+        # Excluir la ruta raíz (landing page) - debe ser completamente pública
+        if path == '/' or path == '':
             return self.get_response(request)
 
         # Excluir peticiones HTMX/AJAX (evita duplicados por carga de widgets)
@@ -149,6 +154,7 @@ class SuperuserRestrictionMiddleware:
             "/api/",
             "/inbox/notifications/", # Notificaciones
             "/jsi18n/",              # Internacionalización JS
+            "/module/",              # Rutas públicas de detalle de módulos
         )
         
         # Prefijos explícitamente bloqueados para superusers

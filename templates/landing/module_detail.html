@@ -10,8 +10,8 @@
   <meta name="description" content="{{ module.description }}">
 
   <!-- Favicons -->
-  <link href="{% static 'favicons/favicon-32x32.png' %}" rel="icon">
-  <link href="{% static 'favicons/apple-touch-icon.png' %}" rel="apple-touch-icon">
+  <link href="{% static 'landing/images/easy-logo.png' %}" rel="icon">
+  <link href="{% static 'landing/images/easy-logo.png' %}" rel="apple-touch-icon">
 
   <!-- Fonts -->
   <link href="https://fonts.googleapis.com" rel="preconnect">
@@ -35,8 +35,7 @@
     <div class="header-container container-fluid container-xl position-relative d-flex align-items-center justify-content-between">
 
       <a href="{% url 'landing-page' %}" class="logo d-flex align-items-center me-auto me-xl-0">
-        <img src="{% static 'favicons/android-chrome-192x192.png' %}" alt="EasyTalent" height="40" width="40" class="me-2">
-        <h1 class="sitename">{% trans "EasyTalent" %}</h1>
+        <img src="{% static 'landing/images/logo.png' %}" alt="EasyTalent" class="me-2">
       </a>
 
       <nav id="navmenu" class="navmenu">
@@ -109,8 +108,7 @@
       <div class="row gy-4">
         <div class="col-lg-4 col-md-6 footer-about">
           <a href="{% url 'landing-page' %}" class="logo d-flex align-items-center">
-            <img src="{% static 'favicons/android-chrome-192x192.png' %}" alt="EasyTalent" height="30" width="30" class="me-2">
-            <span class="sitename">EasyTalent</span>
+            <img src="{% static 'landing/images/logo.png' %}" alt="EasyTalent" class="me-2">
           </a>
           <div class="footer-contact pt-3">
             <p>Software de RRHH para empresas de todos los tamaños.</p>

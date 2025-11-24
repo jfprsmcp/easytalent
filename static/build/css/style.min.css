@@ -8104,6 +8104,7 @@ body {
   background-color: #0d83fd;
   color: white;
   text-decoration: none;
+  border-radius: 50px;
 }
 .oh-btn--secondary:disabled {
   background-color: #0d83fd;
@@ -8131,6 +8132,7 @@ body {
 .oh-btn--success:hover, .oh-btn--success:focus, .oh-btn--success:focus-visible {
   background-color: hsl(148, 70%, 40%);
   text-decoration: none;
+  border-radius: 50px;
 }
 
 .oh-btn--danger {
@@ -8140,6 +8142,7 @@ body {
 .oh-btn--danger:hover, .oh-btn--danger:focus, .oh-btn--danger:focus-visible {
   background-color: hsl(1, 64%, 49%);
   text-decoration: none;
+  border-radius: 50px;
 }
 
 .oh-btn--danger-outline {
@@ -8148,26 +8151,29 @@ body {
 .oh-btn--danger-outline:hover, .oh-btn--danger-outline:focus, .oh-btn--danger-outline:focus-visible {
   color: hsl(1, 64%, 49%);
   text-decoration: none;
+  border-radius: 50px;
 }
 
 .oh-btn--primary {
-  background-color: hsl(0, 0%, 13%);
+  background-color: #2d465e;
   color: hsl(0, 0%, 100%);
 }
 .oh-btn--primary:hover, .oh-btn--primary:focus, .oh-btn--primary:focus-visible {
-  background-color: hsl(0, 0%, 12%);
+  background-color: #2d465e;
   color: hsl(0, 0%, 100%);
   text-decoration: none;
+  border-radius: 50px;
 }
 
 .oh-btn--primary-outline {
   background-color: transparent;
-  border: 1px solid hsl(0, 0%, 13%);
-  color: hsl(0, 0%, 13%);
+  border: 1px solid #2d465e;
+  color: #2d465e;
 }
 .oh-btn--primary-outline:hover, .oh-btn--primary-outline:focus, .oh-btn--primary-outline:focus-visible {
-  background-color: hsl(0, 0%, 13%);
+  background-color: #2d465e;
   color: hsl(0, 0%, 100%);
+  border-radius: 50px;
 }
 
 .oh-btn--secondary-outline {
@@ -8178,6 +8184,7 @@ body {
 .oh-btn--secondary-outline:hover, .oh-btn--secondary-outline:focus, .oh-btn--secondary-outline:focus-visible {
   background-color: #0d83fd;
   color: hsl(0, 0%, 100%);
+  border-radius: 50px;
 }
 
 .oh-btn--white-outline {
@@ -8188,6 +8195,7 @@ body {
 .oh-btn--white-outline:hover, .oh-btn--white-outline:focus, .oh-btn--white-outline:focus-visible {
   background-color: hsl(0, 0%, 100%);
   color: hsl(8, 77%, 56%);
+  border-radius: 50px;
 }
 
 .oh-btn--warning-outline {
@@ -8198,6 +8206,7 @@ body {
 .oh-btn--warning-outline:hover, .oh-btn--warning-outline:focus, .oh-btn--warning-outline:focus-visible {
   background-color: hsl(40, 91%, 60%);
   color: hsl(0, 0%, 11%);
+  border-radius: 50px;
 }
 
 .oh-btn--success-outline {
@@ -8208,6 +8217,7 @@ body {
 .oh-btn--success-outline:hover, .oh-btn--success-outline:focus, .oh-btn--success-outline:focus-visible {
   background-color: hsl(148, 71%, 44%);
   color: hsl(0, 0%, 100%);
+  border-radius: 50px;
 }
 
 .oh-btn--info-outline {
@@ -8218,6 +8228,7 @@ body {
 .oh-btn--info-outline:hover, .oh-btn--info-outline:focus, .oh-btn--info-outline:focus-visible {
   background-color: hsl(204, 70%, 53%);
   color: hsl(0, 0%, 100%);
+  border-radius: 50px;
 }
 
 .oh-btn--info {
@@ -8228,6 +8239,7 @@ body {
   background-color: hsl(204, 62%, 48%);
   color: hsl(0, 0%, 100%);
   text-decoration: none;
+  border-radius: 50px;
 }
 
 .oh-btn--warning {
@@ -8238,6 +8250,7 @@ body {
   background-color: #dda735;
   color: hsl(0, 0%, 11%);
   text-decoration: none;
+  border-radius: 50px;
 }
 
 .oh-btn--dropdown {
@@ -10369,7 +10382,7 @@ select.oh-select--lg {
 }
 
 .oh-sidebar {
-  background-color: hsl(0, 0%, 13%);
+  background-color: #2d465e;
   color: hsl(0, 0%, 100%);
   max-width: 230px;
   min-height: 100vh;

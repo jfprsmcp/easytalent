@@ -12,16 +12,16 @@
     </div>
   {% endif %}
 
-  <div class="oh-header">
-    <div class="oh-header__left">
+  <div class="oh-header d-flex flex-column">
+    <div class="oh-header__left mb-3 mt-3">
       <h1 class="oh-header__title">{% trans "Gestión de Planes" %}</h1>
     </div>
-    <div class="oh-header__right">
-      <a href="{% url 'admin_plan_create' %}" class="oh-btn oh-btn--primary">
+    <div class="d-flex justify-content-between w-100 gap-2">
+      <a href="{% url 'admin_plan_create' %}" class="oh-btn oh-btn--primary w-100">
         <ion-icon name="add-circle-outline"></ion-icon>
         {% trans "Crear Plan" %}
       </a>
-      <a href="{% url 'license_admin_dashboard' %}" class="oh-btn oh-btn--secondary">
+      <a href="{% url 'license_admin_dashboard' %}" class="oh-btn oh-btn--secondary w-100">
         <ion-icon name="bar-chart-outline"></ion-icon>
         {% trans "Dashboard" %}
       </a>

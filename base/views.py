@@ -1016,7 +1016,7 @@ def register_user(request):
                 }
 
                 # === NUEVO: Crear licencia Trial de 2 días ===
-                from licenses.models import LicensePlan, UserLicense
+                from licenses.models import LicensePlan, UserLicense, AVAILABLE_MODULES
                 from django.utils import timezone
                 from datetime import timedelta
 
@@ -1027,7 +1027,13 @@ def register_user(request):
                         description='Prueba gratuita de 2 días para 1 usuario',
                         price_monthly=0, price_yearly=0, currency='USD',
                         max_employees=1, is_active=True,
+                        allowed_modules=AVAILABLE_MODULES,  # TODOS los módulos disponibles
                     )
+                else:
+                    # Si el plan Trial ya existe, asegurarse de que tenga todos los módulos
+                    if not trial_plan.allowed_modules or len(trial_plan.allowed_modules) < len(AVAILABLE_MODULES):
+                        trial_plan.allowed_modules = AVAILABLE_MODULES
+                        trial_plan.save(update_fields=['allowed_modules'])
 
                 start = timezone.now().date()
                 end = start + timedelta(days=2)
@@ -1840,8 +1846,7 @@ def object_duplicate(request, obj_id, **kwargs):
                     initial_value = f"{form.initial.get(field_name, '')} (copy)"
                 form.initial[field_name] = initial_value
                 form.fields[field_name].initial = initial_value
-        if hasattr(form.instance, "id"):
-            form.instance.id = None
+                form.instance.id = None
 
     if request.method == "POST":
         form = form_class(request.POST)
@@ -7698,7 +7703,7 @@ def holiday_info_export(request):
             "export_column": export_column,
         }
         return render(
-            request, "holiday/holiday_export_filter_form.html", context=content
+            request, "holiday/holiday_export_filter_form.html", content=content
         )
     return export_data(
         request=request,

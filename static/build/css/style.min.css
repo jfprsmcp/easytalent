@@ -7601,7 +7601,7 @@ body {
 }
 
 .oh-text--secondary {
-  color: hsl(8, 77%, 56%);
+  color: #0d83fd;
 }
 
 /* Links */
@@ -7614,10 +7614,10 @@ body {
 }
 
 .oh-link--secondary {
-  color: hsl(8, 77%, 56%);
+  color: #0d83fd;
 }
 .oh-link--secondary:hover, .oh-link--secondary:focus, .oh-link--secondary:focus-visible {
-  color: hsl(8, 61%, 50%);
+  color: #0d83fd;
 }
 
 @media (max-width: 991.98px) {
@@ -8043,7 +8043,7 @@ body {
 .oh-btn {
   display: block;
   border: none;
-  border-radius: 0rem;
+  border-radius: 50px;
   padding: 0.8rem 1.25rem;
   display: flex;
   align-items: center;
@@ -8051,6 +8051,8 @@ body {
   text-align: center;
   cursor: pointer;
   color: hsl(219, 9%, 29%);
+  transition: 0.3s;
+  font-weight: 500;
 }
 @media (max-width: 575.98px) {
   .oh-btn {
@@ -8094,32 +8096,32 @@ body {
 }
 
 .oh-btn--secondary {
-  background-color: hsl(8, 77%, 56%);
+  background-color: #0d83fd;
   color: hsl(0, 0%, 100%);
   text-decoration: none;
 }
 .oh-btn--secondary:hover, .oh-btn--secondary:focus, .oh-btn--secondary:focus-visible {
-  background-color: hsl(8, 61%, 50%);
+  background-color: #0d83fd;
   color: white;
   text-decoration: none;
 }
 .oh-btn--secondary:disabled {
-  background-color: hsl(8, 77%, 56%);
+  background-color: #0d83fd;
 }
 
 .oh-btn--secondary-ouline {
-  border: 1px solid hsl(8, 77%, 56%);
-  color: hsl(8, 77%, 56%);
+  border: 1px solid #0d83fd;
+  color: #0d83fd;
   background-color: transparent;
 }
 .oh-btn--secondary-ouline:hover {
-  background-color: hsl(8, 77%, 56%);
+  background-color: #0d83fd;
   color: hsl(0, 0%, 100%);
 }
 .oh-btn--secondary-ouline:focus, .oh-btn--secondary-ouline:focus-visible {
-  color: hsl(8, 61%, 50%);
+  color: #0d83fd;
   background-color: transparent;
-  border: 1px solid hsl(8, 61%, 50%);
+  border: 1px solid #0d83fd;
 }
 
 .oh-btn--success {
@@ -8170,11 +8172,11 @@ body {
 
 .oh-btn--secondary-outline {
   background-color: transparent;
-  border: 1px solid hsl(8, 77%, 56%);
+  border: 1px solid #0d83fd;
   color: hsl(8, 77%, 56%);
 }
 .oh-btn--secondary-outline:hover, .oh-btn--secondary-outline:focus, .oh-btn--secondary-outline:focus-visible {
-  background-color: hsl(8, 77%, 56%);
+  background-color: #0d83fd;
   color: hsl(0, 0%, 100%);
 }
 

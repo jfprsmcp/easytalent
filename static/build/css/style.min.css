@@ -10382,7 +10382,7 @@ select.oh-select--lg {
 }
 
 .oh-sidebar {
-  background-color: #2d465e;
+  background-color: hsl(210, 56%, 42%);
   color: hsl(0, 0%, 100%);
   max-width: 230px;
   min-height: 100vh;

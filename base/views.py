@@ -886,7 +886,7 @@ def register_user(request):
         password1 = request.POST.get("password1") or ""
         password2 = request.POST.get("password2") or ""
 
-        # Basic validations
+        # Validaciones básicas
         if not email or not first_name or not phone or not company_name or not password1 or not password2:
             messages.error(request, "Todos los campos requeridos deben ser completados.")
             return redirect("register")
@@ -899,7 +899,7 @@ def register_user(request):
             messages.error(request, "La contraseña debe tener al menos 8 caracteres.")
             return redirect("register")
 
-        # Uniqueness validations
+        # Validaciones de unicidad
         if User.objects.filter(username=email).exists():
             messages.error(request, "Ya existe un usuario con este correo electrónico.")
             return redirect("register")
@@ -910,9 +910,16 @@ def register_user(request):
             messages.error(request, "Ya existe un empleado con este correo electrónico.")
             return redirect("register")
 
-        # Atomic create of User, Company (by name) and Employee
-        from django.db import transaction
+        # === NUEVO: Validar nombre de empresa único ===
         from base.models import Company
+        # Si quieres que sea case-insensitive, usa company__iexact
+        if Company.objects.filter(company__iexact=company_name).exists():
+            messages.error(request, "Ya existe una empresa registrada con este nombre. Por favor, elige otro.")
+            return redirect("register")
+        # === FIN NUEVO ===
+
+        # Creación atómica de User, Company (por nombre) y Employee
+        from django.db import transaction
         from employee.models import Department, EmployeeType
         from datetime import date
 
@@ -961,6 +968,7 @@ def register_user(request):
 
                 # Create EmployeeWorkInformation with all required fields
                 from employee.models import EmployeeWorkInformation
+
                 work_info, created = EmployeeWorkInformation.objects.get_or_create(
                     employee_id=employee,
                     defaults={
@@ -977,6 +985,7 @@ def register_user(request):
                         "employee_type_id": default_employee_type,
                     }
                 )
+
                 if not created:
                     work_info.employee_id = employee
                     work_info.company_id = company
@@ -1030,7 +1039,7 @@ def register_user(request):
                         allowed_modules=AVAILABLE_MODULES,  # TODOS los módulos disponibles
                     )
                 else:
-                    # Si el plan Trial ya existe, asegurarse de que tenga todos los módulos
+                    # Asegurar que tenga todos los módulos
                     if not trial_plan.allowed_modules or len(trial_plan.allowed_modules) < len(AVAILABLE_MODULES):
                         trial_plan.allowed_modules = AVAILABLE_MODULES
                         trial_plan.save(update_fields=['allowed_modules'])

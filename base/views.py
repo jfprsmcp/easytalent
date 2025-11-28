@@ -1377,8 +1377,10 @@ def home(request):
     """
     This method is used to render index page
     """
-    # Si es superuser, mostrar el admin dashboard de licencias
-    if request.user.is_superuser:
+    # Si es superuser O admin de licencias, mostrar el admin dashboard de licencias
+    from licenses.utils import is_license_admin
+    
+    if request.user.is_superuser or is_license_admin(request.user):
         from licenses.views import admin_dashboard
         return admin_dashboard(request)
 

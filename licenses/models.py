@@ -125,3 +125,41 @@ class UserLicense(models.Model):
         if self.is_expired:
             return False
         return self.plan.has_module(module_name)
+
+
+class UserRole(models.Model):
+    """
+    Modelo para almacenar el rol del usuario
+    Roles disponibles: 1=superadmin, 2=admin, 3=user
+    """
+    ROLE_SUPERADMIN = 1
+    ROLE_ADMIN = 2
+    ROLE_USER = 3
+    
+    ROLE_CHOICES = [
+        (ROLE_SUPERADMIN, 'Super Administrator'),
+        (ROLE_ADMIN, 'License Administrator'),
+        (ROLE_USER, 'Normal User'),
+    ]
+    
+    user = models.OneToOneField(
+        User,
+        on_delete=models.CASCADE,
+        related_name='user_role',
+        verbose_name='Usuario'
+    )
+    rol = models.IntegerField(
+        choices=ROLE_CHOICES,
+        default=ROLE_USER,
+        verbose_name='Rol'
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    class Meta:
+        db_table = 'license_userrole'
+        verbose_name = 'Rol de Usuario'
+        verbose_name_plural = 'Roles de Usuarios'
+    
+    def __str__(self):
+        return f"{self.user.username} - {self.get_rol_display()}"

@@ -2,12 +2,14 @@ from django.shortcuts import redirect
 from django.utils import timezone
 from django.contrib import messages
 from .models import UserLicense
+from .utils import is_license_admin
 
 
 class LicenseMiddleware:
     """
     Verifica que la empresa seleccionada tenga licencia activa y no expirada.
-    - NO aplica a superusers (bypass completo).
+    - NO aplica a superusers (bypass completo - acceso total).
+    - NO aplica a admins de licencias (bypass completo).
     - Solo muestra mensajes en el banner del dashboard (messages framework).
     - Evita spamear: muestra 1 vez por sesión.
     - Si la licencia no es válida, redirige al panel de licencias.
@@ -48,8 +50,12 @@ class LicenseMiddleware:
         if not request.user.is_authenticated:
             return self.get_response(request)
 
-        # BYPASS: Superusers no tienen restricciones de licencia
+        # BYPASS: Superusers tienen acceso completo sin restricciones
         if request.user.is_superuser:
+            return self.get_response(request)
+
+        # BYPASS: Admins de licencias no tienen restricciones de licencia
+        if is_license_admin(request.user):
             return self.get_response(request)
 
         company_id = request.session.get('selected_company')
@@ -114,7 +120,12 @@ class LicenseMiddleware:
 
 from django.urls import resolve, reverse, NoReverseMatch
 
-class SuperuserRestrictionMiddleware:
+class AdminRestrictionMiddleware:
+    """
+    Middleware que restringe el acceso de usuarios con rol 'admin' 
+    (administradores de licencias) solo a las funciones de gestión de licencias.
+    Los superusers (is_superuser=True) NO tienen restricciones - acceso completo.
+    """
     def __init__(self, get_response):
         self.get_response = get_response
 
@@ -132,7 +143,7 @@ class SuperuserRestrictionMiddleware:
             except NoReverseMatch:
                 pass
 
-        # Rutas exactas permitidas para superusers
+        # Rutas exactas permitidas para admins de licencias
         self.allowed_exact_paths = {
             "/",
             "/dashboard/",
@@ -143,7 +154,7 @@ class SuperuserRestrictionMiddleware:
             "/send-otp",             # Envío de OTP
         } | resolved_paths  # unimos los paths resueltos
 
-        # Prefijos permitidos (solo los necesarios)
+        # Prefijos permitidos (solo los necesarios para admins de licencias)
         self.allowed_prefixes = (
             "/licenses/admin/",      # Panel de administración de licencias
             "/settings/licenses/",   # Solo configuraciones de licencias
@@ -157,7 +168,7 @@ class SuperuserRestrictionMiddleware:
             "/module/",              # Rutas públicas de detalle de módulos
         )
         
-        # Prefijos explícitamente bloqueados para superusers
+        # Prefijos explícitamente bloqueados para admins de licencias
         self.blocked_prefixes = (
             "/settings/",            # Bloquear configuraciones generales (excepto licenses)
             "/employee/",            # Módulo de empleados
@@ -175,9 +186,14 @@ class SuperuserRestrictionMiddleware:
         )
 
     def __call__(self, request):
+        # IMPORTANTE: Superusers NO tienen restricciones - acceso completo
+        if request.user.is_authenticated and request.user.is_superuser:
+            return self.get_response(request)
+        
+        # Solo aplicar restricciones a usuarios con rol 'admin' (NO a superusers)
         if (
             request.user.is_authenticated
-            and request.user.is_superuser
+            and is_license_admin(request.user)
             and not request.path.startswith("/admin/")  # Django admin original
         ):
             # Paths exactos permitidos (ej. /change-password, /change-username, /logout)
@@ -192,7 +208,7 @@ class SuperuserRestrictionMiddleware:
                 # Todo lo demás dentro de /settings/ está bloqueado
                 messages.warning(
                     request,
-                    "Como superadministrador, solo puedes acceder a la gestión de licencias y planes, "
+                    "Como administrador de licencias, solo puedes acceder a la gestión de licencias y planes, "
                     "así como a tu perfil y configuración de cuenta.",
                 )
                 return redirect("license_admin_dashboard")
@@ -204,7 +220,7 @@ class SuperuserRestrictionMiddleware:
             # Todo lo demás redirige al dashboard de licencias
             messages.warning(
                 request,
-                "Como superadministrador, solo puedes acceder a la gestión de licencias y planes, "
+                "Como administrador de licencias, solo puedes acceder a la gestión de licencias y planes, "
                 "así como a tu perfil y configuración de cuenta.",
             )
             return redirect("license_admin_dashboard")

@@ -1121,147 +1121,194 @@ input[type="file"] {
 }
 
 .oh-btn--secondary {
-    background-color: hsl(8, 77%, 56%);
+    background-color: #0d83fd;
     color: hsl(0, 0%, 100%);
+    border-radius: 50px;
 }
 
 .oh-btn--secondary:hover,
 .oh-btn--secondary:focus,
 .oh-btn--secondary:focus-visible {
-    background-color: hsl(8, 77%, 48%);
+    background-color: #0d83fd;
     color: white;
+    border-radius: 50px;
 }
 
 .oh-btn--secondary:disabled {
-    background-color: hsl(8, 77%, 56%);
+    background-color: #0d83fd;
+    border-radius: 50px;
 }
 
 .oh-btn--secondary-outline {
-    color: hsl(8, 77%, 56%);
+    color: #0d83fd;
+    border: 1px solid #0d83fd;
+    background-color: transparent;
+    border-radius: 50px;
 }
 
 .oh-btn--secondary-outline:hover,
 .oh-btn--secondary-outline:focus,
 .oh-btn--secondary-outline:focus-visible {
-    color: hsl(8, 77%, 48%);
+    background-color: #0d83fd;
+    color: hsl(0, 0%, 100%);
+    border-radius: 50px;
 }
 
 .oh-btn--success {
     background-color: hsl(148, 71%, 44%);
     color: hsl(0, 0%, 100%);
+    border-radius: 50px;
 }
 
 .oh-btn--success:hover,
 .oh-btn--success:focus,
 .oh-btn--success:focus-visible {
-    background-color: hsl(148, 71%, 38%);
+    background-color: hsl(148, 70%, 40%);
+    border-radius: 50px;
 }
 
 .oh-btn--danger {
     background-color: hsl(1, 100%, 61%);
     color: hsl(0, 0%, 100%);
+    border-radius: 50px;
 }
 
 .oh-btn--danger:hover,
 .oh-btn--danger:focus,
 .oh-btn--danger:focus-visible {
-    background-color: hsl(1, 100%, 55%);
+    background-color: hsl(1, 64%, 49%);
+    border-radius: 50px;
 }
 
 .oh-btn--danger-outline {
     color: hsl(1, 100%, 61%);
+    border: 1px solid hsl(1, 100%, 61%);
+    background-color: transparent;
+    border-radius: 50px;
 }
 
 .oh-btn--danger-outline:hover,
 .oh-btn--danger-outline:focus,
 .oh-btn--danger-outline:focus-visible {
-    color: hsl(1, 100%, 55%);
+    color: hsl(1, 64%, 49%);
+    border-radius: 50px;
 }
 
 .oh-btn--primary {
-    background-color: hsl(0, 0%, 13%);
+    background-color: #2d465e;
     color: hsl(0, 0%, 100%);
+    border-radius: 50px;
 }
 
 .oh-btn--primary:hover,
 .oh-btn--primary:focus,
 .oh-btn--primary:focus-visible {
-    background-color: hsl(0, 0%, 7%);
+    background-color: #2d465e;
     color: hsl(0, 0%, 100%);
+    border-radius: 50px;
 }
 
 .oh-btn--primary-outline {
-    color: hsl(0, 0%, 13%);
+    color: #2d465e;
+    border: 1px solid #2d465e;
+    background-color: transparent;
+    border-radius: 50px;
 }
 
 .oh-btn--primary-outline:hover,
 .oh-btn--primary-outline:focus,
 .oh-btn--primary-outline:focus-visible {
-    color: hsl(0, 0%, 7%);
+    background-color: #2d465e;
+    color: hsl(0, 0%, 100%);
+    border-radius: 50px;
 }
 
 .oh-btn--white-outline {
     color: hsl(0, 0%, 100%);
+    border: 1px solid hsl(0, 0%, 100%);
+    background-color: transparent;
+    border-radius: 50px;
 }
 
 .oh-btn--white-outline:hover,
 .oh-btn--white-outline:focus,
 .oh-btn--white-outline:focus-visible {
-    color: hsl(0, 0%, 90%);
+    background-color: hsl(0, 0%, 100%);
+    color: hsl(8, 77%, 56%);
+    border-radius: 50px;
 }
 
 .oh-btn--warning {
     background-color: hsl(40, 91%, 60%);
     color: hsl(0, 0%, 11%);
+    border-radius: 50px;
 }
 
 .oh-btn--warning:hover,
 .oh-btn--warning:focus,
 .oh-btn--warning:focus-visible {
-    background-color: hsl(40, 91%, 54%);
+    background-color: #dda735;
     color: hsl(0, 0%, 11%);
+    border-radius: 50px;
 }
 
 .oh-btn--warning-outline {
     color: hsl(40, 91%, 60%);
+    border: 1px solid hsl(40, 91%, 60%);
+    background-color: transparent;
+    border-radius: 50px;
 }
 
 .oh-btn--warning-outline:hover,
 .oh-btn--warning-outline:focus,
 .oh-btn--warning-outline:focus-visible {
-    color: hsl(40, 91%, 54%);
+    background-color: hsl(40, 91%, 60%);
+    color: hsl(0, 0%, 11%);
+    border-radius: 50px;
 }
 
 .oh-btn--success-outline {
     color: hsl(148, 71%, 44%);
+    border: 1px solid hsl(148, 71%, 44%);
+    background-color: transparent;
+    border-radius: 50px;
 }
 
 .oh-btn--success-outline:hover,
 .oh-btn--success-outline:focus,
 .oh-btn--success-outline:focus-visible {
-    color: hsl(148, 71%, 38%);
+    background-color: hsl(148, 71%, 44%);
+    color: hsl(0, 0%, 100%);
+    border-radius: 50px;
 }
 
 .oh-btn--info {
     background-color: hsl(204, 70%, 53%);
     color: hsl(0, 0%, 100%);
+    border-radius: 50px;
 }
 
 .oh-btn--info:hover,
 .oh-btn--info:focus,
 .oh-btn--info:focus-visible {
-    background-color: hsl(204, 70%, 47%);
+    background-color: hsl(204, 62%, 48%);
     color: hsl(0, 0%, 100%);
+    border-radius: 50px;
 }
 
 .oh-btn--info-outline {
     color: hsl(204, 70%, 53%);
+    border: 1px solid hsl(204, 70%, 53%);
+    background-color: transparent;
+    border-radius: 50px;
 }
 
 .oh-btn--info-outline:hover,
 .oh-btn--info-outline:focus,
 .oh-btn--info-outline:focus-visible {
-    color: hsl(204, 70%, 47%);
+    background-color: hsl(204, 70%, 53%);
+    color: hsl(0, 0%, 100%);
+    border-radius: 50px;
 }
 
 .oh-btn--dropdown {

@@ -12,11 +12,11 @@
     </div>
   {% endif %}
 
-  <div class="oh-header d-flex flex-column">
-    <div class="oh-header__left mb-3 mt-3">
+  <div class="oh-header">
+    <div class="oh-header__left mt-3 mb-3">
       <h1 class="oh-header__title">{% trans "Gestión de Planes" %}</h1>
     </div>
-    <div class="d-flex justify-content-between w-100 gap-2">
+    <div class="d-flex w-100 gap-2 mt-2">
       <a href="{% url 'admin_plan_create' %}" class="oh-btn oh-btn--primary w-100">
         <ion-icon name="add-circle-outline"></ion-icon>
         {% trans "Crear Plan" %}
@@ -56,51 +56,65 @@
 
   <!-- Tabla de planes -->
   {% if plans %}
-    <div class="oh-table_sticky--wrapper mt-3">
-      <div class="oh-sticky-table">
-        <div class="oh-sticky-table__table oh-table--sortable">
-          <div class="oh-sticky-table__thead">
-            <div class="oh-sticky-table__tr">
-              <div class="oh-sticky-table__th">{% trans "Creado" %}</div>
-              <div class="oh-sticky-table__th">{% trans "Activo" %}</div>
-              <div class="oh-sticky-table__th">{% trans "Nombre del Plan" %}</div>
-              <div class="oh-sticky-table__th">{% trans "Descripción" %}</div>
-              <div class="oh-sticky-table__th">{% trans "Precio Mensual" %}</div>
-              <div class="oh-sticky-table__th">{% trans "Precio Anual" %}</div>
-              <div class="oh-sticky-table__th">{% trans "Moneda" %}</div>
-              <div class="oh-sticky-table__th">{% trans "Máx. Empleados" %}</div>
-              <div class="oh-sticky-table__th">{% trans "Módulos Permitidos" %}</div>
-              <div class="oh-sticky-table__th">{% trans "Creado por" %}</div>
-              <div class="oh-sticky-table__th">{% trans "Modificado por" %}</div>
-              <div class="oh-sticky-table__th oh-sticky-table__right">{% trans "Acciones" %}</div>
-            </div>
-          </div>
-          <div class="oh-sticky-table__tbody">
+    <div class="bg-white p-5 pe-2 pt-3 rounded-md shadow-card relative mt-3">
+      <div class="max-h-[calc(100vh_-_380px)] overflow-hidden overflow-y-auto overflow-x-auto heightContainer">
+        <table class="fixed-table w-full border-separate">
+          <thead class="sticky top-0 bg-[white] z-[1]">
+            <tr class="border-b border-[#ececec]">
+              <th class="text-sm font-medium text-left p-3" style="min-width: 120px; max-width: 180px;">{% trans "Creado" %}</th>
+              <th class="text-sm font-medium text-left p-3" style="min-width: 100px; max-width: 150px;">{% trans "Activo" %}</th>
+              <th class="text-sm font-medium text-left p-3" style="min-width: 150px; max-width: 200px;">{% trans "Nombre del Plan" %}</th>
+              <th class="text-sm font-medium text-left p-3" style="min-width: 150px; max-width: 300px;">{% trans "Descripción" %}</th>
+              <th class="text-sm font-medium text-left p-3" style="min-width: 150px; max-width: 150px;">{% trans "Precio Mensual" %}</th>
+              <th class="text-sm font-medium text-left p-3" style="min-width: 150px; max-width: 150px;">{% trans "Precio Anual" %}</th>
+              <th class="text-sm font-medium text-left p-3" style="min-width: 150px; max-width: 100px;">{% trans "Moneda" %}</th>
+              <th class="text-sm font-medium text-left p-3" style="min-width: 150px; max-width: 150px;">{% trans "Máx. Empleados" %}</th>
+              <th class="text-sm font-medium text-left p-3" style="min-width: 150px; max-width: 200px;">{% trans "Módulos Permitidos" %}</th>
+              <th class="text-sm font-medium text-left p-3" style="min-width: 150px; max-width: 150px;">{% trans "Creado por" %}</th>
+              <th class="text-sm font-medium text-left p-3" style="min-width: 150px; max-width: 150px;">{% trans "Modificado por" %}</th>
+              <th class="stickyright text-sm font-medium" style="min-width: 120px;">
+                <div class="p-3">{% trans "Acciones" %}</div>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
             {% for plan in plans %}
-              <div class="oh-sticky-table__tr">
-                <div class="oh-sticky-table__td dateformat_changer">{{ plan.created_at|date:"Y-m-d H:i" }}</div>
-                <div class="oh-sticky-table__td">
-                  {% if plan.is_active %}
-                    <span class="">{% trans "Sí" %}</span>
-                  {% else %}
-                    <span class="">{% trans "No" %}</span>
-                  {% endif %}
-                </div>
-                <div class="oh-sticky-table__td">
-                  <span class="">
-                    {{ plan.plan_name }}
-                  </span>
-                </div>
-                <div class="oh-sticky-table__td">{{ plan.description|truncatewords:10|default:"-" }}</div>
-                <div class="oh-sticky-table__td">{{ plan.price_monthly|default:"-" }} {{ plan.currency }}</div>
-                <div class="oh-sticky-table__td">{{ plan.price_yearly|default:"-" }} {{ plan.currency }}</div>
-                <div class="oh-sticky-table__td">{{ plan.currency }}</div>
-                <div class="oh-sticky-table__td">{{ plan.max_employees }}</div>
-                <div class="oh-sticky-table__td">
+              <tr data-instance-id="{{ plan.id }}">
+                <td class="text-sm text-left p-3 text-[#666] h-[45px] dateformat_changer" style="max-width: 180px;">{{ plan.created_at|date:"Y-m-d H:i" }}</td>
+                <td class="text-sm text-left p-3 text-[#666] h-[45px]" style="max-width: 100px;">
+                  <div class="truncate">
+                    {% if plan.is_active %}
+                      <span>{% trans "Sí" %}</span>
+                    {% else %}
+                      <span>{% trans "No" %}</span>
+                    {% endif %}
+                  </div>
+                </td>
+                <td class="text-sm text-left p-3 text-[#666] h-[45px]" style="max-width: 150px;">
+                  <div class="truncate">
+                    <span>{{ plan.plan_name }}</span>
+                  </div>
+                </td>
+                <td class="text-sm text-left p-3 text-[#666] h-[45px]" style="max-width: 200px;">
+                  <div class="truncate">{{ plan.description|truncatewords:10|default:"-" }}</div>
+                </td>
+                <td class="text-sm text-left p-3 text-[#666] h-[45px]" style="max-width: 150px;">
+                  <div class="truncate">{{ plan.price_monthly|default:"-" }} {{ plan.currency }}</div>
+                </td>
+                <td class="text-sm text-left p-3 text-[#666] h-[45px]" style="max-width: 150px;">
+                  <div class="truncate">{{ plan.price_yearly|default:"-" }} {{ plan.currency }}</div>
+                </td>
+                <td class="text-sm text-left p-3 text-[#666] h-[45px]" style="max-width: 100px;">
+                  <div class="truncate">{{ plan.currency }}</div>
+                </td>
+                <td class="text-sm text-left p-3 text-[#666] h-[45px]" style="max-width: 150px;">
+                  <div class="truncate">{{ plan.max_employees }}</div>
+                </td>
+                <td class="text-sm text-left p-3 text-[#666] h-[45px]" style="max-width: 200px;">
                   {% if plan.allowed_modules %}
-                    <div class="d-flex flex-column gap-1">
+                    <div class="flex-column gap-1">
                       {% for module in plan.allowed_modules %}
-                        <span style="font-size: 10px;">
+                        <span style="font-size: 10px; line-height: 1.4;">
                           {{ module|title }}
                         </span>
                       {% endfor %}
@@ -108,23 +122,27 @@
                   {% else %}
                     <span class="text-muted">-</span>
                   {% endif %}
-                </div>
-                <div class="oh-sticky-table__td">
-                  {% if plan.created_by %}
-                    {{ plan.created_by.get_full_name|default:plan.created_by.username }}
-                  {% else %}
-                    -
-                  {% endif %}
-                </div>
-                <div class="oh-sticky-table__td">
-                  {% if plan.modified_by %}
-                    {{ plan.modified_by.get_full_name|default:plan.modified_by.username }}
-                  {% else %}
-                    -
-                  {% endif %}
-                </div>
-                <div class="oh-sticky-table__td oh-sticky-table__right">
-                  <div class="oh-btn-group">
+                </td>
+                <td class="text-sm text-left p-3 text-[#666] h-[45px]" style="max-width: 150px;">
+                  <div class="truncate">
+                    {% if plan.created_by %}
+                      {{ plan.created_by.get_full_name|default:plan.created_by.username }}
+                    {% else %}
+                      -
+                    {% endif %}
+                  </div>
+                </td>
+                <td class="text-sm text-left p-3 text-[#666] h-[45px]" style="max-width: 150px;">
+                  <div class="truncate">
+                    {% if plan.modified_by %}
+                      {{ plan.modified_by.get_full_name|default:plan.modified_by.username }}
+                    {% else %}
+                      -
+                    {% endif %}
+                  </div>
+                </td>
+                <td class="stickyright text-sm text-center p-3 text-[#666] h-[45px]" onclick="event.stopPropagation()">
+                  <div class="flex justify-center gap-1">
                     <a href="{% url 'admin_plan_edit' plan.id %}" 
                        class="oh-btn oh-btn--light-bkg w-100" 
                        title="{% trans 'Editar' %}">
@@ -140,57 +158,43 @@
                       <ion-icon name="trash-outline"></ion-icon>
                     </button>
                   </div>
-                </div>
-              </div>
+                </td>
+              </tr>
               <!-- Modal de eliminación para cada plan -->
               {% include 'licenses/admin_plan_delete_modal.html' with plan=plan licenses_count=plan.user_licenses.count %}
             {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% if plans.has_previous or plans.has_next %}
+        <div class="flex justify-between items-center mt-4 w-full inset-0">
+          <p class="text-xs text-[#666]">{% trans "Página" %} {{ plans.number }} {% trans "de" %} {{ plans.paginator.num_pages }}</p>
+          <div class="flex gap-3 text-[#666] items-center">
+            {% if plans.has_previous %}
+              <a href="?page=1&search={{ search }}&is_active={{ is_active_filter }}" 
+                 class="text-xs hover:text-primary-600 transition duration-300">
+                <i class="fa-solid fa-arrow-left"></i>
+              </a>
+            {% endif %}
+            {{ plans.number }} / {{ plans.paginator.num_pages }}
+            {% if plans.has_next %}
+              <a href="?page={{ plans.next_page_number }}&search={{ search }}&is_active={{ is_active_filter }}" 
+                 class="text-xs hover:text-primary-600 transition duration-300">
+                <i class="fa-solid fa-arrow-right"></i>
+              </a>
+            {% endif %}
           </div>
         </div>
-      </div>
-    </div>
-
-    <!-- Paginación -->
-    <div class="oh-pagination">
-      <span class="oh-pagination__page">
-        {% trans "Página" %} {{ plans.number }} {% trans "de" %} {{ plans.paginator.num_pages }}.
-      </span>
-      <nav class="oh-pagination__nav">
-        <div class="oh-pagination__input-container me-3">
-          <span class="oh-pagination__label me-1">{% trans "Página" %}</span>
-          <input type="number" name="page" class="oh-pagination__input" 
-                 value="{{ plans.number }}" min="1" max="{{ plans.paginator.num_pages }}" 
-                 onchange="window.location.href='?page=' + this.value + '&search={{ search }}&is_active={{ is_active_filter }}'">
-          <span class="oh-pagination__label">{% trans "de" %} {{ plans.paginator.num_pages }}</span>
-        </div>
-        <ul class="oh-pagination__items">
-          {% if plans.has_previous %}
-            <li class="oh-pagination__item oh-pagination__item--wide">
-              <a href="?page=1&search={{ search }}&is_active={{ is_active_filter }}" 
-                 class="oh-pagination__link">{% trans "Primera" %}</a>
-            </li>
-            <li class="oh-pagination__item oh-pagination__item--wide">
-              <a href="?page={{ plans.previous_page_number }}&search={{ search }}&is_active={{ is_active_filter }}" 
-                 class="oh-pagination__link">{% trans "Anterior" %}</a>
-            </li>
-          {% endif %}
-          {% if plans.has_next %}
-            <li class="oh-pagination__item oh-pagination__item--wide">
-              <a href="?page={{ plans.next_page_number }}&search={{ search }}&is_active={{ is_active_filter }}" 
-                 class="oh-pagination__link">{% trans "Siguiente" %}</a>
-            </li>
-            <li class="oh-pagination__item oh-pagination__item--wide">
-              <a href="?page={{ plans.paginator.num_pages }}&search={{ search }}&is_active={{ is_active_filter }}" 
-                 class="oh-pagination__link">{% trans "Última" %}</a>
-            </li>
-          {% endif %}
-        </ul>
-      </nav>
+      {% endif %}
     </div>
   {% else %}
-    <div class="oh-404 mt-3">
-      <img src="{% static 'images/ui/no-results.png' %}" class="oh-404__image mb-4" style="width: 150px; height: 150px" />
-      <h5 class="oh-404__subtitle">{% trans "No se encontraron planes" %}</h5>
+    <div class="oh-wrapper h-full mt-3" align="center">
+      <div class="xl:col-span-4 md:col-span-6 col-span-12 bg-white p-6 rounded-md shadow-card h-[70%]">
+        <div class="flex flex-col items-center justify-center h-full">
+          <img src="/static/horilla_theme/assets/img/no-records.svg" alt="" width="300" class="mb-4">
+          <p class="text-[#666] mb-5">{% trans "No se encontraron planes" %}</p>
+        </div>
+      </div>
     </div>
   {% endif %}
 </div>

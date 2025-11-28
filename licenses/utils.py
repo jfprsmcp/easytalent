@@ -1,5 +1,6 @@
 from django.core.exceptions import ValidationError
 from .models import UserLicense, LicensePlan
+from .models import UserRole
 
 def check_employee_limit(company):
     from employee.models import EmployeeWorkInformation
@@ -61,3 +62,48 @@ def check_module_access(company, module_name):
     """
     allowed_modules = get_allowed_modules_for_company(company)
     return module_name in allowed_modules
+
+
+def get_user_rol(user):
+    """
+    Obtiene el rol del usuario como entero. Si no tiene rol asignado:
+    - Si es superuser, retorna 1 (superadmin)
+    - Si no, retorna 3 (user)
+    """
+    if not user or not user.is_authenticated:
+        return None
+    
+    try:
+        user_role = user.user_role
+        return user_role.rol
+    except:
+        # Si no tiene rol asignado, determinar por defecto
+        if user.is_superuser:
+            return UserRole.ROLE_SUPERADMIN  # 1
+        return UserRole.ROLE_USER  # 3
+
+def is_license_admin(user):
+    """
+    Verifica si el usuario es administrador de licencias (rol 2 = admin)
+    """
+    return get_user_rol(user) == UserRole.ROLE_ADMIN  # 2
+
+def is_superadmin(user):
+    """
+    Verifica si el usuario es superadministrador.
+    Los superusers (is_superuser=True) SIEMPRE son superadmins sin restricciones.
+    """
+    if user.is_superuser:
+        return True
+    rol = get_user_rol(user)
+    return rol == UserRole.ROLE_SUPERADMIN  # 1
+
+def is_regular_user(user):
+    """
+    Verifica si el usuario es un usuario normal (rol 3 = user)
+    """
+    # Si es superuser, no es usuario regular
+    if user.is_superuser:
+        return False
+    rol = get_user_rol(user)
+    return rol == UserRole.ROLE_USER or (rol is None and not user.is_superuser)  # 3

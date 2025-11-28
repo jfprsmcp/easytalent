@@ -10,7 +10,7 @@ from .models import UserLicense, LicensePlan
 from .forms import ChangePlanForm, UserLicenseEditForm, LicensePlanForm
 from django.contrib.auth import get_user_model
 from base.models import Company
-from .decorators import superuser_required  # Agregar este import
+from .decorators import license_admin_required  # Cambiar este import
 
 User = get_user_model()
 
@@ -94,9 +94,9 @@ def change_plan(request):
 # Todas las funciones de abajo son SOLO para superusers
 
 @login_required
-@superuser_required  # Agregar este decorador
+@license_admin_required  # Cambiar este decorador
 def admin_dashboard(request):
-    """Panel principal de administración de licencias - SOLO para superusers"""
+    """Panel principal de administración de licencias - Para admins de licencias y superadmins"""
     from datetime import timedelta
     from django.contrib.auth import get_user_model
     from licenses.models import LicensePlan
@@ -185,7 +185,7 @@ def admin_dashboard(request):
 
 
 @login_required
-@superuser_required  # Agregar este decorador
+@license_admin_required  # Cambiar este decorador
 def license_list(request):
     """Listado de todas las licencias de usuarios - SOLO para superusers"""
     # Por defecto, mostrar solo licencias activas
@@ -244,7 +244,7 @@ def license_list(request):
 
 
 @login_required
-@superuser_required  # Agregar este decorador
+@license_admin_required  # Cambiar este decorador
 @transaction.atomic
 def license_edit(request, license_id):
     """Editar una licencia de usuario - SOLO para superusers"""
@@ -268,7 +268,7 @@ def license_edit(request, license_id):
 
 
 @login_required
-@superuser_required  # Agregar este decorador
+@license_admin_required  # Cambiar este decorador
 @transaction.atomic
 def license_delete(request, license_id):
     """Eliminar una licencia de usuario - SOLO para superusers (eliminación lógica)"""
@@ -289,7 +289,7 @@ def license_delete(request, license_id):
 
 
 @login_required
-@superuser_required  # Agregar este decorador
+@license_admin_required  # Cambiar este decorador
 def plan_list(request):
     """Listado de todos los planes de licencia - SOLO para superusers"""
     # Por defecto, mostrar solo planes activos
@@ -332,7 +332,7 @@ def plan_list(request):
 
 
 @login_required
-@superuser_required  # Agregar este decorador
+@license_admin_required  # Cambiar este decorador
 @transaction.atomic
 def plan_create(request):
     """Crear un nuevo plan de licencia - SOLO para superusers"""
@@ -354,7 +354,7 @@ def plan_create(request):
 
 
 @login_required
-@superuser_required  # Agregar este decorador
+@license_admin_required  # Cambiar este decorador
 @transaction.atomic
 def plan_edit(request, plan_id):
     """Editar un plan de licencia - SOLO para superusers"""
@@ -379,7 +379,7 @@ def plan_edit(request, plan_id):
 
 
 @login_required
-@superuser_required  # Agregar este decorador
+@license_admin_required  # Cambiar este decorador
 @transaction.atomic
 def plan_delete(request, plan_id):
     """Eliminar un plan de licencia - SOLO para superusers (eliminación lógica)"""

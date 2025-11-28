@@ -12,6 +12,7 @@ from django.conf import settings
 from django.contrib.auth.context_processors import PermWrapper
 
 from horilla.horilla_apps import SIDEBARS
+# Remover el import de nivel de módulo para evitar import circular
 
 logger = logging.getLogger(__name__)
 
@@ -38,9 +39,19 @@ def sidebar(request):
         request.MENUS = []
         MENUS = request.MENUS
         
-        # IMPORTANTE: Superusers NO deben ver módulos de empresa
-        # Solo pueden gestionar licencias y planes
+        # IMPORTANTE: 
+        # - Superusers ven TODOS los módulos (sin restricciones)
+        # - Admins de licencias NO ven módulos de empresa (lista vacía)
+        # - Usuarios normales ven solo módulos permitidos por su plan
+        
+        # Lazy import para evitar import circular durante la inicialización de Django
+        from licenses.utils import is_license_admin
+        
         if request.user.is_superuser:
+            # Superusers ven todos los módulos - no filtrar
+            allowed_modules = None  # None = mostrar todos
+        elif is_license_admin(request.user):
+            # Admins de licencias NO ven módulos de empresa
             allowed_modules = []  # Lista vacía = no mostrar ningún módulo
         else:
             # Obtener módulos permitidos para usuarios normales
@@ -58,9 +69,8 @@ def sidebar(request):
 
         for app in base_dir_apps:
             if apps.is_installed(app):
-                # Verificar si el módulo está permitido
-                # Si allowed_modules está vacío (superuser), no mostrar ningún módulo
-                if app not in allowed_modules:
+                # Si allowed_modules es None (superuser), mostrar todos los módulos
+                if allowed_modules is not None and app not in allowed_modules:
                     continue  # Saltar este módulo si no está permitido
                 
                 try:

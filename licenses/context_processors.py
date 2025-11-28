@@ -1,18 +1,19 @@
 from licenses.models import UserLicense
-from licenses.utils import get_active_license_for_company, get_allowed_modules_for_company
+from licenses.utils import get_active_license_for_company, get_allowed_modules_for_company, is_license_admin
 from django.utils import timezone
 from django.contrib import messages
 
 def current_license(request):
     try:
-        # Si es superuser, NO mostrar módulos permitidos (lista vacía)
-        if request.user.is_authenticated and request.user.is_superuser:
+        # Si es superuser, tiene acceso completo - mostrar módulos normalmente
+        # Solo admins de licencias NO muestran módulos permitidos (lista vacía)
+        if request.user.is_authenticated and is_license_admin(request.user):
             return {
                 'current_license': None,
                 'license_days_left': None,
                 'license_hours_left': None,
                 'show_license_modal': False,
-                'allowed_modules': [],  # Lista vacía para superusers
+                'allowed_modules': [],  # Lista vacía solo para admins de licencias
             }
         
         cid = request.session.get('selected_company')

@@ -53,6 +53,8 @@ ALLOWED_HOSTS = env("ALLOWED_HOSTS")
 
 # Application definition
 
+THEME_APP = "horilla_theme"
+
 INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
@@ -65,6 +67,7 @@ INSTALLED_APPS = [
     "corsheaders",
     "simple_history",
     "django_filters",
+    THEME_APP,
     "base",
     "employee",
     "recruitment",
@@ -78,6 +81,7 @@ INSTALLED_APPS = [
     "django_apscheduler",
     "licenses",
 ]
+
 APSCHEDULER_DATETIME_FORMAT = "N j, Y, f:s a"
 
 APSCHEDULER_RUN_NOW_TIMEOUT = 25  # Seconds
@@ -96,7 +100,7 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     'licenses.middleware.LicenseMiddleware',
-    'licenses.middleware.SuperuserRestrictionMiddleware',  # NUEVO - Agregar después de LicenseMiddleware
+    'licenses.middleware.AdminRestrictionMiddleware',
 ]
 
 ROOT_URLCONF = "horilla.urls"
@@ -107,7 +111,7 @@ TEMPLATES = [
         "DIRS": [
             BASE_DIR / "templates",
         ],
-        "APP_DIRS": True,
+        "APP_DIRS": False,
         "OPTIONS": {
             "context_processors": [
                 "django.template.context_processors.debug",
@@ -115,6 +119,14 @@ TEMPLATES = [
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
                 "licenses.context_processors.current_license",
+            ],
+            "loaders": [
+                (
+                    "django.template.loaders.filesystem.Loader",
+                    [BASE_DIR / THEME_APP / "templates"],
+                ),
+                "django.template.loaders.app_directories.Loader",
+                ("django.template.loaders.filesystem.Loader", [BASE_DIR / "templates"]),
             ],
         },
     },

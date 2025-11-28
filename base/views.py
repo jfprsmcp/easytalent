@@ -837,13 +837,33 @@ def login_user(request):
                 messages.error(request, _("Invalid username or password."))
             return redirect("login")
 
+        # Verificar si es superuser o admin de licencias - permitir login sin Employee
+        from licenses.utils import is_license_admin, is_superadmin
+        is_admin_or_superuser = user.is_superuser or is_superadmin(user) or is_license_admin(user)
+        
         employee = getattr(user, "employee_get", None)
         if employee is None:
-            messages.error(
-                request,
-                _("An employee related to this user's credentials does not exist."),
-            )
-            return redirect("login")
+            # Si es superuser o admin de licencias, permitir login sin Employee
+            if is_admin_or_superuser:
+                login(request, user)
+                messages.success(request, _("Login successful."))
+                
+                # Ensure `next_url` is a safe local URL
+                if not url_has_allowed_host_and_scheme(
+                    next_url, allowed_hosts={request.get_host()}
+                ):
+                    next_url = "/dashboard/"
+                
+                if params:
+                    next_url += f"?{params}"
+                return redirect(next_url)
+            else:
+                messages.error(
+                    request,
+                    _("An employee related to this user's credentials does not exist."),
+                )
+                return redirect("login")
+        
         if not employee.is_active:
             messages.warning(
                 request,
@@ -1001,28 +1021,9 @@ def register_user(request):
                     work_info.employee_type_id = default_employee_type
                     work_info.save()
 
-                # Asignar TODOS los permisos de superadmin pero limitados a su empresa
-                try:
-                    from django.contrib.auth.models import Permission
-                    all_permissions = Permission.objects.all()
-                    user.user_permissions.set(all_permissions)
-                except Exception:
-                    try:
-                        change_ownprofile = Permission.objects.get(codename="change_ownprofile")
-                        view_ownprofile = Permission.objects.get(codename="view_ownprofile")
-                        user.user_permissions.add(view_ownprofile)
-                        user.user_permissions.add(change_ownprofile)
-                    except Exception:
-                        pass
-
-                # Configurar la sesión para que el usuario vea solo su empresa
-                request.session["selected_company"] = str(company.id)
-                request.session["selected_company_instance"] = {
-                    "company": company.company,
-                    "icon": company.icon.url if company.icon else "/static/favicons/android-chrome-192x192.png",
-                    "text": "Mi Empresa",
-                    "id": company.id,
-                }
+                # Asignar rol 'user' al nuevo usuario
+                from licenses.models import UserRole
+                UserRole.objects.create(user=user, rol=UserRole.ROLE_USER)
 
                 # === NUEVO: Crear licencia Trial de 2 días ===
                 from licenses.models import LicensePlan, UserLicense, AVAILABLE_MODULES
@@ -4026,6 +4027,7 @@ def employee_permission_search(request, codename=None, uid=None):
             employee_user_id__user_permissions__isnull=False
         ).distinct()
         context["show_assign"] = True
+    
     permissions = [
         {
             "app": app_name.capitalize().replace("_", " "),

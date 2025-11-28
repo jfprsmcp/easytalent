@@ -1277,11 +1277,11 @@ section,
 }
 
 .features-cards .feature-box i {
-  font-size: 44px;
+  font-size: 20px;
   display: inline-block;
   line-height: 0;
   color: var(--accent-color);
-  margin-bottom: 20px;
+  margin-bottom: 12px;
 }
 
 .features-cards .feature-box h4 {

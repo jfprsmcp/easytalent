@@ -2,11 +2,12 @@ from functools import wraps
 from django.shortcuts import redirect
 from django.contrib import messages
 from django.urls import reverse
-from licenses.utils import check_module_access
+from licenses.utils import check_module_access, is_license_admin
 
-def superuser_required(view_func):
+def license_admin_required(view_func):
     """
-    Decorador que verifica que el usuario sea superuser.
+    Decorador que verifica que el usuario sea admin de licencias o superuser.
+    Los superusers tienen acceso completo.
     """
     @wraps(view_func)
     def wrapped_view(request, *args, **kwargs):
@@ -14,7 +15,12 @@ def superuser_required(view_func):
             from django.contrib.auth.views import redirect_to_login
             return redirect_to_login(request.get_full_path())
         
-        if not request.user.is_superuser:
+        # Superusers tienen acceso completo
+        if request.user.is_superuser:
+            return view_func(request, *args, **kwargs)
+        
+        # Verificar si es admin de licencias
+        if not is_license_admin(request.user):
             messages.error(request, 'No tienes permisos para acceder a esta sección.')
             return redirect('home-page')
         
@@ -25,7 +31,8 @@ def superuser_required(view_func):
 def module_required(module_name):
     """
     Decorador que verifica que la empresa tenga acceso al módulo según su plan.
-    Los superusers NO tienen acceso automático a módulos de empresa.
+    Los superusers tienen acceso completo a todos los módulos.
+    Los admins de licencias NO tienen acceso a módulos de empresa.
     
     Usage:
         @module_required('employee')
@@ -35,11 +42,15 @@ def module_required(module_name):
     def decorator(view_func):
         @wraps(view_func)
         def wrapped_view(request, *args, **kwargs):
-            # IMPORTANTE: Superusers NO tienen acceso a módulos de empresa
+            # Superusers tienen acceso completo - sin restricciones
             if request.user.is_superuser:
+                return view_func(request, *args, **kwargs)
+            
+            # IMPORTANTE: Admins de licencias NO tienen acceso a módulos de empresa
+            if is_license_admin(request.user):
                 messages.error(
                     request, 
-                    'Los administradores no tienen acceso a módulos de empresa. '
+                    'Los administradores de licencias no tienen acceso a módulos de empresa. '
                     'Solo pueden gestionar licencias y planes.'
                 )
                 return redirect('license_admin_dashboard')

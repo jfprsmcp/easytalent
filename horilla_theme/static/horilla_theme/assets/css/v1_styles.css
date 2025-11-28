@@ -2415,7 +2415,7 @@ ul.errorlist ul.errorlist li {
 }
 
 .sideboxmain:hover {
-    background-color: #e34e38;
+    background-color: #2d84fd;
 }
 
 .sideboxmain:hover img {
@@ -2423,7 +2423,7 @@ ul.errorlist ul.errorlist li {
 }
 
 .sideboxmain.active {
-    background-color: #e34e38;
+    background-color: #2d84fd;
 }
 
 .sideboxmain img, .sideboxmain svg {

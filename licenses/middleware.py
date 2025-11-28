@@ -155,9 +155,9 @@ class AdminRestrictionMiddleware:
         } | resolved_paths  # unimos los paths resueltos
 
         # Prefijos permitidos (solo los necesarios para admins de licencias)
+        # IMPORTANTE: Verificar estos ANTES de blocked_prefixes
         self.allowed_prefixes = (
-            "/licenses/admin/",      # Panel de administración de licencias
-            "/settings/licenses/",   # Solo configuraciones de licencias
+            "/settings/licenses/",   # TODAS las rutas de licencias (incluye admin/licenses/, admin/plans/, etc.)
             "/employee-profile/",    # Perfil del empleado/usuario
             "/accounts/",            # Autenticación de Django
             "/static/",
@@ -186,6 +186,13 @@ class AdminRestrictionMiddleware:
         )
 
     def __call__(self, request):
+        path = request.path
+        
+        # IMPORTANTE: Permitir rutas de autenticación (login, logout) SIN restricciones
+        # Esto debe ir ANTES de cualquier verificación de usuario
+        if path in self.allowed_exact_paths or path.startswith("/accounts/"):
+            return self.get_response(request)
+        
         # IMPORTANTE: Superusers NO tienen restricciones - acceso completo
         if request.user.is_authenticated and request.user.is_superuser:
             return self.get_response(request)
@@ -194,35 +201,36 @@ class AdminRestrictionMiddleware:
         if (
             request.user.is_authenticated
             and is_license_admin(request.user)
-            and not request.path.startswith("/admin/")  # Django admin original
+            and not path.startswith("/admin/")  # Django admin original
         ):
-            # Paths exactos permitidos (ej. /change-password, /change-username, /logout)
-            if request.path in self.allowed_exact_paths:
+            # 1. Paths exactos permitidos (ya verificados arriba, pero por seguridad)
+            if path in self.allowed_exact_paths:
                 return self.get_response(request)
 
-            # Verificar si la ruta está bloqueada
-            if any(request.path.startswith(prefix) for prefix in self.blocked_prefixes):
-                # Permitir solo /settings/licenses/ dentro de /settings/
-                if request.path.startswith("/settings/licenses/"):
+            # 2. IMPORTANTE: Verificar prefijos permitidos ANTES de blocked_prefixes
+            # Esto asegura que /settings/licenses/ se permita antes de verificar /settings/
+            # Verificar de manera más explícita
+            for allowed_prefix in self.allowed_prefixes:
+                if path.startswith(allowed_prefix):
                     return self.get_response(request)
-                # Todo lo demás dentro de /settings/ está bloqueado
-                messages.warning(
-                    request,
-                    "Como administrador de licencias, solo puedes acceder a la gestión de licencias y planes, "
-                    "así como a tu perfil y configuración de cuenta.",
-                )
-                return redirect("license_admin_dashboard")
 
-            # Prefijos permitidos (ej. /licenses/admin/, /employee-profile/, /accounts/…)
-            if any(request.path.startswith(prefix) for prefix in self.allowed_prefixes):
-                return self.get_response(request)
+            # 3. Verificar si la ruta está bloqueada (solo si no pasó por allowed_prefixes)
+            # IMPORTANTE: Verificar blocked_prefixes pero EXCLUIR /settings/licenses/
+            for blocked_prefix in self.blocked_prefixes:
+                if path.startswith(blocked_prefix):
+                    # Excepción: si empieza con /settings/licenses/, ya debería haber sido permitido arriba
+                    # pero por si acaso, lo verificamos aquí también
+                    if path.startswith("/settings/licenses/"):
+                        return self.get_response(request)
+                    # Si no es /settings/licenses/, entonces está bloqueado
+                    messages.warning(
+                        request,
+                        "Como administrador de licencias, solo puedes acceder a la gestión de licencias y planes, "
+                        "así como a tu perfil y configuración de cuenta.",
+                    )
+                    return redirect("license_admin_dashboard")
 
-            # Todo lo demás redirige al dashboard de licencias
-            messages.warning(
-                request,
-                "Como administrador de licencias, solo puedes acceder a la gestión de licencias y planes, "
-                "así como a tu perfil y configuración de cuenta.",
-            )
+
             return redirect("license_admin_dashboard")
 
         return self.get_response(request)

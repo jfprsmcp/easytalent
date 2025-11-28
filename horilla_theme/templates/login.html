@@ -125,13 +125,23 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
     <script>
         $(document).ready(function () {
-            if ($(".oh-alert--warning").length > 0) {
-                Swal.fire({
-                    title: '{% trans "¡Acceso Denegado!" %}',
-                    text: '{% trans "Tus credenciales de inicio de sesión están actualmente bloqueadas. Por favor contacta a los administradores de RRHH para asistencia." %}',
-                    icon: 'warning',
-                    confirmButtonText: 'OK',
-                });
+            // Solo mostrar SweetAlert para mensajes de ERROR, no para WARNING del middleware
+            // Los mensajes de warning del middleware de restricciones no deben mostrarse aquí
+            var errorAlerts = $(".oh-alert--danger, .oh-alert--error");
+            if (errorAlerts.length > 0) {
+                // Verificar que el mensaje no sea del middleware de restricciones
+                var alertText = errorAlerts.first().text().trim();
+                var isRestrictionMessage = alertText.includes("administrador de licencias") || 
+                                          alertText.includes("solo puedes acceder");
+                
+                if (!isRestrictionMessage) {
+                    Swal.fire({
+                        title: '{% trans "¡Acceso Denegado!" %}',
+                        text: '{% trans "Tus credenciales de inicio de sesión están actualmente bloqueadas. Por favor contacta a los administradores de RRHH para asistencia." %}',
+                        icon: 'warning',
+                        confirmButtonText: 'OK',
+                    });
+                }
             }
         });
     </script>

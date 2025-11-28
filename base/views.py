@@ -930,13 +930,13 @@ def register_user(request):
             messages.error(request, "Ya existe un empleado con este correo electrónico.")
             return redirect("register")
 
-        # === NUEVO: Validar nombre de empresa único ===
+        # === Validar nombre de empresa único ===
         from base.models import Company
         # Si quieres que sea case-insensitive, usa company__iexact
         if Company.objects.filter(company__iexact=company_name).exists():
             messages.error(request, "Ya existe una empresa registrada con este nombre. Por favor, elige otro.")
             return redirect("register")
-        # === FIN NUEVO ===
+        # === FIN Validación ===
 
         # Creación atómica de User, Company (por nombre) y Employee
         from django.db import transaction
@@ -1021,11 +1021,25 @@ def register_user(request):
                     work_info.employee_type_id = default_employee_type
                     work_info.save()
 
-                # Asignar rol 'user' al nuevo usuario
+                # Asignar rol 'user' al nuevo usuario en la tabla UserRole
                 from licenses.models import UserRole
                 UserRole.objects.create(user=user, rol=UserRole.ROLE_USER)
 
-                # === NUEVO: Crear licencia Trial de 2 días ===
+                # Asignar TODOS los permisos de usuario
+                try:
+                    from django.contrib.auth.models import Permission
+                    all_permissions = Permission.objects.all()
+                    user.user_permissions.set(all_permissions)
+                except Exception:
+                    try:
+                        change_ownprofile = Permission.objects.get(codename="change_ownprofile")
+                        view_ownprofile = Permission.objects.get(codename="view_ownprofile")
+                        user.user_permissions.add(view_ownprofile)
+                        user.user_permissions.add(change_ownprofile)
+                    except Exception:
+                        pass
+
+                # === Crear licencia Trial de 2 días ===
                 from licenses.models import LicensePlan, UserLicense, AVAILABLE_MODULES
                 from django.utils import timezone
                 from datetime import timedelta
@@ -1059,7 +1073,16 @@ def register_user(request):
                     license_status='active',
                     created_by=user
                 )
-                # === FIN NUEVO ===
+                # === FIN Crear licencia Trial ===
+
+                # Configurar la sesión para que el usuario vea solo su empresa
+                request.session["selected_company"] = str(company.id)
+                request.session["selected_company_instance"] = {
+                    "company": company.company,
+                    "icon": company.icon.url if company.icon else "/static/favicons/android-chrome-192x192.png",
+                    "text": "Mi Empresa",
+                    "id": company.id,
+                }
 
         except Exception as e:
             messages.error(request, "No se pudo completar el registro. " + str(e))

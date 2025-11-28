@@ -67,7 +67,68 @@ def sidebar(request):
             else:
                 allowed_modules = []
 
+        # Procesar el sidebar de 'licenses' primero (siempre se muestra si cumple accesibilidad)
+        # Este menú es especial porque muestra información de la empresa, no es un módulo de empresa
+        if apps.is_installed("licenses"):
+            try:
+                licenses_sidebar = importlib.import_module("licenses.sidebar")
+                if licenses_sidebar:
+                    accessibility = None
+                    if getattr(licenses_sidebar, "ACCESSIBILITY", None):
+                        accessibility = import_method(licenses_sidebar.ACCESSIBILITY)
+
+                    if hasattr(licenses_sidebar, "MENU") and (
+                        not accessibility
+                        or accessibility(
+                            request,
+                            licenses_sidebar.MENU,
+                            PermWrapper(request.user),
+                        )
+                    ):
+                        MENU = {}
+                        MENU["menu"] = licenses_sidebar.MENU
+                        MENU["app"] = "licenses"
+                        MENU["img_src"] = licenses_sidebar.IMG_SRC
+                        MENU["submenu"] = []
+                        MENUS.append(MENU)
+                        
+                        # Obtener submenús (dinámicos o estáticos)
+                        submenus_to_process = []
+                        if hasattr(licenses_sidebar, 'get_submenus'):
+                            # Si existe función get_submenus, usarla para generar submenús dinámicamente
+                            try:
+                                submenus_to_process = licenses_sidebar.get_submenus(request)
+                            except Exception as e:
+                                logger.error(f"Error generating dynamic submenus for licenses: {e}")
+                                submenus_to_process = getattr(licenses_sidebar, 'SUBMENUS', [])
+                        else:
+                            # Usar SUBMENUS estáticos
+                            submenus_to_process = getattr(licenses_sidebar, 'SUBMENUS', [])
+                        
+                        for submenu in submenus_to_process:
+                            accessibility = None
+
+                            if submenu.get("accessibility"):
+                                accessibility = import_method(submenu["accessibility"])
+                            redirect: str = submenu["redirect"]
+                            redirect = redirect.split("?")
+                            submenu["redirect"] = redirect[0]
+
+                            if not accessibility or accessibility(
+                                request,
+                                submenu,
+                                PermWrapper(request.user),
+                            ):
+                                MENU["submenu"].append(submenu)
+            except Exception as e:
+                logger.error(f"Error loading licenses sidebar: {e}")
+
+        # Procesar los demás módulos
         for app in base_dir_apps:
+            # Saltar 'licenses' porque ya se procesó arriba
+            if app == "licenses":
+                continue
+                
             if apps.is_installed(app):
                 # Si allowed_modules es None (superuser), mostrar todos los módulos
                 if allowed_modules is not None and app not in allowed_modules:
@@ -99,8 +160,21 @@ def sidebar(request):
                         MENU["img_src"] = sidebar.IMG_SRC
                         MENU["submenu"] = []
                         MENUS.append(MENU)
-                        for submenu in sidebar.SUBMENUS:
-
+                        
+                        # Obtener submenús (dinámicos o estáticos)
+                        submenus_to_process = []
+                        if hasattr(sidebar, 'get_submenus'):
+                            # Si existe función get_submenus, usarla para generar submenús dinámicamente
+                            try:
+                                submenus_to_process = sidebar.get_submenus(request)
+                            except Exception as e:
+                                logger.error(f"Error generating dynamic submenus for {app}: {e}")
+                                submenus_to_process = getattr(sidebar, 'SUBMENUS', [])
+                        else:
+                            # Usar SUBMENUS estáticos
+                            submenus_to_process = getattr(sidebar, 'SUBMENUS', [])
+                        
+                        for submenu in submenus_to_process:
                             accessibility = None
 
                             if submenu.get("accessibility"):

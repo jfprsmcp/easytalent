@@ -63,6 +63,7 @@ SIDEBARS = [
     "helpdesk",
     "project",
     "report",
+    "licenses",  # Agregar licenses para mostrar información de empresa y licencia
 ]
 
 WHITE_LABELLING = False

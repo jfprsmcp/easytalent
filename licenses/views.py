@@ -222,22 +222,27 @@ def admin_dashboard(request):
 @license_admin_required  # Cambiar este decorador
 def license_list(request):
     """Listado de todas las licencias de usuarios - SOLO para superusers"""
-    # Por defecto, mostrar solo licencias activas
-    licenses = UserLicense.objects.select_related('owner', 'company', 'plan', 'created_by', 'modified_by').filter(is_active=True)
-    
+    # Query base: TODAS las licencias registradas en UserLicense
+    licenses = UserLicense.objects.select_related(
+        'owner', 'company', 'plan', 'created_by', 'modified_by'
+    )
+
     # Filtros
     search = request.GET.get('search', '')
     status_filter = request.GET.get('status', '')
     plan_filter = request.GET.get('plan', '')
     is_active_filter = request.GET.get('is_active', '')
-    
-    # Si se especifica explícitamente el filtro is_active, aplicar el filtro
+
+    # Filtro por is_active (opcional)
+    # ''      -> no filtra (muestra activas + inactivas + "eliminadas lógicamente")
+    # 'true'  -> solo is_active=True
+    # 'false' -> solo is_active=False
     if is_active_filter == 'true':
         licenses = licenses.filter(is_active=True)
     elif is_active_filter == 'false':
-        # Si se pide ver inactivos, cambiar el queryset base
-        licenses = UserLicense.objects.select_related('owner', 'company', 'plan', 'created_by', 'modified_by').filter(is_active=False)
-    
+        licenses = licenses.filter(is_active=False)
+
+    # Búsqueda por usuario / empresa / plan
     if search:
         licenses = licenses.filter(
             Q(owner__first_name__icontains=search) |
@@ -246,24 +251,26 @@ def license_list(request):
             Q(company__company__icontains=search) |
             Q(plan__plan_name__icontains=search)
         )
-    
+
+    # Filtro por estado de licencia (active, expired, suspended, cancelled)
     if status_filter:
         licenses = licenses.filter(license_status=status_filter)
-    
+
+    # Filtro por plan
     if plan_filter:
         licenses = licenses.filter(plan_id=plan_filter)
-    
+
     # Ordenamiento
     order_by = request.GET.get('order_by', '-created_at')
     licenses = licenses.order_by(order_by)
-    
+
     # Paginación
     paginator = Paginator(licenses, 20)
     page = request.GET.get('page', 1)
     licenses_page = paginator.get_page(page)
-    
+
     plans = LicensePlan.objects.filter(is_active=True).order_by('plan_name')
-    
+
     context = {
         'licenses': licenses_page,
         'plans': plans,
@@ -273,7 +280,7 @@ def license_list(request):
         'is_active_filter': is_active_filter,
         'order_by': order_by,
     }
-    
+
     return render(request, 'licenses/admin_license_list.html', context)
 
 

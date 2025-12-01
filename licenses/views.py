@@ -100,70 +100,104 @@ def admin_dashboard(request):
     from datetime import timedelta
     from django.contrib.auth import get_user_model
     from licenses.models import LicensePlan
-    
+
     User = get_user_model()
-    
+
+    # Query base de licencias
+    licenses_qs = UserLicense.objects.all()
+
     # Estadísticas generales
-    total_licenses = UserLicense.objects.count()
-    active_licenses = UserLicense.objects.filter(is_active=True).count()
-    inactive_licenses = UserLicense.objects.filter(is_active=False).count()
-    cancelled_licenses = UserLicense.objects.filter(license_status='cancelled').count()
-    expired_licenses = UserLicense.objects.filter(license_status='expired').count()
-    trial_licenses = UserLicense.objects.filter(is_trial=True).count()
-    
-    # Licencias no activas o canceladas (combinado)
-    inactive_or_cancelled = UserLicense.objects.filter(
+    total_licenses = licenses_qs.count()
+
+    # Licencias realmente activas
+    active_licenses = licenses_qs.filter(
+        is_active=True,
+        license_status='active'
+    ).count()
+
+    # Licencias canceladas
+    cancelled_licenses = licenses_qs.filter(
+        license_status='cancelled'
+    ).count()
+
+    # Licencias expiradas
+    expired_licenses = licenses_qs.filter(
+        license_status='expired'
+    ).count()
+
+    # Licencias "inactivas" que NO son ni canceladas ni expiradas
+    inactive_licenses = licenses_qs.filter(
+        is_active=False
+    ).exclude(
+        license_status__in=['cancelled', 'expired']
+    ).count()
+
+    # Licencias no activas o canceladas (para el card combinado)
+    inactive_or_cancelled = licenses_qs.filter(
         Q(is_active=False) | Q(license_status='cancelled')
     ).count()
-    
-    # Nuevos usuarios (últimos 30 días)
+
+    # Licencias de prueba
+    trial_licenses = licenses_qs.filter(is_trial=True).count()
+
+    # Nuevos usuarios (últimos 30 días) SOLO si tienen licencia activa asociada
     thirty_days_ago = timezone.now() - timedelta(days=30)
     new_users = User.objects.filter(
-        date_joined__gte=thirty_days_ago,
-        is_superuser=False  # Excluir superusers del conteo
-    ).count()
-    
-    # Obtener todos los planes activos y contar usuarios por cada plan (dinámico)
+        licenses__created_at__gte=thirty_days_ago,    # relación User -> UserLicense (owner)
+        licenses__is_active=True,
+        licenses__license_status='active',
+        is_superuser=False
+    ).distinct().count()
+
+    # Obtener todos los planes activos y contar usuarios por cada plan (solo licencias activas)
     plans_with_users = []
     all_plans = LicensePlan.objects.filter(is_active=True).order_by('plan_name')
-    
+
     for plan in all_plans:
-        user_count = UserLicense.objects.filter(
+        user_count = licenses_qs.filter(
             plan=plan,
-            is_active=True
+            is_active=True,
+            license_status='active'
         ).count()
         plans_with_users.append({
             'plan': plan,
             'plan_name': plan.plan_name,
             'user_count': user_count,
         })
-    
+
     # Estadísticas por plan (todas las licencias)
-    licenses_by_plan = UserLicense.objects.values('plan__plan_name').annotate(
+    licenses_by_plan = licenses_qs.values('plan__plan_name').annotate(
         count=Count('id')
     ).order_by('-count')
-    
-    # Usuarios por plan (activos) - para gráficas
-    active_by_plan = UserLicense.objects.filter(is_active=True).values(
+
+    # Usuarios por plan (ACTIVOS) - para gráficas
+    active_by_plan = licenses_qs.filter(
+        is_active=True,
+        license_status='active'
+    ).values(
         'plan__plan_name'
     ).annotate(count=Count('id')).order_by('-count')
-    
-    # Licencias por estado
-    licenses_by_status = UserLicense.objects.values('license_status').annotate(
+
+    # Licencias por estado (active/expired/suspended/cancelled)
+    licenses_by_status = licenses_qs.values('license_status').annotate(
         count=Count('id')
     ).order_by('-count')
-    
-    # Licencias próximas a vencer (últimos 30 días)
+
+    # Licencias próximas a vencer (30 días) - solo activas
     upcoming_expiry = timezone.now().date() + timedelta(days=30)
-    expiring_soon = UserLicense.objects.filter(
+    expiring_soon = licenses_qs.filter(
         end_date__lte=upcoming_expiry,
         end_date__gte=timezone.now().date(),
-        is_active=True
+        is_active=True,
+        license_status='active'
     ).count()
-    
-    # Total de empresas con licencias
-    companies_with_licenses = Company.objects.filter(licenses__isnull=False).distinct().count()
-    
+
+    # Total de empresas con licencias ACTIVAS
+    companies_with_licenses = Company.objects.filter(
+        licenses__is_active=True,
+        licenses__license_status='active'
+    ).distinct().count()
+
     context = {
         'total_licenses': total_licenses,
         'active_licenses': active_licenses,
@@ -173,14 +207,14 @@ def admin_dashboard(request):
         'expired_licenses': expired_licenses,
         'trial_licenses': trial_licenses,
         'new_users': new_users,
-        'plans_with_users': plans_with_users,  # Nueva variable dinámica
+        'plans_with_users': plans_with_users,  # variable dinámica
         'expiring_soon': expiring_soon,
         'companies_with_licenses': companies_with_licenses,
         'licenses_by_plan': list(licenses_by_plan),
         'active_by_plan': list(active_by_plan),
         'licenses_by_status': list(licenses_by_status),
     }
-    
+
     return render(request, 'licenses/admin_dashboard.html', context)
 
 

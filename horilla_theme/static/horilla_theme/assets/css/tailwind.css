@@ -1834,7 +1834,7 @@ video {
 
 .bg-primary-100 {
     --tw-bg-opacity: 1;
-    background-color: rgb(255 245 241/var(--tw-bg-opacity))
+    background-color: rgb(13 131 253 / 10%)
 }
 
 .bg-primary-200 {
@@ -2427,7 +2427,7 @@ video {
 
 .text-primary-600 {
     --tw-text-opacity: 1;
-    color: rgb(229 79 56/var(--tw-text-opacity))
+    color: #0d83fd;
 }
 
 .text-red-500 {
@@ -2712,7 +2712,7 @@ video {
 
 .hover\:bg-primary-600:hover {
     --tw-bg-opacity: 1;
-    background-color: rgb(229 79 56/var(--tw-bg-opacity))
+    background: linear-gradient(135deg, #0d83fd 0%, #4da3ff 100%);
 }
 
 .hover\:bg-primary-700:hover {
@@ -2737,7 +2737,7 @@ video {
 
 .hover\:text-primary-600:hover {
     --tw-text-opacity: 1;
-    color: rgb(229 79 56/var(--tw-text-opacity))
+    color: #0d83fd;
 }
 
 .hover\:text-red-500:hover {

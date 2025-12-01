@@ -211,7 +211,10 @@
 }
 
 .breadcrumb li:last-child {
-  color: #e54f38;
+  background: linear-gradient(135deg, #0d83fd 0%, #4da3ff 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
   font-weight: 500;
 }
 
@@ -220,7 +223,10 @@
 }
 
 .breadcrumb li a:hover {
-  color: #e54f38;
+  background: linear-gradient(135deg, #0d83fd 0%, #4da3ff 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 .stickyleft {

@@ -2415,7 +2415,7 @@ ul.errorlist ul.errorlist li {
 }
 
 .sideboxmain:hover {
-    background-color: #2d84fd;
+    background-color: #0d83fd;
 }
 
 .sideboxmain:hover img {
@@ -2423,7 +2423,7 @@ ul.errorlist ul.errorlist li {
 }
 
 .sideboxmain.active {
-    background-color: #2d84fd;
+    background-color: #0d83fd;
 }
 
 .sideboxmain img, .sideboxmain svg {
@@ -2458,7 +2458,7 @@ ul.errorlist ul.errorlist li {
     position: absolute;
     width: 2px;
     height: 100%;
-    background-color: #e34e38;
+    background-color: #0d38fd;
     opacity: 0;
     inset: 0;
     right: 0;
@@ -2467,8 +2467,8 @@ ul.errorlist ul.errorlist li {
 }
 
 .sidebox ul li a:hover {
-    background: rgb(227 78 56 / 10%);
-    color: #e34e38;
+    background: rgb(13 131 253 / 10%);
+    color: #0d38fd;
     /* border-right: 2px solid #e54f38; */
 }
 
@@ -2479,7 +2479,7 @@ ul.errorlist ul.errorlist li {
 
 .sidebox ul li a.active {
     background: rgb(227 78 56 / 10%);
-    color: #e34e38;
+    color: #0d38fd;
 }
 
 .oh-permission-panel,

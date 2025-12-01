@@ -16,14 +16,14 @@
             {% endif %}
             <br />
             <p class="text-xs text-[#777777] mt-1">
-                {{ notification.timesince }} ago by
+                {{ notification.timesince }} {% trans "hace por" %}
                 {% if notification.actor.employee_first_name %}
                     {{ notification.actor.get_full_name }}
                 {% else %}
                     {% if notification.data.label %}
                         {{notification.data.label}}
                     {% else %}
-                        {% trans "Anonymous"%}
+                        {% trans "Anónimo"%}
                     {% endif %}
                 {% endif %}
             </p>
@@ -34,7 +34,7 @@
 {% else %}
     <div class="opacity-30">
         <img src="{% static "/horilla_theme/assets/img/icons/notification.svg" %}" alt="" width="40" class="mx-auto mb-3">
-        <h5 class="text-center font-semibold mb-1">{% trans "All Caught Up!" %}</h5>
-        <p class="text-center text-sm">{% trans "You have no new notifications at the moment" %}</p>
+        <h5 class="text-center font-semibold mb-1">{% trans "¡Todo al día!" %}</h5>
+        <p class="text-center text-sm">{% trans "No tienes notificaciones nuevas en este momento" %}</p>
     </div>
 {% endif %}

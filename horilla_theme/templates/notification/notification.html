@@ -7,13 +7,13 @@
     <div
         class="flex justify-between items-center p-3 border-b border-b-dark-50"
     >
-        <h5 class="font-semibold text-sm">{% trans "Notifications" %}</h5>
+        <h5 class="font-semibold text-sm">{% trans "Notificaciones" %}</h5>
         <div class="flex gap-1">
             <span
                 class="cursor-pointer text-xs group text-primary-600 w-7 h-7 bg-primary-100 hover:bg-primary-600 hover:text-white rounded-full transition duration-300 flex items-center justify-center"
                 hx-get="{% url 'notifications:notification-sound' %}"
                 hx-swap="none"
-                title="Notification Sound"
+                title="{% trans 'Sonido de Notificación' %}"
                 onclick="
                     event.stopPropagation();
                     event.preventDefault();
@@ -35,7 +35,7 @@
                 onclick="event.stopPropagation();event.preventDefault();"
                 hx-get="{% url 'read-notifications' %}"
                 hx-target="#notificationContainer"
-                title="Mark All as Read"
+                title="{% trans 'Marcar Todas como Leídas' %}"
             >
                 <i class="fa-solid fa-check-double"></i>
             </span>
@@ -44,7 +44,7 @@
                 onclick="event.stopPropagation();event.preventDefault();"
                 hx-get="{% url 'clear-notifications' %}"
                 hx-target="#notificationContainer"
-                title="{% trans 'Clear Notifications' %}"
+                title="{% trans 'Limpiar Notificaciones' %}"
             >
                 <i class="fa-solid fa-xmark"></i>
             </span>
@@ -61,7 +61,7 @@
             hx-get="{% url 'all-notifications' %}"
             hx-target="#sidebarModalBody"
         >
-            {% trans "View all Notification" %}
+            {% trans "Ver Todas las Notificaciones" %}
         </button>
     </div>
 </div>

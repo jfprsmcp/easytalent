@@ -8,7 +8,7 @@
             id="gender_chart"
         >
             <div class="flex justify-between items-center mb-2">
-                <h3 class="text-md font-semibold">{% trans "Gender Chart" %}</h3>
+                <h3 class="text-md font-semibold">{% trans "Gráfica de Género" %}</h3>
                 <span class="float-end hidden group-hover:block " role="button"
                     hx-post="{% url 'dashboard-components-toggle' %}?chart_id=gender_chart"
                     hx-target="closest .shadow-card" hx-swap="outerHTML"
@@ -30,7 +30,7 @@
             id="employees_chart"
         >
             <div class="flex justify-between items-center mb-2">
-                <h3 class="text-md font-semibold">{% trans "Employees Chart" %}</h3>
+                <h3 class="text-md font-semibold">{% trans "Gráfica de Empleados" %}</h3>
 
                 <span class="float-end hidden group-hover:block " role="button"
                     hx-post="{% url 'dashboard-components-toggle' %}?chart_id=employees_chart"
@@ -58,7 +58,7 @@
         >
             <div class="flex justify-between items-center mb-2">
                 <h3 class="text-md font-semibold">
-                    {% trans "Shift Requests to Approve" %}
+                    {% trans "Solicitudes de Turno por Aprobar" %}
                 </h3>
                 <span class="float-end hidden group-hover:block " role="button"
                     hx-post="{% url 'dashboard-components-toggle' %}?chart_id=shift_request_approve"
@@ -83,7 +83,7 @@
         >
             <div class="flex justify-between items-center mb-2">
                 <h3 class="text-md font-semibold">
-                    {% trans "Work Type Requests to Approve" %}
+                    {% trans "Solicitudes de Tipo de Trabajo por Aprobar" %}
                 </h3>
                 <span class="float-end hidden group-hover:block " role="button"
                     hx-post="{% url 'dashboard-components-toggle' %}?chart_id=work_type_request_approve"
@@ -108,7 +108,7 @@
         >
             <div class="flex justify-between items-center mb-2">
                 <h3 class="text-md font-semibold">
-                    {% trans "Employee Work Information" %}
+                    {% trans "Información Laboral del Empleado" %}
                 </h3>
                 <span class="float-end hidden group-hover:block " role="button"
                     hx-post="{% url 'dashboard-components-toggle' %}?chart_id=employee_work_info"
@@ -128,7 +128,7 @@
                         hx-trigger="keyup changed delay:0.3s"
                         id="employeeSearch"
                         name="search"
-                        placeholder="Search Employee"
+                        placeholder="{% trans 'Buscar Empleado' %}"
                         class="text-color-600 ps-10 p-2 placeholder:text-xs w-full border border-dark-50 rounded-md focus-visible:outline-0 placeholder:text-dark-100 text-sm [transition:.3s] focus:border-primary-600"
                     />
                     <i
@@ -151,7 +151,7 @@
         >
             <div class="flex justify-between items-center mb-2">
                 <h3 class="text-md font-semibold">
-                    {% trans "Recruitment Analytics" %}
+                    {% trans "Análisis de Reclutamiento" %}
                 </h3>
 
                 <span class="float-end hidden group-hover:block " role="button"
@@ -176,7 +176,7 @@
             id="department_chart"
         >
             <div class="flex justify-between items-center mb-2">
-                <h3 class="text-md font-semibold">{% trans "Department Chart" %}</h3>
+                <h3 class="text-md font-semibold">{% trans "Gráfica de Departamentos" %}</h3>
 
                 <span class="float-end hidden group-hover:block " role="button"
                     hx-post="{% url 'dashboard-components-toggle' %}?chart_id=department_chart"
@@ -208,7 +208,7 @@
         >
             <div class="flex justify-between items-center mb-2">
                 <h3 class="text-md font-semibold">
-                    {% trans "Key Result Status" %}
+                    {% trans "Estado de Resultados Clave" %}
                 </h3>
 
                 <span class="float-end hidden group-hover:block " role="button"
@@ -231,7 +231,7 @@
         >
             <div class="flex justify-between items-center mb-2">
                 <h3 class="text-md font-semibold">
-                    {% trans "Attendance To Validate" %}
+                    {% trans "Asistencias por Validar" %}
                 </h3>
 
                 <span class="float-end hidden group-hover:block " role="button"
@@ -256,7 +256,7 @@
         >
             <div class="flex justify-between items-center mb-2">
                 <h3 class="text-md font-semibold">
-                    {% trans "Candidates Started Onboarding" %}
+                    {% trans "Candidatos que Iniciaron Incorporación" %}
                 </h3>
 
                 <span class="float-end hidden group-hover:block " role="button"
@@ -283,7 +283,7 @@
         >
             <div class="flex justify-between items-center mb-5">
                 <h3 class="text-md font-semibold">
-                    {% trans "Hired Candidates" %}
+                    {% trans "Candidatos Contratados" %}
                 </h3>
 
                 <span class="float-end hidden group-hover:block " role="button"
@@ -310,7 +310,7 @@
         >
             <div class="flex justify-between items-center mb-2">
                 <h3 class="text-md font-semibold">
-                    {% trans "Asset Requests To Approve" %}
+                    {% trans "Solicitudes de Activos por Aprobar" %}
                 </h3>
 
                 <span class="float-end hidden group-hover:block " role="button"
@@ -336,7 +336,7 @@
         >
             <div class="flex justify-between items-center mb-2">
                 <h3 class="text-md font-semibold">
-                    {% trans "Online Employees" %}
+                    {% trans "Empleados en Línea" %}
                 </h3>
 
                 <span class="float-end hidden group-hover:block " role="button"
@@ -361,7 +361,7 @@
         >
             <div class="flex justify-between items-center mb-2">
                 <h3 class="text-md font-semibold">
-                    {% trans "Offline Employees" %}
+                    {% trans "Empleados Desconectados" %}
                 </h3>
 
                 <span class="float-end hidden group-hover:block " role="button"
@@ -386,7 +386,7 @@
         >
             <div class="flex justify-between items-center mb-2">
                 <h3 class="text-md font-semibold">
-                    {% trans "Overtime To Approve" %}
+                    {% trans "Horas Extra por Aprobar" %}
                 </h3>
 
                 <span class="float-end hidden group-hover:block " role="button"
@@ -411,7 +411,7 @@
         >
             <div class="flex justify-between items-center mb-4">
                 <h3 class="text-md font-semibold">
-                    {% trans "Attendance Analytic" %}
+                    {% trans "Análisis de Asistencia" %}
                 </h3>
 
                 <span class="float-end hidden group-hover:block " role="button"
@@ -428,10 +428,10 @@
                     name="type"
                     onchange="changeView(this)"
                 >
-                    <option value="day">{% trans "Day" %}</option>
-                    <option value="weekly">{% trans "Weekly" %}</option>
-                    <option value="monthly">{% trans "Monthly" %}</option>
-                    <option value="date_range">{% trans "Date range" %}</option>
+                    <option value="day">{% trans "Día" %}</option>
+                    <option value="weekly">{% trans "Semanal" %}</option>
+                    <option value="monthly">{% trans "Mensual" %}</option>
+                    <option value="date_range">{% trans "Rango de fechas" %}</option>
                 </select>
                 <input
                     type="date"
@@ -454,7 +454,7 @@
             id="hours_chart"
         >
             <div class="flex justify-between items-center mb-2">
-                <h3 class="text-md font-semibold">{% trans "Hours Chart" %}</h3>
+                <h3 class="text-md font-semibold">{% trans "Gráfica de Horas" %}</h3>
                 <div class="flex items-center gap-3">
                     <input
                         type="month"
@@ -484,17 +484,17 @@
             id="overall_leave_chart"
         >
             <div class="flex justify-between items-center mb-2">
-                <h3 class="text-md font-semibold">{% trans "Overall Leave" %}</h3>
+                <h3 class="text-md font-semibold">{% trans "Permisos Generales" %}</h3>
                 <div class="flex items-center gap-3">
                     <select
                         class="oh-input float-end w-40"
                         name=""
                         id="overAllLeaveSelect"
                     >
-                        <option value="today" selected>{% trans "Today" %}</option>
-                        <option value="week">{% trans "This Week" %}</option>
-                        <option value="month">{% trans "This Month" %}</option>
-                        <option value="year">{% trans "This Year" %}</option>
+                        <option value="today" selected>{% trans "Hoy" %}</option>
+                        <option value="week">{% trans "Esta Semana" %}</option>
+                        <option value="month">{% trans "Este Mes" %}</option>
+                        <option value="year">{% trans "Este Año" %}</option>
                     </select>
 
                     <span class="float-end hidden group-hover:block " role="button"
@@ -520,7 +520,7 @@
         >
             <div class="flex justify-between items-center mb-2">
                 <h3 class="text-md font-semibold">
-                    {% trans "Leave Requests To Approve" %}
+                    {% trans "Solicitudes de Permiso por Aprobar" %}
                 </h3>
 
                 <span class="float-end hidden group-hover:block " role="button"
@@ -545,7 +545,7 @@
         >
             <div class="flex justify-between items-center mb-2">
                 <h3 class="text-md font-semibold">
-                    {% trans "Leave Allocation Request To Approve" %}
+                    {% trans "Solicitudes de Asignación de Permisos por Aprobar" %}
                 </h3>
 
                 <span class="float-end hidden group-hover:block " role="button"
@@ -570,7 +570,7 @@
         >
             <div class="flex justify-between items-center mb-2">
                 <h3 class="text-md font-semibold">
-                    {% trans "Feedback To Answers" %}
+                    {% trans "Comentarios por Responder" %}
                 </h3>
 
                 <span class="float-end hidden group-hover:block " role="button"
@@ -594,7 +594,7 @@
             id="feedback_status"
         >
             <div class="flex justify-between items-center mb-2">
-                <h3 class="text-md font-semibold">{% trans "Feedback Status" %}</h3>
+                <h3 class="text-md font-semibold">{% trans "Estado de Comentarios" %}</h3>
 
                 <span class="float-end hidden group-hover:block " role="button"
                     hx-post="{% url 'dashboard-components-toggle' %}?chart_id=feedback_status"
@@ -622,7 +622,7 @@
         >
             <div class="flex justify-between items-center mb-2">
                 <h3 class="text-md font-semibold">
-                    {% trans "Objective Status" %}
+                    {% trans "Estado de Objetivos" %}
                 </h3>
 
                 <span class="float-end hidden group-hover:block " role="button"
@@ -648,7 +648,7 @@
             <div class="bg-white p-6 rounded-md shadow-card h-full">
                 <div class="flex flex-col items-center justify-center h-full">
                     <img src="/static/horilla_theme/assets/img/no-records.svg" alt="" width="300" class="mb-4">
-                    <p class="text-[#666] mb-5">{% trans "No charts are available at the moment..." %}</p>
+                    <p class="text-[#666] mb-5">{% trans "No hay gráficas disponibles en este momento..." %}</p>
                 </div>
             </div>
         </div>

@@ -1144,7 +1144,7 @@ class HorillaPasswordResetView(PasswordResetView):
             opts = {
                 "use_https": self.request.is_secure(),
                 "token_generator": self.token_generator,
-                "from_email": "soporte@easycorp.cloud",
+                "from_email": email_backend.dynamic_from_email_with_display_name,
                 "email_template_name": self.email_template_name,
                 "subject_template_name": self.subject_template_name,
                 "request": self.request,

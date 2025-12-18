@@ -250,6 +250,15 @@ USE_L10N = True
 
 USE_TZ = True
 
+# Email settings
+EMAIL_HOST = env("EMAIL_HOST", default="")
+EMAIL_PORT = env("EMAIL_PORT", default=587)
+EMAIL_HOST_USER = env("EMAIL_HOST_USER", default="")
+EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD", default="")
+EMAIL_USE_TLS = env("EMAIL_USE_TLS", default=True)
+EMAIL_USE_SSL = env("EMAIL_USE_SSL", default=False)
+DEFAULT_FROM_EMAIL = env("DEFAULT_FROM_EMAIL", default="soporte@easycorp.cloud")
+
 # Production settings
 if not DEBUG:
     SECURE_BROWSER_XSS_FILTER = True

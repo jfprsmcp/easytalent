@@ -1,0 +1,126 @@
+{% extends "company_onboarding/base.html" %}
+{% load static %} {% load i18n %}
+
+{% block wizard_content %}
+<div class="text-center mb-4">
+    <div class="section-icon section-icon--primary" style="margin: 0 auto;">
+        <ion-icon name="briefcase-outline"></ion-icon>
+    </div>
+    <h2 class="section-title">{% trans "Puestos de Trabajo" %}</h2>
+    <p class="section-subtitle">{% trans "Define los roles dentro de cada departamento." %}</p>
+</div>
+
+<!-- Puestos creados -->
+{% if positions %}
+<div class="items-panel">
+    <div class="items-panel__header">
+        <span class="items-panel__count">{% trans "Puestos creados" %}</span>
+        <span class="items-panel__badge">{{ positions|length }}</span>
+    </div>
+    <div>
+        {% for pos in positions %}
+        <span class="chip chip-dept">
+            <ion-icon name="person-outline" style="color: var(--primary); font-size: 0.9rem;"></ion-icon>
+            {{ pos.job_position }}
+            <span style="font-size: 0.7rem; color: var(--gray-400); font-weight: 500;">{{ pos.department_id }}</span>
+            <form method="post" action="{% url 'company-onboarding-pos-delete' pos.id %}" style="display:inline; margin:0;">
+                {% csrf_token %}
+                <button type="submit" class="chip-delete" title="{% trans 'Eliminar' %}"
+                        onclick="return confirm('{% trans "¿Eliminar este puesto?" %}')">
+                    <ion-icon name="close-circle"></ion-icon>
+                </button>
+            </form>
+        </span>
+        {% endfor %}
+    </div>
+</div>
+{% else %}
+<div class="empty-state mb-3">
+    <ion-icon name="briefcase-outline"></ion-icon>
+    <p>{% trans "Agrega tu primer puesto de trabajo" %}</p>
+</div>
+{% endif %}
+
+<!-- Formulario -->
+{% if departments %}
+<form method="post" id="posForm" class="form-panel">
+    {% csrf_token %}
+    <div class="row g-3 align-items-end">
+        <div class="col-12 col-md-5">
+            <label for="position_name" class="form-label">
+                <ion-icon name="person-add-outline" style="vertical-align: middle; margin-right: 2px;"></ion-icon>
+                {% trans "Nombre del Puesto" %}
+            </label>
+            <input type="text" name="position_name" id="position_name"
+                   placeholder="{% trans 'ej. Gerente de Ventas' %}"
+                   style="border: 1.5px solid var(--gray-200); border-radius: var(--radius-sm); padding: 10px 14px; font-size: 0.88rem; width: 100%; transition: all 0.2s; background: white; font-family: inherit;"
+                   onfocus="this.style.borderColor='var(--primary)'; this.style.boxShadow='0 0 0 3px var(--primary-glow)'"
+                   onblur="this.style.borderColor='var(--gray-200)'; this.style.boxShadow='none'" />
+        </div>
+        <div class="col-12 col-md-4">
+            <label for="department_id" class="form-label">
+                <ion-icon name="git-branch-outline" style="vertical-align: middle; margin-right: 2px;"></ion-icon>
+                {% trans "Departamento" %}
+            </label>
+            <select name="department_id" id="department_id" required
+                    style="border: 1.5px solid var(--gray-200); border-radius: var(--radius-sm); padding: 10px 14px; font-size: 0.88rem; width: 100%; height: 44px; transition: all 0.2s; background: white; font-family: inherit; cursor: pointer;"
+                    onfocus="this.style.borderColor='var(--primary)'; this.style.boxShadow='0 0 0 3px var(--primary-glow)'"
+                    onblur="this.style.borderColor='var(--gray-200)'; this.style.boxShadow='none'">
+                <option value="">{% trans "Seleccionar..." %}</option>
+                {% for dept in departments %}
+                <option value="{{ dept.id }}">{{ dept.department }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-12 col-md-3">
+            <button type="submit" class="btn-add w-100" style="height: 44px;">
+                <ion-icon name="add-outline"></ion-icon>
+                {% trans "Agregar" %}
+            </button>
+        </div>
+    </div>
+    {% if error %}
+    <div class="error-msg">
+        <ion-icon name="alert-circle"></ion-icon> {{ error }}
+    </div>
+    {% endif %}
+</form>
+{% else %}
+<div class="warning-box">
+    <ion-icon name="information-circle-outline" style="font-size: 1.8rem; color: #f59e0b; display: block; margin-bottom: 0.5rem;"></ion-icon>
+    <p style="margin: 0 0 0.8rem; color: var(--gray-600); font-size: 0.88rem; font-weight: 500;">
+        {% trans "Primero debes crear al menos un departamento." %}
+    </p>
+    <a href="{% url 'company-onboarding-step3' %}" class="btn-next" style="font-size: 0.82rem; padding: 8px 20px;">
+        <ion-icon name="arrow-back-outline"></ion-icon>
+        {% trans "Ir a Departamentos" %}
+    </a>
+</div>
+{% endif %}
+
+<div class="d-flex justify-content-between align-items-center mt-4">
+    <a href="{% url 'company-onboarding-step3' %}" class="btn-back">
+        <ion-icon name="arrow-back-outline"></ion-icon>
+        {% trans "Atrás" %}
+    </a>
+    <a href="{% url 'company-onboarding-step5' %}" class="btn-next">
+        {% trans "Siguiente" %}
+        <ion-icon name="arrow-forward-outline"></ion-icon>
+    </a>
+</div>
+<div class="text-center mt-3">
+    <a href="{% url 'company-onboarding-step5' %}" class="skip-link">
+        {% trans "Saltar este paso" %}
+        <ion-icon name="arrow-forward-outline" style="font-size: 0.75rem;"></ion-icon>
+    </a>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    var inp = document.getElementById('position_name');
+    if (inp) inp.focus();
+});
+</script>
+{% endblock %}

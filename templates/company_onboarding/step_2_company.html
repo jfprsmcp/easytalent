@@ -1,0 +1,81 @@
+{% extends "company_onboarding/base.html" %}
+{% load static %} {% load i18n %}
+
+{% block wizard_content %}
+<div class="text-center mb-4">
+    <div class="section-icon section-icon--primary" style="margin: 0 auto;">
+        <ion-icon name="business-outline"></ion-icon>
+    </div>
+    <h2 class="section-title">{% trans "Perfil de tu Empresa" %}</h2>
+    <p class="section-subtitle">{% trans "Completa la información básica." %}</p>
+</div>
+
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="form-panel mb-3">
+        <div class="mb-3">
+            <label for="id_company" class="form-label">
+                <ion-icon name="business-outline" style="vertical-align: middle; margin-right: 2px;"></ion-icon>
+                {% trans "Nombre de la Empresa" %}
+            </label>
+            {{ form.company }}
+            {% if form.company.errors %}<div class="error-msg"><ion-icon name="alert-circle"></ion-icon> {{ form.company.errors.0 }}</div>{% endif %}
+        </div>
+        <div class="mb-3">
+            <label for="id_address" class="form-label">
+                <ion-icon name="location-outline" style="vertical-align: middle; margin-right: 2px;"></ion-icon>
+                {% trans "Dirección" %}
+            </label>
+            {{ form.address }}
+            {% if form.address.errors %}<div class="error-msg"><ion-icon name="alert-circle"></ion-icon> {{ form.address.errors.0 }}</div>{% endif %}
+        </div>
+        <div class="row g-3">
+            <div class="col-12 col-md-6">
+                <label for="id_country" class="form-label">{% trans "País" %}</label>
+                {{ form.country }}
+            </div>
+            <div class="col-12 col-md-6">
+                <label for="id_state" class="form-label">{% trans "Estado / Provincia" %}</label>
+                {{ form.state }}
+            </div>
+        </div>
+        <div class="row g-3 mt-0">
+            <div class="col-12 col-md-6">
+                <label for="id_city" class="form-label">{% trans "Ciudad" %}</label>
+                {{ form.city }}
+            </div>
+            <div class="col-12 col-md-6">
+                <label for="id_zip" class="form-label">{% trans "Código Postal" %}</label>
+                {{ form.zip }}
+            </div>
+        </div>
+        <div class="mt-3">
+            <label for="id_icon" class="form-label">
+                <ion-icon name="image-outline" style="vertical-align: middle; margin-right: 2px;"></ion-icon>
+                {% trans "Logo de la Empresa" %}
+            </label>
+            {{ form.icon }}
+            <small style="color: var(--gray-400); font-size: 0.72rem; margin-top: 4px; display: block;">
+                {% trans "JPG, PNG, WEBP, SVG. Máximo 5MB." %}
+            </small>
+        </div>
+    </div>
+
+    <div class="d-flex justify-content-between align-items-center mt-4">
+        <a href="{% url 'company-onboarding-step1' %}" class="btn-back">
+            <ion-icon name="arrow-back-outline"></ion-icon>
+            {% trans "Atrás" %}
+        </a>
+        <button type="submit" class="btn-next">
+            {% trans "Siguiente" %}
+            <ion-icon name="arrow-forward-outline"></ion-icon>
+        </button>
+    </div>
+    <div class="text-center mt-3">
+        <a href="{% url 'company-onboarding-step3' %}" class="skip-link">
+            {% trans "Saltar este paso" %}
+            <ion-icon name="arrow-forward-outline" style="font-size: 0.75rem;"></ion-icon>
+        </a>
+    </div>
+</form>
+{% endblock %}

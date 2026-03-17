@@ -1,0 +1,113 @@
+{% load static %} {% load i18n %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Register - {{white_label_company_name}} Dashboard</title>
+    <link rel="apple-touch-icon" sizes="180x180"
+        href="{% if white_label_company.icon %}{{white_label_company.icon.url}} {% else %}{% static 'favicons/apple-touch-icon.png' %}{% endif %}">
+    <link rel="icon" type="image/png" sizes="32x32"
+        href="{% if white_label_company.icon %}{{white_label_company.icon.url}} {% else %}{% static 'favicons/favicon-32x32.png' %}{% endif %}">
+    <link rel="icon" type="image/png" sizes="16x16"
+        href="{% if white_label_company.icon %}{{white_label_company.icon.url}} {% else %}{% static 'favicons/favicon-16x16.png' %}{% endif %}">
+    <link rel="stylesheet" href="{% static '/build/css/style.min.css' %}" />
+    <link rel="manifest" href="{% static 'build/manifest.json' %}" />
+</head>
+
+<body>
+    <div id="main">
+        <div class="oh-alert-container">
+            {% for message in messages %}
+            <div class="oh-alert oh-alert--animated {{ message.tags }}">
+                {{ message }}
+            </div>
+            {% endfor %}
+        </div>
+        <main class="oh-auth">
+            <div class="oh-auth-card mb-4">
+                <h1 class="oh-onboarding-card__title oh-onboarding-card__title--h2 text-center my-3">
+                    {% trans "Create Account" %}
+                </h1>
+                <p class="text-muted text-center">
+                    {% trans "Register to access the dashboard." %}
+                </p>
+                <form method="post" class="oh-form-group" action="{% url 'register' %}">
+                    {% csrf_token %}
+                    <div class="oh-input-group">
+                        <label class="oh-label" for="email">{% trans "Correo electronico" %}</label>
+                        <input type="email" id="email" name="email" class="oh-input w-100" placeholder="e.g. jane.doe@acme.com" required />
+                    </div>
+                    <div class="oh-input-group">
+                        <label class="oh-label" for="company_name">{% trans "Company Name" %}</label>
+                        <input type="text" id="company_name" name="company_name" class="oh-input w-100" placeholder="Your Company LLC" required />
+                    </div>
+                    <div class="oh-input-group">
+                        <label class="oh-label" for="first_name">{% trans "First Name" %}</label>
+                        <input type="text" id="first_name" name="first_name" class="oh-input w-100" placeholder="Jane" required />
+                    </div>
+                    <div class="oh-input-group">
+                        <label class="oh-label" for="last_name">{% trans "Last Name" %}</label>
+                        <input type="text" id="last_name" name="last_name" class="oh-input w-100" placeholder="Doe" />
+                    </div>
+                    <div class="oh-input-group">
+                        <label class="oh-label" for="phone">{% trans "Phone" %}</label>
+                        <input type="text" id="phone" name="phone" class="oh-input w-100" placeholder="+1 555 0100" required />
+                    </div>
+                    <div class="oh-input-group">
+                        <label class="oh-label" for="password1">{% trans "Password" %}</label>
+                        <div class="oh-password-input-container">
+                            <input type="password" id="password1" name="password1" class="oh-input oh-input--password w-100" placeholder="At least 8 characters" required />
+                            <button type="button" class="oh-btn oh-btn--transparent oh-password-input--toggle">
+                                <ion-icon class="oh-passowrd-input__show-icon" title="{% trans 'Show Password' %}" name="eye-outline"></ion-icon>
+                                <ion-icon class="oh-passowrd-input__hide-icon d-none" title="{% trans 'Hide Password' %}" name="eye-off-outline"></ion-icon>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="oh-input-group">
+                        <label class="oh-label" for="password2">{% trans "Confirm Password" %}</label>
+                        <div class="oh-password-input-container">
+                            <input type="password" id="password2" name="password2" class="oh-input oh-input--password w-100" placeholder="Repeat your password" required />
+                            <button type="button" class="oh-btn oh-btn--transparent oh-password-input--toggle">
+                                <ion-icon class="oh-passowrd-input__show-icon" title="{% trans 'Show Password' %}" name="eye-outline"></ion-icon>
+                                <ion-icon class="oh-passowrd-input__hide-icon d-none" title="{% trans 'Hide Password' %}" name="eye-off-outline"></ion-icon>
+                            </button>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="oh-btn oh-onboarding-card__button mt-4 oh-btn--secondary oh-btn--shadow w-100 mb-4">
+                        <ion-icon class="me-2" name="person-add-outline"></ion-icon>
+                        {% trans "Create Account" %}
+                    </button>
+                    <small class="text-center d-block">
+                        {% trans "Already have an account?" %}
+                        <a href="{% url 'login' %}" class="oh-link oh-link--secondary justify-content-center">
+                            {% trans "Sign in" %}
+                        </a>
+                    </small>
+                </form>
+            </div>
+            <div style="display: contents;">
+                <img src={% if white_label_company.icon %}
+                        "{{white_label_company.icon.url}}"
+                        alt="{{white_label_company_name}}"
+                        style=" opacity:.90; 200px; height: 140px;"
+                    {% else %}
+                        "{% static 'images/ui/auth-logo.png' %}" alt="Horilla"
+                    {% endif %}
+                />
+                {% if white_label_company %}
+                <p style=" font-size: large; color: gray; text-align: center;" class="mt-2">{{white_label_company}}</p>
+                {% endif %}
+            </div>
+        </main>
+    </div>
+    <script src="{% static '/build/js/web.frontend.min.js' %}"></script>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script type="module" src="{% static 'images/ionicons/ui_icons/ionicons/ionicons.esm.js' %}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+</body>
+
+</html>

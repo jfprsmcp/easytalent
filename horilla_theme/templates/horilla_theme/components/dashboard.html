@@ -1,0 +1,393 @@
+{% load static i18n tz basefilters horillafilters employee_filter accessibility_filters %}
+
+{% now "Y-m-d" as current_date %}
+
+<!-- Onboarding Banner -->
+{% if show_onboarding_banner %}
+<div id="onboarding-banner" style="
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #2d3a4f 100%);
+    border-radius: 16px;
+    padding: 1.5rem 2rem;
+    margin-bottom: 1.5rem;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 10px 25px -5px rgba(0,0,0,0.15);
+">
+    <!-- Pattern decorativo -->
+    <div style="position:absolute;top:0;left:0;right:0;bottom:0;background:url('data:image/svg+xml,%3Csvg width=&quot;60&quot; height=&quot;60&quot; viewBox=&quot;0 0 60 60&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot;%3E%3Cg fill=&quot;none&quot; fill-rule=&quot;evenodd&quot;%3E%3Cg fill=&quot;%23ffffff&quot; fill-opacity=&quot;0.03&quot;%3E%3Cpath d=&quot;M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z&quot;/%3E%3C/g%3E%3C/g%3E%3C/svg%3E');pointer-events:none;"></div>
+    <!-- Glow -->
+    <div style="position:absolute;top:-50%;right:-10%;width:300px;height:300px;background:radial-gradient(circle,rgba(229,79,56,0.15) 0%,transparent 70%);pointer-events:none;"></div>
+
+    <div style="position:relative;z-index:1;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;">
+        <div style="flex:1;min-width:250px;">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:0.6rem;">
+                <div style="width:40px;height:40px;border-radius:12px;background:linear-gradient(135deg,#e54f38,#ff6b52);display:flex;align-items:center;justify-content:center;">
+                    <ion-icon name="settings-outline" style="color:white;font-size:1.3rem;"></ion-icon>
+                </div>
+                <div>
+                    <h3 style="color:white;font-size:1rem;font-weight:700;margin:0;line-height:1.2;">
+                        {% trans "Completa la configuración de tu empresa" %}
+                    </h3>
+                    <p style="color:rgba(255,255,255,0.5);font-size:0.78rem;margin:0;">
+                        {{ onboarding_progress.total_configured }}/{{ onboarding_progress.total_sections }} {% trans "secciones configuradas" %}
+                    </p>
+                </div>
+            </div>
+
+            <!-- Barra de progreso -->
+            <div style="background:rgba(255,255,255,0.1);border-radius:8px;height:6px;margin-top:0.5rem;overflow:hidden;max-width:400px;">
+                <div style="height:100%;border-radius:8px;background:linear-gradient(90deg,#e54f38,#ff6b52);transition:width 0.8s cubic-bezier(0.34,1.56,0.64,1);width:{% widthratio onboarding_progress.total_configured onboarding_progress.total_sections 100 %}%;position:relative;">
+                </div>
+            </div>
+
+            <!-- Mini indicadores -->
+            <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:0.7rem;">
+                <span style="font-size:0.68rem;padding:3px 10px;border-radius:20px;font-weight:600;
+                    {% if onboarding_progress.departments > 0 %}background:rgba(16,185,129,0.15);color:#10b981;{% else %}background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.35);{% endif %}">
+                    {% if onboarding_progress.departments > 0 %}✓{% endif %} {% trans "Deptos" %}
+                </span>
+                <span style="font-size:0.68rem;padding:3px 10px;border-radius:20px;font-weight:600;
+                    {% if onboarding_progress.positions > 0 %}background:rgba(16,185,129,0.15);color:#10b981;{% else %}background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.35);{% endif %}">
+                    {% if onboarding_progress.positions > 0 %}✓{% endif %} {% trans "Puestos" %}
+                </span>
+                <span style="font-size:0.68rem;padding:3px 10px;border-radius:20px;font-weight:600;
+                    {% if onboarding_progress.shifts > 0 %}background:rgba(16,185,129,0.15);color:#10b981;{% else %}background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.35);{% endif %}">
+                    {% if onboarding_progress.shifts > 0 %}✓{% endif %} {% trans "Horarios" %}
+                </span>
+                <span style="font-size:0.68rem;padding:3px 10px;border-radius:20px;font-weight:600;
+                    {% if onboarding_progress.employee_types > 0 %}background:rgba(16,185,129,0.15);color:#10b981;{% else %}background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.35);{% endif %}">
+                    {% if onboarding_progress.employee_types > 0 %}✓{% endif %} {% trans "Empleados" %}
+                </span>
+                <span style="font-size:0.68rem;padding:3px 10px;border-radius:20px;font-weight:600;
+                    {% if onboarding_progress.work_types > 0 %}background:rgba(16,185,129,0.15);color:#10b981;{% else %}background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.35);{% endif %}">
+                    {% if onboarding_progress.work_types > 0 %}✓{% endif %} {% trans "Trabajo" %}
+                </span>
+                <span style="font-size:0.68rem;padding:3px 10px;border-radius:20px;font-weight:600;
+                    {% if onboarding_progress.holidays > 0 %}background:rgba(16,185,129,0.15);color:#10b981;{% else %}background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.35);{% endif %}">
+                    {% if onboarding_progress.holidays > 0 %}✓{% endif %} {% trans "Festivos" %}
+                </span>
+                <span style="font-size:0.68rem;padding:3px 10px;border-radius:20px;font-weight:600;
+                    {% if onboarding_progress.leave_types > 0 %}background:rgba(16,185,129,0.15);color:#10b981;{% else %}background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.35);{% endif %}">
+                    {% if onboarding_progress.leave_types > 0 %}✓{% endif %} {% trans "Permisos" %}
+                </span>
+            </div>
+        </div>
+
+        <div style="display:flex;flex-direction:column;align-items:center;gap:8px;">
+            <a href="{% url 'company-onboarding' %}"
+               style="background:linear-gradient(135deg,#e54f38,#cc3d28);color:white;padding:10px 24px;border-radius:10px;font-weight:600;font-size:0.85rem;text-decoration:none;display:inline-flex;align-items:center;gap:8px;transition:all 0.3s;box-shadow:0 4px 12px rgba(229,79,56,0.3);"
+               onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 8px 20px rgba(229,79,56,0.4)'"
+               onmouseout="this.style.transform='';this.style.boxShadow='0 4px 12px rgba(229,79,56,0.3)'">
+                <ion-icon name="settings-outline"></ion-icon>
+                {% trans "Continuar Configuración" %}
+            </a>
+            <a href="{% url 'company-onboarding-dismiss-banner' %}"
+               style="background:none;border:none;color:rgba(255,255,255,0.35);font-size:0.72rem;cursor:pointer;padding:2px 8px;transition:color 0.2s;text-decoration:none;"
+               onmouseover="this.style.color='rgba(255,255,255,0.7)'"
+               onmouseout="this.style.color='rgba(255,255,255,0.35)'">
+                {% trans "Ocultar por ahora" %}
+            </a>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<!-- Stats Cards -->
+
+<style>
+	#pending .heightContainer {
+		max-height: 310px;
+	}
+	#offlineEmployees .heightContainer {
+		max-height: 300px;
+	}
+	#onlineEmployees .heightContainer {
+		max-height: 300px;
+	}
+	.oh-empty {
+		height: 300px;
+	}
+</style>
+
+<div class="grid grid-cols-1 xl:grid-cols-4 md:grid-cols-2 gap-4 mb-4">
+	{% if perms.employee.view_employee %}
+		{% if "recruitment"|app_installed %}
+			<div class="bg-white p-6 rounded-md shadow-card group relative">
+				<div class="flex items-center gap-4">
+					<div class="bg-[#1cba5121] p-3 rounded-md">
+						<img
+							src="/static/horilla_theme/assets/img/icons/add-user.svg"
+							width="20"
+						/>
+					</div>
+					<a
+						href="{% url 'candidate-view' %}?joining_date={{current_date}}"
+						style="text-decoration: none"
+					>
+						<div>
+							<p class="text-sm">{% trans "Nuevos Ingresos de Hoy" %}</p>
+							<div class="flex items-center gap-2">
+								<p
+									class="text-xl font-bold text-secondary-900"
+									hx-get="{% url 'joining-today-count' %}"
+									hx-trigger="load"
+								>0</p>
+							</div>
+						</div>
+					</a>
+				</div>
+			</div>
+		{% endif %}
+		{% if "leave"|app_installed %}
+			<div class="bg-white p-6 rounded-md shadow-card group relative">
+				<div class="flex items-center gap-4">
+					<div class="bg-[#b71db01f] p-3 rounded-md">
+						<img
+							src="/static/horilla_theme/assets/img/icons/absent.svg"
+							width="20"
+						/>
+					</div>
+					<a
+						href="{% url 'request-view' %}?from_date={{current_date}}&to_date={{current_date}}"
+						style="text-decoration: none"
+					>
+						<div>
+							<p class="text-sm">{% trans "Permisos de Hoy" %}</p>
+							<div class="flex items-center gap-2">
+								<p class="text-xl font-bold text-secondary-900"
+									hx-get="{% url 'leave-today-count' %}"
+									hx-trigger="load"
+								>0</p>
+							</div>
+						</div>
+					</a>
+				</div>
+			</div>
+		{% endif %}
+		{% if "recruitment"|app_installed %}
+			<div class="bg-white p-6 rounded-md shadow-card group relative">
+				<div class="flex items-center gap-4">
+					<div class="bg-[#ea7f2f2e] p-3 rounded-md">
+						<img
+							src="/static/horilla_theme/assets/img/icons/joining.svg"
+							width="20"
+						/>
+					</div>
+					<a
+						href="{% url 'candidate-view' %}?scheduled_from={{first_day_of_week}}&scheduled_till={{last_day_of_week}}"
+						style="text-decoration: none"
+					>
+						<div>
+							<p class="text-sm">{% trans "Ingresos de Esta Semana" %}</p>
+							<div class="flex items-center gap-2">
+								<p
+									class="text-xl font-bold text-secondary-900"
+									hx-get="{% url 'joining-week-count' %}"
+									hx-trigger="load"
+								>0</p>
+							</div>
+						</div>
+					</a>
+				</div>
+			</div>
+		{% endif %}
+		<div class="bg-white p-6 rounded-md shadow-card group relative">
+			<div class="flex items-center gap-4">
+				<div class="bg-[#d821491c] p-3 rounded-md">
+					<img
+						src="/static/horilla_theme/assets/img/icons/strenth.svg"
+						width="20"
+					/>
+				</div>
+				<a href="{% url 'employee-view' %}" style="text-decoration: none">
+					<div>
+						<p class="text-sm">{% trans "Total de Empleados" %}</p>
+						<div class="flex items-center gap-2">
+							<p class="text-xl font-bold text-secondary-900">
+								{{total_employees|default:0}}
+							</p>
+						</div>
+					</div>
+				</a>
+			</div>
+		</div>
+	{% endif %}
+</div>
+
+<div class="flex flex-col md:flex-row-reverse gap-4">
+	<div class="w-full md:w-3/12 max-h-[76vh] overflow-auto">
+		<div
+			class="xl:col-span-3 md:col-span-12 col-span-12 bg-white p-6 rounded-md shadow-card group mb-3"
+		>
+			<div class="flex justify-between items-center mb-3">
+				<h3 class="text-md font-semibold">{% trans "Anuncios" %}</h3>
+				{% if perms.base.add_announcement %}
+					<button
+						class="w-4 h-4"
+						id="addAnnouncement"
+						hx-get="{% url 'create-announcement' %}"
+						hx-target="#objectCreateModalTarget"
+						hx-swap="innerHTML"
+						data-toggle="oh-modal-toggle"
+						data-target="#objectCreateModal"
+						title="{% trans 'Crear Anuncio' %}"
+					>
+						<img
+							src="/static/horilla_theme/assets/img/icons/more.svg"
+							alt=""
+						/>
+					</button>
+				{% endif %}
+			</div>
+			<div
+				class="flex gap-3 items-center text-sm font-medium py-1"
+				hx-get="{% url 'announcement-list' %}"
+				hx-trigger="load"
+			></div>
+		</div>
+
+		{% if "leave"|app_installed %}
+			{% if perms.leave.view_leaverequest or request.user|is_reportingmanager %}
+				<div
+					class="xl:col-span-6 md:col-span-12 col-span-12 bg-white p-6 rounded-md shadow-card group"
+				>
+					<div class="flex justify-between items-center mb-2">
+						<h3 class="text-md font-semibold">{% trans "De Permiso" %}</h3>
+					</div>
+					<div
+						class="flex-col items-center justify-center"
+						hx-get="{% url 'employee-leave' %}"
+						hx-trigger="load"
+					></div>
+				</div>
+			{% endif %}
+		{% endif %}
+	</div>
+
+	<div class="w-full md:w-9/12 grid grid-cols-12 gap-4 mb-4 max-h-[76vh] overflow-auto" id="tileContainer">
+		{% include "horilla_theme/components/dashboard_tiles.html" %}
+	</div>
+
+    <div class="oh-modal" id="sendMailModal" role="dialog" aria-labelledby="sendMailModal" aria-hidden="true">
+        <div class="oh-modal__dialog">
+            <div class="oh-modal__dialog-header">
+                <h5 class="oh-modal__dialog-title" id="sendMailModalLabel">
+                    {% trans "Enviar Correo" %}
+                </h5>
+                <button class="oh-modal__close" aria-label="Close" onclick="$(this).closest('.oh-modal--show').removeClass('oh-modal--show')">
+                    <ion-icon name="close-outline"></ion-icon>
+                </button>
+            </div>
+            <div class="oh-modal__dialog-body" id="mail-content"></div>
+        </div>
+    </div>
+
+
+	<div class="oh-modal" id="activityViewModal" role="dialog" aria-hidden="true" style="z-index:1100;">
+		<div class="oh-modal__dialog" style="max-width: 900px;">
+			<div class="oh-modal__dialog-header">
+				<h3 class="oh-main__titlebar-title fw-bold ">{% trans "Actividades" %}</h3>
+				<button class="oh-modal__close--custom" aria-label="Close"
+					onclick="$(this).closest('.oh-modal--show').removeClass('oh-modal--show');"
+				>
+					<ion-icon name="close-outline"></ion-icon>
+				</button>
+			</div>
+			<div class="oh-modal__dialog-body" id="activityViewModalBody" style="overflow-x:auto;"></div>
+		</div>
+	</div>
+
+	<div
+		class="oh-modal"
+		id="rejectModal"
+		role="dialog"
+		aria-labelledby="rejectDialogModal"
+		aria-hidden="true"
+	>
+		<div class="oh-modal__dialog">
+			<div class="rejectForm">
+				<div class="oh-modal__dialog-header">
+					<h2 class="oh-modal__dialog-title" id="rejectTitle">
+						{% trans "Rechazar" %}
+					</h2>
+					<button
+						class="oh-modal__close"
+						onclick="$('#rejectModal').removeClass('oh-modal--show');"
+						aria-label="Close"
+					>
+						<ion-icon name="close-outline"></ion-icon>
+					</button>
+				</div>
+				<div class="oh-modal__dialog-body" id="rejectForm"></div>
+			</div>
+
+			<div id="rejectTarget">
+
+			</div>
+		</div>
+	</div>
+
+	<div class="oh-modal" id="penaltyModal" role="dialog" aria-hidden="true">
+		<div class="oh-modal__dialog" id="penaltyModalBody" style="max-width: 550px"></div>
+	</div>
+
+
+	<div
+		class="oh-modal"
+		id="TaskModal"
+		role="dialog"
+		aria-labelledby="TaskModal"
+		aria-hidden="true"
+	>
+		<div
+			class="oh-modal__dialog"
+			style="max-width: 550px"
+			id="TaskFormTarget"
+		></div>
+	</div>
+
+</div>
+
+<script>
+	$("#rejectModal").on("htmx:afterSwap", function (event) {
+		const targetEl = event.originalEvent.detail.target;
+		const $rejectForm = $(this).find(".rejectForm");
+		const $rejectTarget = $(this).find("#rejectTarget");
+
+		if (targetEl.id === "rejectTarget") {
+			$rejectForm.find("#rejectForm").html("");
+			$rejectForm.hide()
+		} else if (targetEl.id === "rejectForm") {
+			$rejectForm.show()
+			$rejectTarget.html("");
+		}
+	});
+</script>
+
+<script src="{% static 'dashboard/employeeChart.js' %}"></script>
+{% if "recruitment"|app_installed %}
+	{% if perms.recruitment.view_recruitment or request.user|is_stagemanager %}
+		<script src="{% static 'dashboard/recruitmentChart.js' %}"></script>
+	{% endif %}
+{% endif %}
+
+{% if "pms"|app_installed %}
+<!-- PMS chart -->
+<script src="{% static 'src/dashboard/pmsChart.js' %}"></script>
+{% endif %}
+
+{% if "onboarding"|app_installed %}
+<!-- onboarding dashboard -->
+<script src="{% static 'dashboard/onboardChart.js' %}"></script>
+{% endif %}
+
+{% if "attendance"|app_installed %}
+	{% if perms.attendance.view_attendance or request.user|is_reportingmanager %}
+	<script src="{% static 'dashboard/attendanceChart.js' %}"></script>
+	{% endif %}
+{% endif %}
+
+{% if "leave"|app_installed %}
+<script src="{% static 'dashboard/onLeave.js' %}"></script>
+<script src="{% static 'dashboard/leaveChart.js' %}"></script>
+{% endif %}

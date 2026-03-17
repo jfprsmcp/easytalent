@@ -1,0 +1,136 @@
+{% extends "company_onboarding/base.html" %}
+{% load static %} {% load i18n %}
+
+{% block wizard_content %}
+<div class="text-center mb-4">
+    <div class="section-icon section-icon--primary" style="margin: 0 auto;">
+        <ion-icon name="time-outline"></ion-icon>
+    </div>
+    <h2 class="section-title">{% trans "Horario Laboral" %}</h2>
+    <p class="section-subtitle">{% trans "Configura el horario de trabajo de tu empresa." %}</p>
+</div>
+
+<!-- Turnos creados -->
+{% if shifts %}
+<div class="items-panel">
+    <div class="items-panel__header">
+        <span class="items-panel__count">{% trans "Turnos configurados" %}</span>
+        <span class="items-panel__badge">{{ shifts|length }}</span>
+    </div>
+    <div>
+        {% for shift in shifts %}
+        <span class="chip chip-success">
+            <ion-icon name="checkmark-circle" style="color: var(--success); font-size: 0.95rem;"></ion-icon>
+            {{ shift.employee_shift }}
+        </span>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+
+<!-- Formulario -->
+<form method="post" class="form-panel">
+    {% csrf_token %}
+
+    <div class="mb-3">
+        <label for="shift_name" class="form-label">
+            <ion-icon name="pricetag-outline" style="vertical-align: middle; margin-right: 2px;"></ion-icon>
+            {% trans "Nombre del Turno" %}
+        </label>
+        <input type="text" name="shift_name" id="shift_name"
+               placeholder="{% trans 'ej. Horario Regular' %}" value="Horario Regular" />
+    </div>
+
+    <div class="row g-3 mb-3">
+        <div class="col-6">
+            <label for="start_time" class="form-label">
+                <ion-icon name="sunny-outline" style="vertical-align: middle; color: #f59e0b; margin-right: 2px;"></ion-icon>
+                {% trans "Entrada" %}
+            </label>
+            <input type="time" name="start_time" id="start_time" value="08:00" />
+        </div>
+        <div class="col-6">
+            <label for="end_time" class="form-label">
+                <ion-icon name="moon-outline" style="vertical-align: middle; color: #6366f1; margin-right: 2px;"></ion-icon>
+                {% trans "Salida" %}
+            </label>
+            <input type="time" name="end_time" id="end_time" value="17:00" />
+        </div>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label" style="margin-bottom: 10px;">
+            <ion-icon name="calendar-outline" style="vertical-align: middle; margin-right: 2px;"></ion-icon>
+            {% trans "Días Laborales" %}
+        </label>
+        <div class="d-flex flex-wrap justify-content-center gap-2">
+            {% for day_val, day_name in days %}
+            <label class="day-toggle {% if day_val != 'saturday' and day_val != 'sunday' %}active{% endif %}"
+                   title="{{ day_name }}" id="day-{{ day_val }}">
+                <input type="checkbox" name="work_days" value="{{ day_val }}"
+                       {% if day_val != "saturday" and day_val != "sunday" %}checked{% endif %} />
+                {{ day_name|truncatechars:3 }}
+            </label>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="mb-3">
+        <label for="min_hours" class="form-label">
+            <ion-icon name="hourglass-outline" style="vertical-align: middle; margin-right: 2px;"></ion-icon>
+            {% trans "Horas mínimas por día" %}
+        </label>
+        <input type="text" name="min_hours" id="min_hours" value="08:00" placeholder="HH:MM" />
+        <small style="color: var(--gray-400); font-size: 0.72rem; margin-top: 4px; display: block;">{% trans "Formato HH:MM" %}</small>
+    </div>
+
+    {% if error %}
+    <div class="error-msg mb-2">
+        <ion-icon name="alert-circle"></ion-icon> {{ error }}
+    </div>
+    {% endif %}
+
+    <button type="submit" class="btn-add w-100" style="height: 46px; border-radius: var(--radius-sm); font-size: 0.88rem;">
+        <ion-icon name="add-outline"></ion-icon>
+        {% trans "Crear Turno" %}
+    </button>
+</form>
+
+<div class="d-flex justify-content-between align-items-center mt-4">
+    <a href="{% url 'company-onboarding-step4' %}" class="btn-back">
+        <ion-icon name="arrow-back-outline"></ion-icon>
+        {% trans "Atrás" %}
+    </a>
+    <a href="{% url 'company-onboarding-step6' %}" class="btn-next">
+        {% trans "Siguiente" %}
+        <ion-icon name="arrow-forward-outline"></ion-icon>
+    </a>
+</div>
+<div class="text-center mt-3">
+    <a href="{% url 'company-onboarding-step6' %}" class="skip-link">
+        {% trans "Saltar este paso" %}
+        <ion-icon name="arrow-forward-outline" style="font-size: 0.75rem;"></ion-icon>
+    </a>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.day-toggle').forEach(function(toggle) {
+        toggle.addEventListener('click', function(e) {
+            e.preventDefault();
+            var input = this.querySelector('input');
+            var isActive = this.classList.contains('active');
+            if (isActive) {
+                this.classList.remove('active');
+                input.checked = false;
+            } else {
+                this.classList.add('active');
+                input.checked = true;
+            }
+        });
+    });
+});
+</script>
+{% endblock %}

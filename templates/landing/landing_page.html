@@ -1,0 +1,1049 @@
+{% load static %} 
+{% load i18n %}
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>{% trans "EasyTalent" %} – Software de RRHH</title>
+  <meta name="description" content="EasyTalent HRMS - Software de gestión de recursos humanos para empresas">
+  <meta name="keywords" content="RRHH, HRMS, gestión de empleados, software HR">
+
+  <!-- Favicons -->
+  <link href="{% static 'landing/images/easy-logo.png' %}" rel="icon">
+  <link href="{% static 'landing/images/easy-logo.png' %}" rel="apple-touch-icon">
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com" rel="preconnect">
+  <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Inter:wght@100;200;300;400;500;600;700;800;900&family=Nunito:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+
+  <!-- Vendor CSS Files -->
+  <link href="{% static 'landing/images/assets/vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+  <link href="{% static 'landing/images/assets/vendor/bootstrap-icons/bootstrap-icons.css' %}" rel="stylesheet">
+  <link href="{% static 'landing/images/assets/vendor/aos/aos.css' %}" rel="stylesheet">
+  <link href="{% static 'landing/images/assets/vendor/glightbox/css/glightbox.min.css' %}" rel="stylesheet">
+  <link href="{% static 'landing/images/assets/vendor/swiper/swiper-bundle.min.css' %}" rel="stylesheet">
+
+  <!-- Main CSS File -->
+  <link href="{% static 'landing/images/assets/css/main.css' %}" rel="stylesheet">
+    
+    <!-- Font Awesome para iconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <meta name="theme-color" content="#e54f38">
+</head>
+
+<body class="index-page">
+
+  <header id="header" class="header d-flex align-items-center fixed-top">
+    <div class="header-container container-fluid container-xl position-relative d-flex align-items-center justify-content-between">
+
+      <a href="#hero" class="logo d-flex align-items-center me-auto me-xl-0">
+        <img src="{% static 'landing/images/logo.png' %}" alt="EasyTalent" class="me-2" style="min-height: 52px;">
+      </a>
+
+      <nav id="navmenu" class="navmenu">
+        <ul>
+          <li><a href="#hero" class="active">Inicio</a></li>
+          <li><a href="#features">Características</a></li>
+          <li><a href="#modules">Módulos</a></li>
+          <li><a href="#faq">FAQ</a></li>
+          <li><a href="#contact">Contacto</a></li>
+        </ul>
+        <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
+      </nav>
+
+      <a class="btn-getstarted" href="{% url 'login' %}">Iniciar Sesión</a>
+
+    </div>
+  </header>
+
+  <main class="main">
+
+    <!-- Hero Section -->
+    <section id="hero" class="hero section">
+
+      <div class="container" data-aos="fade-up" data-aos-delay="100">
+
+        <div class="row align-items-center">
+                <div class="col-lg-6">
+            <div class="hero-content" data-aos="fade-up" data-aos-delay="200">
+              <div class="company-badge mb-4">
+                <i class="bi bi-gear-fill me-2"></i>
+                <span id="typed-badge"></span>
+              </div>
+
+              <h1 class="mb-4">
+                Potencia tu Equipo de RRHH con <br>
+                <span class="accent-text">EasyTalent</span>
+                    </h1>
+
+              <p class="mb-4 mb-md-5">
+                        EasyTalent HRMS ofrece todas las características que esperarías de tu software de RRHH y mucho más.
+                    </p>
+
+              <div class="hero-buttons">
+                <a href="{% url 'login' %}" class="btn btn-primary me-0 me-sm-2 mx-1">Iniciar Sesión</a>
+                <a href="{% url 'register' %}" class="btn btn-link mt-2 mt-sm-0">
+                  <i class="bi bi-person-plus me-1"></i>
+                  Registrarse
+                        </a>
+                    </div>
+                </div>
+          </div>
+
+          <div class="col-lg-6">
+            <div class="hero-image" data-aos="zoom-out" data-aos-delay="300">
+                    <img src="{% static 'landing/images/home-img-new.avif' %}" alt="EasyTalent Dashboard" class="img-fluid">
+                </div>
+            </div>
+        </div>
+
+        <div class="row stats-row gy-4 mt-5" data-aos="fade-up" data-aos-delay="500">
+          <div class="col-lg-3 col-md-6">
+            <div class="stat-item">
+              <div class="stat-icon">
+                <i class="bi bi-people"></i>
+              </div>
+              <div class="stat-content">
+                <h4>Gestión Completa</h4>
+                <p class="mb-0">De empleados</p>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-3 col-md-6">
+            <div class="stat-item">
+              <div class="stat-icon">
+                <i class="bi bi-clock-history"></i>
+              </div>
+              <div class="stat-content">
+                <h4>Control de Asistencia</h4>
+                <p class="mb-0">Automatizado</p>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-3 col-md-6">
+            <div class="stat-item">
+              <div class="stat-icon">
+                <i class="bi bi-calendar-check"></i>
+              </div>
+              <div class="stat-content">
+                <h4>Gestión de Permisos</h4>
+                <p class="mb-0">Simplificada</p>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-3 col-md-6">
+            <div class="stat-item">
+              <div class="stat-icon">
+                <i class="bi bi-graph-up-arrow"></i>
+              </div>
+              <div class="stat-content">
+                <h4>Rendimiento</h4>
+                <p class="mb-0">Optimizado</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </section><!-- /Hero Section -->
+
+    <!-- Features Section -->
+    <section id="features" class="features section">
+
+      <!-- Section Title -->
+      <div class="container section-title" data-aos="fade-up">
+        <h2>¿Qué hace que EasyTalent HRMS se destaque?</h2>
+        <p>La solución integral de software de RRHH para tu empresa</p>
+      </div><!-- End Section Title -->
+
+        <div class="container">
+
+        <div class="d-flex justify-content-center">
+
+          <ul class="nav nav-tabs" data-aos="fade-up" data-aos-delay="100">
+
+            <li class="nav-item">
+              <a class="nav-link active show" data-bs-toggle="tab" data-bs-target="#features-tab-1">
+                <h4>Servicio</h4>
+              </a>
+            </li><!-- End tab nav item -->
+
+            <li class="nav-item">
+              <a class="nav-link" data-bs-toggle="tab" data-bs-target="#features-tab-2">
+                <h4>Control</h4>
+              </a><!-- End tab nav item -->
+
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" data-bs-toggle="tab" data-bs-target="#features-tab-3">
+                <h4>Soluciones</h4>
+              </a>
+            </li><!-- End tab nav item -->
+
+          </ul>
+
+            </div>
+
+        <div class="tab-content" data-aos="fade-up" data-aos-delay="200">
+
+          <div class="tab-pane fade active show" id="features-tab-1">
+            <div class="row">
+              <div class="col-lg-6 order-2 order-lg-1 mt-3 mt-lg-0 d-flex flex-column justify-content-center">
+                <h3>Servicio Integral</h3>
+                <p class="fst-italic">
+                                EasyTalent es la única solución integral de software de RRHH para tu empresa.
+                            </p>
+                <ul>
+                  <li><i class="bi bi-check2-all"></i> <span>Gestión completa de empleados con integración LDAP.</span></li>
+                  <li><i class="bi bi-check2-all"></i> <span>Control de asistencia automatizado con integración biométrica.</span></li>
+                  <li><i class="bi bi-check2-all"></i> <span>Gestión de permisos con flujos de aprobación personalizables.</span></li>
+                </ul>
+                        </div>
+              <div class="col-lg-6 order-1 order-lg-2 text-center">
+                <img src="{% static 'landing/images/assets/img/features-illustration-1.webp' %}" alt="Servicio" class="img-fluid">
+                    </div>
+                </div>
+          </div><!-- End tab content item -->
+
+          <div class="tab-pane fade" id="features-tab-2">
+            <div class="row">
+              <div class="col-lg-6 order-2 order-lg-1 mt-3 mt-lg-0 d-flex flex-column justify-content-center">
+                <h3>Control Total</h3>
+                <p class="fst-italic">
+                                EasyTalent. Tú tienes el control. Úsalo como mejor te parezca. Sin límites. Sin asteriscos.
+                            </p>
+                <ul>
+                  <li><i class="bi bi-check2-all"></i> <span>Personalización completa de módulos y flujos de trabajo.</span></li>
+                  <li><i class="bi bi-check2-all"></i> <span>Adaptación a requisitos empresariales específicos.</span></li>
+                  <li><i class="bi bi-check2-all"></i> <span>Sin restricciones ni límites de uso.</span></li>
+                </ul>
+                        </div>
+              <div class="col-lg-6 order-1 order-lg-2 text-center">
+                <img src="{% static 'landing/images/assets/img/features-illustration-2.webp' %}" alt="Control" class="img-fluid">
+                    </div>
+                </div>
+          </div><!-- End tab content item -->
+
+          <div class="tab-pane fade" id="features-tab-3">
+            <div class="row">
+              <div class="col-lg-6 order-2 order-lg-1 mt-3 mt-lg-0 d-flex flex-column justify-content-center">
+                <h3>Soluciones para tu Empresa</h3>
+                <p class="fst-italic">
+                                EasyTalent es la solución perfecta para tu empresa. Ofrecemos todas las características que necesitas para gestionar tu personal de manera eficiente y efectiva.
+                            </p>
+                <ul>
+                  <li><i class="bi bi-check2-all"></i> <span>Ideal para empresas de todos los tamaños.</span></li>
+                  <li><i class="bi bi-check2-all"></i> <span>Diseño modular y escalable.</span></li>
+                  <li><i class="bi bi-check2-all"></i> <span>Adaptable a diversas industrias.</span></li>
+                </ul>
+                        </div>
+              <div class="col-lg-6 order-1 order-lg-2 text-center">
+                <img src="{% static 'landing/images/assets/img/features-illustration-3.webp' %}" alt="Soluciones" class="img-fluid">
+                </div>
+            </div>
+          </div><!-- End tab content item -->
+
+        </div>
+
+      </div>
+
+    </section><!-- /Features Section -->
+
+    <!-- Features Cards Section -->
+    <section id="modules" class="features-cards section">
+
+        <div class="container">
+
+        <!-- Section Title -->
+        <div class="container section-title" data-aos="fade-up">
+          <h2>Todos los módulos que necesitarás en un solo software</h2>
+          <p>Gestión completa de RRHH en una plataforma integrada</p>
+        </div><!-- End Section Title -->
+
+        <div class="row gy-4">
+
+          <div class="col-xl-4 col-md-6" data-aos="zoom-in" data-aos-delay="100">
+            <div class="feature-box orange">
+              <i class="bi bi-people-fill"></i>
+              <h4>Gestión de Empleados</h4>
+              <p>Centraliza la gestión de empleados con integración LDAP para sincronización de datos perfecta.</p>
+              <a href="{% url 'module-detail' 'gestion-empleados' %}" class="btn btn-primary btn-sm mt-3">
+                Ver más <i class="bi bi-arrow-right ms-1"></i>
+              </a>
+            </div>
+          </div><!-- End Feature Box-->
+
+          <div class="col-xl-4 col-md-6" data-aos="zoom-in" data-aos-delay="200">
+            <div class="feature-box blue">
+              <i class="bi bi-clock-history"></i>
+              <h4>Control de Asistencia</h4>
+              <p>Automatiza el registro de entrada y salida con integración biométrica para gestión precisa.</p>
+              <a href="{% url 'module-detail' 'control-asistencia' %}" class="btn btn-primary btn-sm mt-3">
+                Ver más <i class="bi bi-arrow-right ms-1"></i>
+              </a>
+            </div>
+          </div><!-- End Feature Box-->
+
+          <div class="col-xl-4 col-md-6" data-aos="zoom-in" data-aos-delay="300">
+            <div class="feature-box green">
+              <i class="bi bi-calendar-check"></i>
+              <h4>Gestión de Permisos</h4>
+              <p>Simplifica las solicitudes de permisos con flujos de aprobación personalizables.</p>
+              <a href="{% url 'module-detail' 'gestion-permisos' %}" class="btn btn-primary btn-sm mt-3">
+                Ver más <i class="bi bi-arrow-right ms-1"></i>
+              </a>
+            </div>
+          </div><!-- End Feature Box-->
+
+          <div class="col-xl-4 col-md-6" data-aos="zoom-in" data-aos-delay="400">
+            <div class="feature-box red">
+              <i class="bi bi-cash-stack"></i>
+              <h4>Nómina</h4>
+              <p>Gestiona contratos, asignaciones y deducciones con cálculos automáticos de impuestos.</p>
+              <a href="{% url 'module-detail' 'nomina' %}" class="btn btn-primary btn-sm mt-3">
+                Ver más <i class="bi bi-arrow-right ms-1"></i>
+              </a>
+            </div>
+          </div><!-- End Feature Box-->
+
+          <div class="col-xl-4 col-md-6" data-aos="zoom-in" data-aos-delay="500">
+            <div class="feature-box orange">
+              <i class="bi bi-graph-up-arrow"></i>
+              <h4>Gestión del Rendimiento</h4>
+              <p>OKRs y retroalimentación 360° para mejorar continuamente el rendimiento.</p>
+              <a href="{% url 'module-detail' 'gestion-rendimiento' %}" class="btn btn-primary btn-sm mt-3">
+                Ver más <i class="bi bi-arrow-right ms-1"></i>
+              </a>
+            </div>
+          </div><!-- End Feature Box-->
+
+          <div class="col-xl-4 col-md-6" data-aos="zoom-in" data-aos-delay="600">
+            <div class="feature-box blue">
+              <i class="bi bi-person-badge"></i>
+              <h4>Reclutamiento</h4>
+              <p>Gestiona candidatos y procesos de reclutamiento con seguimiento en tiempo real.</p>
+              <a href="{% url 'module-detail' 'reclutamiento' %}" class="btn btn-primary btn-sm mt-3">
+                Ver más <i class="bi bi-arrow-right ms-1"></i>
+              </a>
+            </div>
+          </div><!-- End Feature Box-->
+
+          <div class="col-xl-4 col-md-6" data-aos="zoom-in" data-aos-delay="800">
+            <div class="feature-box red">
+              <i class="bi bi-box-arrow-right"></i>
+              <h4>Desembarco</h4>
+              <p>Gestiona el proceso de salida de empleados de manera eficiente y organizada.</p>
+              <a href="{% url 'module-detail' 'desembarco' %}" class="btn btn-primary btn-sm mt-3">
+                Ver más <i class="bi bi-arrow-right ms-1"></i>
+              </a>
+            </div>
+          </div><!-- End Feature Box-->
+
+          <div class="col-xl-4 col-md-6" data-aos="zoom-in" data-aos-delay="900">
+            <div class="feature-box orange">
+              <i class="bi bi-headset"></i>
+              <h4>Soporte</h4>
+              <p>Sistema de tickets y gestión de solicitudes de soporte para resolver problemas rápidamente.</p>
+              <a href="{% url 'module-detail' 'soporte' %}" class="btn btn-primary btn-sm mt-3">
+                Ver más <i class="bi bi-arrow-right ms-1"></i>
+              </a>
+            </div>
+          </div><!-- End Feature Box-->
+
+          <div class="col-xl-4 col-md-6" data-aos="zoom-in" data-aos-delay="1000">
+            <div class="feature-box blue">
+              <i class="bi bi-briefcase"></i>
+              <h4>Activos</h4>
+              <p>Gestiona y rastrea los activos de la empresa asignados a empleados y departamentos.</p>
+              <a href="{% url 'module-detail' 'activos' %}" class="btn btn-primary btn-sm mt-3">
+                Ver más <i class="bi bi-arrow-right ms-1"></i>
+              </a>
+            </div>
+          </div><!-- End Feature Box-->
+
+                        </div>
+
+                    </div>
+
+    </section><!-- /Features Cards Section -->
+
+    <!-- Features 2 Section -->
+    <section id="features-2" class="features-2 section">
+
+      <div class="container" data-aos="fade-up" data-aos-delay="100">
+
+        <div class="row align-items-center">
+
+          <div class="col-lg-4">
+
+            <div class="feature-item text-end mb-5" data-aos="fade-right" data-aos-delay="200">
+              <div class="d-flex align-items-center justify-content-end gap-4">
+                <div class="feature-content">
+                  <h3>Usa en Cualquier Dispositivo</h3>
+                  <p>Accede a EasyTalent desde cualquier dispositivo, en cualquier momento y lugar. Totalmente responsive y optimizado para móviles.</p>
+                </div>
+                <div class="feature-icon flex-shrink-0">
+                  <i class="bi bi-display"></i>
+                </div>
+                        </div>
+            </div><!-- End .feature-item -->
+
+            <div class="feature-item text-end mb-5" data-aos="fade-right" data-aos-delay="300">
+              <div class="d-flex align-items-center justify-content-end gap-4">
+                <div class="feature-content">
+                  <h3>Aplicación Móvil</h3>
+                  <p>Gestiona asistencia, permisos, empleados y mucho más sin esfuerzo con EasyTalent HRMS desde tu móvil.</p>
+                </div>
+                <div class="feature-icon flex-shrink-0">
+                  <i class="bi bi-phone"></i>
+                </div>
+                        </div>
+            </div><!-- End .feature-item -->
+
+            <div class="feature-item text-end" data-aos="fade-right" data-aos-delay="400">
+              <div class="d-flex align-items-center justify-content-end gap-4">
+                <div class="feature-content">
+                  <h3>Seguridad Avanzada</h3>
+                  <p>Protección de datos de nivel empresarial con encriptación y controles de acceso granulares.</p>
+                </div>
+                <div class="feature-icon flex-shrink-0">
+                  <i class="bi bi-shield-check"></i>
+                </div>
+              </div>
+            </div><!-- End .feature-item -->
+
+          </div>
+
+          <div class="col-lg-4" data-aos="zoom-in" data-aos-delay="200">
+            <div class="phone-mockup text-center">
+              <img src="{% static 'landing/images/horilla-app-mockup.png' %}" alt="EasyTalent Mobile App" class="img-fluid">
+            </div>
+            <div class="text-center mt-4">
+              <div class="d-flex gap-3 justify-content-center flex-wrap">
+                        <a href="https://play.google.com/store/apps/details?id=com.cybrosys.horilla_project" class="btn btn-primary btn-lg d-flex align-items-center">
+                            <img src="{% static 'landing/images/google-play-store.png' %}" alt="Google Play Store" height="40" class="me-2">
+                            Para Android
+                        </a>
+                        <a href="https://apps.apple.com/in/app/horilla-mobile-app/id6744724397" class="btn btn-secondary btn-lg d-flex align-items-center">
+                            <img src="{% static 'landing/images/app-store.png' %}" alt="App Store" height="40" class="me-2">
+                            Para iOS
+                        </a>
+                    </div>
+                </div>
+          </div><!-- End Phone Mockup -->
+
+          <div class="col-lg-4">
+
+            <div class="feature-item mb-5" data-aos="fade-left" data-aos-delay="200">
+              <div class="d-flex align-items-center gap-4">
+                <div class="feature-icon flex-shrink-0">
+                  <i class="bi bi-code-square"></i>
+                </div>
+                <div class="feature-content">
+                  <h3>Código Limpio</h3>
+                  <p>Desarrollado con las mejores prácticas y estándares de la industria para máxima confiabilidad.</p>
+                </div>
+              </div>
+            </div><!-- End .feature-item -->
+
+            <div class="feature-item mb-5" data-aos="fade-left" data-aos-delay="300">
+              <div class="d-flex align-items-center gap-4">
+                <div class="feature-icon flex-shrink-0">
+                  <i class="bi bi-arrows-angle-contract"></i>
+                </div>
+                <div class="feature-content">
+                  <h3>Totalmente Responsive</h3>
+                  <p>Diseño adaptativo que funciona perfectamente en todos los tamaños de pantalla y dispositivos.</p>
+                </div>
+              </div>
+            </div><!-- End .feature-item -->
+
+            <div class="feature-item" data-aos="fade-left" data-aos-delay="400">
+              <div class="d-flex align-items-center gap-4">
+                <div class="feature-icon flex-shrink-0">
+                  <i class="bi bi-browser-chrome"></i>
+                </div>
+                <div class="feature-content">
+                  <h3>Compatibilidad de Navegadores</h3>
+                  <p>Funciona perfectamente en todos los navegadores modernos sin necesidad de plugins adicionales.</p>
+                </div>
+              </div>
+            </div><!-- End .feature-item -->
+
+            </div>
+        </div>
+
+      </div>
+
+    </section><!-- /Features 2 Section -->
+
+    <!-- Call To Action Section -->
+    <section id="call-to-action" class="call-to-action section">
+
+      <div class="container" data-aos="fade-up" data-aos-delay="100">
+
+        <div class="row content justify-content-center align-items-center position-relative">
+          <div class="col-lg-8 mx-auto text-center">
+            <h2 class="display-4 mb-4">{% trans "Controla Tu Empresa" %}</h2>
+            <p class="mb-4">Con el Software EasyTalent HRMS tienes total libertad para usarlo como mejor te parezca. Sin límites, sin asteriscos.</p>
+            <a href="{% url 'login' %}" class="btn btn-cta">Comenzar Gratis</a>
+            <div class="mt-4">
+              <img src="{% static 'landing/images/free-open-source.svg' %}" alt="Free and Open Source" class="img-fluid" style="max-width: 300px;">
+            </div>
+          </div>
+
+          <!-- Abstract Background Elements -->
+          <div class="shape shape-1">
+            <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+              <path d="M47.1,-57.1C59.9,-45.6,68.5,-28.9,71.4,-10.9C74.2,7.1,71.3,26.3,61.5,41.1C51.7,55.9,35,66.2,16.9,69.2C-1.3,72.2,-21,67.8,-36.9,57.9C-52.8,48,-64.9,32.6,-69.1,15.1C-73.3,-2.4,-69.5,-22,-59.4,-37.1C-49.3,-52.2,-32.8,-62.9,-15.7,-64.9C1.5,-67,34.3,-68.5,47.1,-57.1Z" transform="translate(100 100)"></path>
+            </svg>
+                                </div>
+
+          <div class="shape shape-2">
+            <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+              <path d="M41.3,-49.1C54.4,-39.3,66.6,-27.2,71.1,-12.1C75.6,3,72.4,20.9,63.3,34.4C54.2,47.9,39.2,56.9,23.2,62.3C7.1,67.7,-10,69.4,-24.8,64.1C-39.7,58.8,-52.3,46.5,-60.1,31.5C-67.9,16.4,-70.9,-1.4,-66.3,-16.6C-61.8,-31.8,-49.7,-44.3,-36.3,-54C-22.9,-63.7,-8.2,-70.6,3.6,-75.1C15.4,-79.6,28.2,-58.9,41.3,-49.1Z" transform="translate(100 100)"></path>
+            </svg>
+                            </div>
+
+          <!-- Dot Pattern Groups -->
+          <div class="dots dots-1">
+            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+              <pattern id="dot-pattern" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse">
+                <circle cx="2" cy="2" r="2" fill="currentColor"></circle>
+              </pattern>
+              <rect width="100" height="100" fill="url(#dot-pattern)"></rect>
+            </svg>
+                        </div>
+
+          <div class="dots dots-2">
+            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+              <pattern id="dot-pattern-2" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse">
+                <circle cx="2" cy="2" r="2" fill="currentColor"></circle>
+              </pattern>
+              <rect width="100" height="100" fill="url(#dot-pattern-2)"></rect>
+            </svg>
+                                </div>
+
+          <div class="shape shape-3">
+            <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+              <path d="M43.3,-57.1C57.4,-46.5,71.1,-32.6,75.3,-16.2C79.5,0.2,74.2,19.1,65.1,35.3C56,51.5,43.1,65,27.4,71.7C11.7,78.4,-6.8,78.3,-23.9,72.4C-41,66.5,-56.7,54.8,-65.4,39.2C-74.1,23.6,-75.8,4,-71.7,-13.2C-67.6,-30.4,-57.7,-45.2,-44.3,-56.1C-30.9,-67,-15.5,-74,0.7,-74.9C16.8,-75.8,33.7,-70.7,43.3,-57.1Z" transform="translate(100 100)"></path>
+            </svg>
+                            </div>
+                        </div>
+
+                                </div>
+
+    </section><!-- /Call To Action Section -->
+
+    <!-- Clients Section -->
+    <section id="clients" class="clients section">
+
+      <div class="container" data-aos="fade-up" data-aos-delay="100">
+
+        <div class="swiper init-swiper">
+          <script type="application/json" class="swiper-config">
+            {
+              "loop": true,
+              "speed": 600,
+              "autoplay": {
+                "delay": 5000
+              },
+              "slidesPerView": "auto",
+              "pagination": {
+                "el": ".swiper-pagination",
+                "type": "bullets",
+                "clickable": true
+              },
+              "breakpoints": {
+                "320": {
+                  "slidesPerView": 2,
+                  "spaceBetween": 40
+                },
+                "480": {
+                  "slidesPerView": 3,
+                  "spaceBetween": 60
+                },
+                "640": {
+                  "slidesPerView": 4,
+                  "spaceBetween": 80
+                },
+                "992": {
+                  "slidesPerView": 6,
+                  "spaceBetween": 120
+                }
+              }
+            }
+          </script>
+          <div class="swiper-wrapper align-items-center">
+            <div class="swiper-slide"><img src="{% static 'landing/images/assets/img/clients/client-1.png' %}" class="img-fluid" alt=""></div>
+            <div class="swiper-slide"><img src="{% static 'landing/images/assets/img/clients/client-2.png' %}" class="img-fluid" alt=""></div>
+            <div class="swiper-slide"><img src="{% static 'landing/images/assets/img/clients/client-3.png' %}" class="img-fluid" alt=""></div>
+            <div class="swiper-slide"><img src="{% static 'landing/images/assets/img/clients/client-4.png' %}" class="img-fluid" alt=""></div>
+            <div class="swiper-slide"><img src="{% static 'landing/images/assets/img/clients/client-5.png' %}" class="img-fluid" alt=""></div>
+            <div class="swiper-slide"><img src="{% static 'landing/images/assets/img/clients/client-6.png' %}" class="img-fluid" alt=""></div>
+            <div class="swiper-slide"><img src="{% static 'landing/images/assets/img/clients/client-7.png' %}" class="img-fluid" alt=""></div>
+            <div class="swiper-slide"><img src="{% static 'landing/images/assets/img/clients/client-8.png' %}" class="img-fluid" alt=""></div>
+          </div>
+          <div class="swiper-pagination"></div>
+        </div>
+
+      </div>
+
+    </section><!-- /Clients Section -->
+
+    <!-- Pricing Section -->
+    <section id="pricing" class="pricing section light-background">
+
+      <!-- Section Title -->
+      <div class="container section-title" data-aos="fade-up">
+        <h2>Planes y Precios</h2>
+        <p>Elige el plan que mejor se adapte a las necesidades de tu empresa</p>
+      </div><!-- End Section Title -->
+
+      <div class="container" data-aos="fade-up" data-aos-delay="100">
+
+        <div class="row g-4 justify-content-center">
+
+          <!-- Plan Básico -->
+          <div class="col-lg-4" data-aos="fade-up" data-aos-delay="100">
+            <div class="pricing-card">
+              <h3>Plan Básico</h3>
+              <div class="price">
+                <span class="currency">$</span>
+                <span class="amount">29.9</span>
+                <span class="period">/ mes</span>
+                            </div>
+              <p class="description">Perfecto para pequeñas empresas que están comenzando con la gestión de RRHH.</p>
+
+              <h4>Características Incluidas:</h4>
+              <ul class="features-list">
+                <li>
+                  <i class="bi bi-check-circle-fill"></i>
+                  Gestión de hasta 50 empleados
+                </li>
+                <li>
+                  <i class="bi bi-check-circle-fill"></i>
+                  Control de asistencia básico
+                </li>
+                <li>
+                  <i class="bi bi-check-circle-fill"></i>
+                  Gestión de permisos
+                </li>
+                <li>
+                  <i class="bi bi-check-circle-fill"></i>
+                  Soporte por email
+                </li>
+              </ul>
+
+              <a href="{% url 'register' %}" class="btn btn-primary">
+                Comenzar Ahora
+                <i class="bi bi-arrow-right"></i>
+              </a>
+                        </div>
+                    </div>
+
+          <!-- Plan Estándar -->
+          <div class="col-lg-4" data-aos="fade-up" data-aos-delay="200">
+            <div class="pricing-card popular">
+              <div class="popular-badge">Más Popular</div>
+              <h3>Plan Estándar</h3>
+              <div class="price">
+                <span class="currency">$</span>
+                <span class="amount">59.9</span>
+                <span class="period">/ mes</span>
+                </div>
+              <p class="description">Ideal para empresas en crecimiento que necesitan funcionalidades avanzadas de RRHH.</p>
+
+              <h4>Características Incluidas:</h4>
+              <ul class="features-list">
+                <li>
+                  <i class="bi bi-check-circle-fill"></i>
+                  Gestión de hasta 200 empleados
+                </li>
+                <li>
+                  <i class="bi bi-check-circle-fill"></i>
+                  Todos los módulos incluidos
+                </li>
+                <li>
+                  <i class="bi bi-check-circle-fill"></i>
+                  Nómina automatizada
+                </li>
+                <li>
+                  <i class="bi bi-check-circle-fill"></i>
+                  Gestión del rendimiento
+                </li>
+                <li>
+                  <i class="bi bi-check-circle-fill"></i>
+                  Soporte prioritario
+                </li>
+                <li>
+                  <i class="bi bi-check-circle-fill"></i>
+                  Integración biométrica
+                </li>
+              </ul>
+
+              <a href="{% url 'register' %}" class="btn btn-light">
+                Comenzar Ahora
+                <i class="bi bi-arrow-right"></i>
+              </a>
+            </div>
+        </div>
+
+          <!-- Plan Premium -->
+          <div class="col-lg-4" data-aos="fade-up" data-aos-delay="300">
+            <div class="pricing-card">
+              <h3>Plan Premium</h3>
+              <div class="price">
+                <span class="currency">$</span>
+                <span class="amount">99.9</span>
+                <span class="period">/ mes</span>
+              </div>
+              <p class="description">Solución completa para grandes empresas con necesidades avanzadas de personalización.</p>
+
+              <h4>Características Incluidas:</h4>
+              <ul class="features-list">
+                <li>
+                  <i class="bi bi-check-circle-fill"></i>
+                  Empleados ilimitados
+                </li>
+                <li>
+                  <i class="bi bi-check-circle-fill"></i>
+                  Todas las características del Plan Estándar
+                </li>
+                <li>
+                  <i class="bi bi-check-circle-fill"></i>
+                  Personalización avanzada
+                </li>
+                <li>
+                  <i class="bi bi-check-circle-fill"></i>
+                  Integración LDAP
+                </li>
+                <li>
+                  <i class="bi bi-check-circle-fill"></i>
+                  API completa
+                </li>
+                <li>
+                  <i class="bi bi-check-circle-fill"></i>
+                  Soporte 24/7
+                </li>
+                <li>
+                  <i class="bi bi-check-circle-fill"></i>
+                  Gestor de cuenta dedicado
+                </li>
+                <li>
+                  <i class="bi bi-check-circle-fill"></i>
+                  Capacitación personalizada
+                </li>
+              </ul>
+
+              <a href="{% url 'register' %}" class="btn btn-primary">
+                Comenzar Ahora
+                <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+            </div>
+
+        </div>
+
+      </div>
+
+    </section><!-- /Pricing Section -->
+
+    <!-- Faq Section -->
+    <section class="faq-9 faq section light-background" id="faq">
+
+        <div class="container">
+            <div class="row">
+
+          <div class="col-lg-5" data-aos="fade-up">
+            <h2 class="faq-title">¿Tienes una pregunta? Consulta las FAQ</h2>
+            <p class="faq-description">Encuentra respuestas a las preguntas más frecuentes sobre EasyTalent HRMS.</p>
+            <div class="faq-arrow d-none d-lg-block" data-aos="fade-up" data-aos-delay="200">
+              <svg class="faq-arrow" width="200" height="211" viewBox="0 0 200 211" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M198.804 194.488C189.279 189.596 179.529 185.52 169.407 182.07L169.384 182.049C169.227 181.994 169.07 181.939 168.912 181.884C166.669 181.139 165.906 184.546 167.669 185.615C174.053 189.473 182.761 191.837 189.146 195.695C156.603 195.912 119.781 196.591 91.266 179.049C62.5221 161.368 48.1094 130.695 56.934 98.891C84.5539 98.7247 112.556 84.0176 129.508 62.667C136.396 53.9724 146.193 35.1448 129.773 30.2717C114.292 25.6624 93.7109 41.8875 83.1971 51.3147C70.1109 63.039 59.63 78.433 54.2039 95.0087C52.1221 94.9842 50.0776 94.8683 48.0703 94.6608C30.1803 92.8027 11.2197 83.6338 5.44902 65.1074C-1.88449 41.5699 14.4994 19.0183 27.9202 1.56641C28.6411 0.625793 27.2862 -0.561638 26.5419 0.358501C13.4588 16.4098 -0.221091 34.5242 0.896608 56.5659C1.8218 74.6941 14.221 87.9401 30.4121 94.2058C37.7076 97.0203 45.3454 98.5003 53.0334 98.8449C47.8679 117.532 49.2961 137.487 60.7729 155.283C87.7615 197.081 139.616 201.147 184.786 201.155L174.332 206.827C172.119 208.033 174.345 211.287 176.537 210.105C182.06 207.125 187.582 204.122 193.084 201.144C193.346 201.147 195.161 199.887 195.423 199.868C197.08 198.548 193.084 201.144 195.528 199.81C196.688 199.192 197.846 198.552 199.006 197.935C200.397 197.167 200.007 195.087 198.804 194.488ZM60.8213 88.0427C67.6894 72.648 78.8538 59.1566 92.1207 49.0388C98.8475 43.9065 106.334 39.2953 114.188 36.1439C117.295 34.8947 120.798 33.6609 124.168 33.635C134.365 33.5511 136.354 42.9911 132.638 51.031C120.47 77.4222 86.8639 93.9837 58.0983 94.9666C58.8971 92.6666 59.783 90.3603 60.8213 88.0427Z" fill="currentColor"></path>
+              </svg>
+            </div>
+          </div>
+
+          <div class="col-lg-7" data-aos="fade-up" data-aos-delay="300">
+            <div class="faq-container">
+
+              <div class="faq-item faq-active">
+                <h3>¿Por qué las empresas utilizan software HRMS?</h3>
+                <div class="faq-content">
+                  <p>Las empresas utilizan software de gestión de recursos humanos para automatizar actividades de RRHH, aumentar la productividad, disminuir errores y asegurar el cumplimiento de las leyes laborales.</p>
+                </div>
+                <i class="faq-toggle bi bi-chevron-right"></i>
+              </div><!-- End Faq item-->
+
+              <div class="faq-item">
+                <h3>¿Se puede personalizar EasyTalent para adaptarse a requisitos empresariales específicos?</h3>
+                <div class="faq-content">
+                  <p>Sí, EasyTalent permite a las organizaciones adaptar módulos, flujos de trabajo y características para alinearse con sus procesos únicos de gestión de RRHH.</p>
+                </div>
+                <i class="faq-toggle bi bi-chevron-right"></i>
+              </div><!-- End Faq item-->
+
+              <div class="faq-item">
+                <h3>¿Es EasyTalent ideal tanto para pequeñas como grandes empresas?</h3>
+                <div class="faq-content">
+                  <p>Sí, el diseño modular y escalable de EasyTalent lo hace ideal para empresas de todos los tamaños, desde startups hasta grandes empresas, en diversas industrias.</p>
+                </div>
+                <i class="faq-toggle bi bi-chevron-right"></i>
+              </div><!-- End Faq item-->
+
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section><!-- /Faq Section -->
+
+    <!-- Contact Section -->
+    <section id="contact" class="contact section light-background">
+
+      <!-- Section Title -->
+      <div class="container section-title" data-aos="fade-up">
+        <h2>Contacto</h2>
+        <p>¿Tienes preguntas? ¡Estamos aquí para ayudarte! Contáctanos a través de WhatsApp.</p>
+      </div><!-- End Section Title -->
+
+      <div class="container" data-aos="fade-up" data-aos-delay="100">
+
+        <div class="row g-4 g-lg-5">
+          <div class="col-lg-5">
+            <div class="info-box" data-aos="fade-up" data-aos-delay="200">
+              <h3>Información de Contacto</h3>
+              <p>Estamos ubicados en Santa Cruz, Bolivia. Contáctanos para más información sobre nuestros servicios.</p>
+
+              <div class="info-item" data-aos="fade-up" data-aos-delay="300">
+                <div class="icon-box">
+                  <i class="bi bi-geo-alt"></i>
+                </div>
+                <div class="content">
+                  <h4>Nuestra Ubicación</h4>
+                  <p>Avenida Roca y Coronado</p>
+                  <p>Entre 2do y 3er anillo, Calle Postrevalle</p>
+                  <p>Santa Cruz, Bolivia</p>
+                </div>
+              </div>
+
+              <div class="info-item" data-aos="fade-up" data-aos-delay="400">
+                <div class="icon-box">
+                  <i class="bi bi-telephone"></i>
+                </div>
+                <div class="content">
+                  <h4>Número de Teléfono</h4>
+                  <p>+591 75661556</p>
+                </div>
+              </div>
+
+              <div class="info-item" data-aos="fade-up" data-aos-delay="500">
+                <div class="icon-box">
+                  <i class="bi bi-envelope"></i>
+                </div>
+                <div class="content">
+                  <h4>Correo Electrónico</h4>
+                  <p>soporte@easycorp.cloud</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-7">
+            <div class="contact-form" data-aos="fade-up" data-aos-delay="300">
+              <h3>Ponte en Contacto</h3>
+              <p>Completa el formulario y te contactaremos por WhatsApp.</p>
+
+              <form id="contactForm" data-aos="fade-up" data-aos-delay="200">
+                <div class="row gy-4">
+
+                  <div class="col-md-6">
+                    <input type="text" name="firstName" id="firstName" class="form-control" placeholder="Nombre" required="">
+                  </div>
+
+                  <div class="col-md-6">
+                    <input type="text" name="lastName" id="lastName" class="form-control" placeholder="Apellido" required="">
+                  </div>
+
+                  <div class="col-12">
+                    <input type="tel" name="phoneNumber" id="phoneNumber" class="form-control" placeholder="Número de WhatsApp" required="">
+                  </div>
+
+                  <div class="col-12">
+                    <textarea class="form-control" name="message" id="message" rows="6" placeholder="Escribe tu mensaje aquí..." required=""></textarea>
+                  </div>
+
+                  <div class="col-12 text-center">
+                    <button type="submit" class="btn">Enviar Mensaje</button>
+                  </div>
+
+                </div>
+              </form>
+
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </section><!-- /Contact Section -->
+
+  </main>
+
+  <footer id="footer" class="footer">
+
+    <div class="container footer-top">
+      <div class="row gy-4">
+        <div class="col-lg-4 col-md-6 footer-about">
+          <a href="#hero" class="logo d-flex align-items-center">
+            <img src="{% static 'landing/images/logo.png' %}" alt="EasyTalent" class="me-2" style="min-height: 52px;">
+          </a>
+          <div class="footer-contact pt-3">
+            <p>Software de RRHH para empresas de todos los tamaños.</p>
+          </div>
+        </div>
+
+        <div class="col-lg-2 col-md-3 footer-links">
+          <h4>Enlaces Útiles</h4>
+          <ul>
+            <li><a href="#hero">Inicio</a></li>
+            <li><a href="#features">Características</a></li>
+            <li><a href="#modules">Módulos</a></li>
+            <li><a href="#faq">FAQ</a></li>
+            <li><a href="#contact">Contacto</a></li>
+          </ul>
+        </div>
+
+        <div class="col-lg-2 col-md-3 footer-links">
+          <h4>Módulos</h4>
+          <ul>
+            <li><a href="#modules">Gestión de Empleados</a></li>
+            <li><a href="#modules">Control de Asistencia</a></li>
+            <li><a href="#modules">Gestión de Permisos</a></li>
+            <li><a href="#modules">Nómina</a></li>
+            <li><a href="#modules">Reclutamiento</a></li>
+          </ul>
+        </div>
+
+        <div class="col-lg-2 col-md-3 footer-links">
+          <h4>Acceso</h4>
+          <ul>
+            <li><a href="{% url 'login' %}">Iniciar Sesión</a></li>
+            <li><a href="{% url 'register' %}">Registrarse</a></li>
+          </ul>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="container copyright text-center mt-4">
+      <p>© <span>Copyright</span> <strong class="px-1 sitename">EasyTalent</strong> <span>2025. Todos los derechos reservados.</span></p>
+    </div>
+
+    </footer>
+
+  <!-- Scroll Top -->
+  <a href="#" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+
+  <style>
+    /* Ajustar posición del scroll-top más arriba */
+    .scroll-top.active {
+      right: 30px;
+      bottom: 90px !important; /* Cambiar de 15px a 80px para moverlo más arriba */
+    }
+    
+    @media screen and (max-width: 768px) {
+      .scroll-top.active {
+        bottom: 60px !important; /* Ajuste para móviles */
+      }
+    }
+  </style>
+
+  <!-- Vendor JS Files -->
+  <script src="{% static 'landing/images/assets/vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+  <script src="{% static 'landing/images/assets/vendor/php-email-form/validate.js' %}"></script>
+  <script src="{% static 'landing/images/assets/vendor/aos/aos.js' %}"></script>
+  <script src="{% static 'landing/images/assets/vendor/glightbox/js/glightbox.min.js' %}"></script>
+  <script src="{% static 'landing/images/assets/vendor/swiper/swiper-bundle.min.js' %}"></script>
+  <script src="{% static 'landing/images/assets/vendor/purecounter/purecounter_vanilla.js' %}"></script>
+
+  <!-- Main JS File -->
+  <script src="{% static 'landing/images/assets/js/main.js' %}"></script>
+
+  <!-- Typed.js para animación de texto -->
+  <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12"></script>
+
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+  <script>
+    // Typed.js animation para el company-badge
+    document.addEventListener('DOMContentLoaded', function() {
+      const typed = new Typed('#typed-badge', {
+        strings: [
+          'Potenciando tu equipo de RRHH',
+          'Gestión completa de empleados',
+          'Control de asistencia automatizado',
+          'Software de RRHH integral',
+          'Soluciones para tu empresa'
+        ],
+        typeSpeed: 50,
+        backSpeed: 30,
+        backDelay: 2000,
+        loop: true,
+        showCursor: true,
+        cursorChar: '|'
+      });
+    });
+
+    // WhatsApp Contact Form Logic
+    document.getElementById('contactForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+
+      const firstName = document.getElementById('firstName').value;
+      const lastName = document.getElementById('lastName').value;
+      const phoneNumber = document.getElementById('phoneNumber').value;
+      const message = document.getElementById('message').value;
+
+      const companyWhatsAppNumber = '59175661556'; // Número de EasyTalent (sin espacios ni +)
+      const whatsappURL = `https://wa.me/${companyWhatsAppNumber}?text=${encodeURIComponent(
+        `Hola, mi nombre es ${firstName} ${lastName}. Mi número es ${phoneNumber}. ${message}`
+      )}`;
+
+      window.open(whatsappURL, '_blank');
+
+      Swal.fire({
+        icon: 'success',
+        title: '¡Mensaje enviado!',
+        text: 'Serás redirigido a WhatsApp',
+        timer: 2000,
+        showConfirmButton: false
+      });
+    });
+  </script>
+
+  <script>
+    (function(d,t) {
+      var BASE_URL = "https://www.easycontact.top";
+      var g = d.createElement(t), s = d.getElementsByTagName(t)[0];
+      g.src = BASE_URL + "/packs/js/sdk.js";
+      g.defer = true;
+      g.async = true;
+      s.parentNode.insertBefore(g, s);
+      g.onload = function() {
+        window.chatwootSDK.run({
+          websiteToken: "562p8Li5cAc5iQXNmTgyfHRV",
+          baseUrl: BASE_URL
+        });
+      };
+    })(document, "script");
+  </script>
+</body>
+
+</html>

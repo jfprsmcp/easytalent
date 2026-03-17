@@ -1,0 +1,496 @@
+{% load static %} {% load i18n %}
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{% trans "Registrarse" %} - {{white_label_company_name}} Dashboard</title>
+    <link rel="apple-touch-icon" sizes="180x180"
+        href="{% static 'landing/images/easy-logo.png' %}">
+    <link rel="icon" type="image/png" sizes="32x32"
+        href="{% static 'landing/images/easy-logo.png' %}">
+    <link rel="icon" type="image/png" sizes="16x16"
+        href="{% static 'landing/images/easy-logo.png' %}">
+    <link rel="stylesheet" href="{% static '/build/css/style.min.css' %}" />
+    <link rel="manifest" href="{% static 'build/manifest.json' %}" />
+
+    <!-- Bootstrap CSS para consistencia con login -->
+    <link href="{% static 'landing/images/assets/vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'landing/images/assets/vendor/bootstrap-icons/bootstrap-icons.css' %}" rel="stylesheet">
+    <link href="{% static 'landing/images/assets/css/main.css' %}" rel="stylesheet">
+
+    <meta name="theme-color" content="#0d83fd">
+    <style>
+        .register-card {
+            max-width: 520px;
+            width: 100%;
+            margin: 0 auto;
+            animation: fadeInUp 0.5s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .form-section {
+            border-left: 3px solid #0d83fd;
+            padding-left: 16px;
+            margin-bottom: 20px;
+        }
+
+        .form-section__title {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #0d83fd;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .name-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        @media (max-width: 480px) {
+            .name-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .oh-input-group {
+            margin-bottom: 14px;
+        }
+
+        .oh-input {
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .oh-input:focus {
+            border-color: #0d83fd;
+            box-shadow: 0 0 0 3px rgba(13, 131, 253, 0.15);
+        }
+
+        .input-icon-wrap {
+            position: relative;
+        }
+
+        .input-icon-wrap .oh-input {
+            padding-left: 38px;
+        }
+
+        .input-icon-wrap ion-icon.input-icon {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #999;
+            font-size: 18px;
+            pointer-events: none;
+        }
+
+        /* Indicador de fortaleza */
+        .password-strength {
+            display: flex;
+            gap: 4px;
+            margin-top: 6px;
+        }
+
+        .password-strength__bar {
+            height: 4px;
+            flex: 1;
+            border-radius: 2px;
+            background: #e0e0e0;
+            transition: background 0.3s;
+        }
+
+        .password-strength__bar.active-weak { background: #dc3545; }
+        .password-strength__bar.active-medium { background: #f0ad4e; }
+        .password-strength__bar.active-strong { background: #28a745; }
+
+        .password-strength__text {
+            font-size: 0.75rem;
+            margin-top: 4px;
+            color: #999;
+            transition: color 0.3s;
+        }
+
+        /* Validacion en tiempo real */
+        .field-error {
+            border-color: #dc3545 !important;
+            box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.15) !important;
+        }
+
+        .field-success {
+            border-color: #28a745 !important;
+        }
+
+        .field-hint {
+            font-size: 0.75rem;
+            color: #dc3545;
+            margin-top: 4px;
+            display: none;
+        }
+
+        .field-hint.visible {
+            display: block;
+        }
+
+        /* Boton submit */
+        .btn-register {
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.15s, box-shadow 0.15s;
+        }
+
+        .btn-register:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(13, 131, 253, 0.35);
+        }
+
+        .btn-register:active {
+            transform: translateY(0);
+        }
+
+        /* Stepper visual */
+        .register-steps {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 24px;
+        }
+
+        .register-steps__step {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.78rem;
+            color: #bbb;
+        }
+
+        .register-steps__step.active {
+            color: #0d83fd;
+        }
+
+        .register-steps__dot {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: #eee;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 0.75rem;
+        }
+
+        .register-steps__step.active .register-steps__dot {
+            background: #0d83fd;
+            color: #fff;
+        }
+
+        .register-steps__line {
+            width: 30px;
+            height: 2px;
+            background: #0d83fd;
+            opacity: 0.3;
+        }
+
+        /* Alertas mejoradas */
+        .oh-alert {
+            border-radius: 8px;
+            padding: 12px 16px;
+            font-size: 0.9rem;
+        }
+
+        /* Headings consistentes */
+        .register-card h1 {
+            color: #2d465e;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="main">
+        <div class="oh-alert-container">
+            {% for message in messages %}
+            <div class="oh-alert oh-alert--animated {{ message.tags }}">
+                {{ message }}
+            </div>
+            {% endfor %}
+        </div>
+        <main class="oh-auth">
+            <div class="oh-auth-card mb-4 register-card">
+                <!-- Logo -->
+                <div class="text-center mb-3">
+                    <img src={% if white_label_company.icon %}
+                            "{{white_label_company.icon.url}}"
+                            alt="{{white_label_company_name}}"
+                            style="opacity:.90; max-width: 200px; height: auto;"
+                        {% else %}
+                            "{% static 'landing/images/logo.png' %}" alt="EasyTalent" style="opacity:.90; max-width: 220px; height: auto;"
+                        {% endif %}
+                    />
+                    {% if white_label_company %}
+                    <p style="font-size: large; color: gray; text-align: center;" class="mt-2">{{white_label_company}}</p>
+                    {% endif %}
+                </div>
+
+                <h1 class="oh-onboarding-card__title oh-onboarding-card__title--h2 text-center my-2" style="font-size: 1.5rem;">
+                    {% trans "Crear Cuenta" %}
+                </h1>
+                <p class="text-muted text-center mb-4" style="font-size: 0.9rem;">
+                    {% trans "Completa los datos para comenzar a usar la plataforma." %}
+                </p>
+
+                <!-- Indicador de pasos -->
+                <div class="register-steps">
+                    <div class="register-steps__step active">
+                        <span class="register-steps__dot">1</span>
+                        <span>{% trans "Empresa" %}</span>
+                    </div>
+                    <div class="register-steps__line"></div>
+                    <div class="register-steps__step active">
+                        <span class="register-steps__dot">2</span>
+                        <span>{% trans "Datos" %}</span>
+                    </div>
+                    <div class="register-steps__line"></div>
+                    <div class="register-steps__step active">
+                        <span class="register-steps__dot">3</span>
+                        <span>{% trans "Seguridad" %}</span>
+                    </div>
+                </div>
+
+                <form method="post" class="oh-form-group" action="{% url 'register' %}" id="registerForm" novalidate>
+                    {% csrf_token %}
+
+                    <!-- Seccion 1: Empresa -->
+                    <div class="form-section">
+                        <div class="form-section__title">
+                            <ion-icon name="business-outline"></ion-icon>
+                            {% trans "Tu Empresa" %}
+                        </div>
+                        <div class="oh-input-group">
+                            <label class="oh-label" for="company_name">{% trans "Nombre de la Empresa" %}</label>
+                            <div class="input-icon-wrap">
+                                <ion-icon name="briefcase-outline" class="input-icon"></ion-icon>
+                                <input type="text" id="company_name" name="company_name" class="oh-input w-100" placeholder="{% trans 'ej. Mi Empresa S.A.' %}" required />
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Seccion 2: Datos personales -->
+                    <div class="form-section">
+                        <div class="form-section__title">
+                            <ion-icon name="person-outline"></ion-icon>
+                            {% trans "Datos Personales" %}
+                        </div>
+                        <div class="name-row">
+                            <div class="oh-input-group">
+                                <label class="oh-label" for="first_name">{% trans "Nombre" %}</label>
+                                <div class="input-icon-wrap">
+                                    <ion-icon name="person-outline" class="input-icon"></ion-icon>
+                                    <input type="text" id="first_name" name="first_name" class="oh-input w-100" placeholder="{% trans 'ej. María' %}" required />
+                                </div>
+                            </div>
+                            <div class="oh-input-group">
+                                <label class="oh-label" for="last_name">{% trans "Apellido" %}</label>
+                                <div class="input-icon-wrap">
+                                    <ion-icon name="people-outline" class="input-icon"></ion-icon>
+                                    <input type="text" id="last_name" name="last_name" class="oh-input w-100" placeholder="{% trans 'ej. García' %}" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="oh-input-group">
+                            <label class="oh-label" for="email">{% trans "Correo Electrónico" %}</label>
+                            <div class="input-icon-wrap">
+                                <ion-icon name="mail-outline" class="input-icon"></ion-icon>
+                                <input type="email" id="email" name="email" class="oh-input w-100" placeholder="{% trans 'ej. maria@miempresa.com' %}" required />
+                            </div>
+                            <div class="field-hint" id="emailHint">{% trans "Ingresa un correo electrónico válido." %}</div>
+                        </div>
+                        <div class="oh-input-group">
+                            <label class="oh-label" for="phone">{% trans "Teléfono" %}</label>
+                            <div class="input-icon-wrap">
+                                <ion-icon name="call-outline" class="input-icon"></ion-icon>
+                                <input type="tel" id="phone" name="phone" class="oh-input w-100" placeholder="{% trans 'ej. +52 55 1234 5678' %}" required />
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Seccion 3: Seguridad -->
+                    <div class="form-section">
+                        <div class="form-section__title">
+                            <ion-icon name="shield-checkmark-outline"></ion-icon>
+                            {% trans "Seguridad" %}
+                        </div>
+                        <div class="oh-input-group">
+                            <label class="oh-label" for="password1">{% trans "Contraseña" %}</label>
+                            <div class="oh-password-input-container">
+                                <input type="password" id="password1" name="password1" class="oh-input oh-input--password w-100" placeholder="{% trans 'Al menos 8 caracteres' %}" required />
+                                <button type="button" class="oh-btn oh-btn--transparent oh-password-input--toggle">
+                                    <ion-icon class="oh-passowrd-input__show-icon" title="{% trans 'Mostrar' %}" name="eye-outline"></ion-icon>
+                                    <ion-icon class="oh-passowrd-input__hide-icon d-none" title="{% trans 'Ocultar' %}" name="eye-off-outline"></ion-icon>
+                                </button>
+                            </div>
+                            <div class="password-strength" id="passwordStrength">
+                                <div class="password-strength__bar" id="bar1"></div>
+                                <div class="password-strength__bar" id="bar2"></div>
+                                <div class="password-strength__bar" id="bar3"></div>
+                                <div class="password-strength__bar" id="bar4"></div>
+                            </div>
+                            <div class="password-strength__text" id="passwordText"></div>
+                        </div>
+                        <div class="oh-input-group">
+                            <label class="oh-label" for="password2">{% trans "Confirmar Contraseña" %}</label>
+                            <div class="oh-password-input-container">
+                                <input type="password" id="password2" name="password2" class="oh-input oh-input--password w-100" placeholder="{% trans 'Repite tu contraseña' %}" required />
+                                <button type="button" class="oh-btn oh-btn--transparent oh-password-input--toggle">
+                                    <ion-icon class="oh-passowrd-input__show-icon" title="{% trans 'Mostrar' %}" name="eye-outline"></ion-icon>
+                                    <ion-icon class="oh-passowrd-input__hide-icon d-none" title="{% trans 'Ocultar' %}" name="eye-off-outline"></ion-icon>
+                                </button>
+                            </div>
+                            <div class="field-hint" id="passwordMatchHint">{% trans "Las contraseñas no coinciden." %}</div>
+                        </div>
+                    </div>
+
+                    <button type="submit" id="btnSubmit" class="btn-register oh-btn oh-onboarding-card__button mt-3 oh-btn--secondary oh-btn--shadow w-100 mb-4">
+                        <ion-icon class="me-2" name="person-add-outline"></ion-icon>
+                        {% trans "Crear Cuenta" %}
+                    </button>
+
+                    <small class="text-center d-block">
+                        {% trans "¿Ya tienes una cuenta?" %}
+                        <a href="{% url 'login' %}" class="oh-link oh-link--secondary justify-content-center">
+                            {% trans "Iniciar Sesión" %}
+                        </a>
+                    </small>
+                </form>
+            </div>
+
+        </main>
+    </div>
+    <script src="{% static '/build/js/web.frontend.min.js' %}"></script>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script type="module" src="{% static 'images/ionicons/ui_icons/ionicons/ionicons.esm.js' %}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var password1 = document.getElementById('password1');
+        var password2 = document.getElementById('password2');
+        var emailInput = document.getElementById('email');
+        var bars = [document.getElementById('bar1'), document.getElementById('bar2'), document.getElementById('bar3'), document.getElementById('bar4')];
+        var passwordText = document.getElementById('passwordText');
+        var passwordMatchHint = document.getElementById('passwordMatchHint');
+        var emailHint = document.getElementById('emailHint');
+
+        // Indicador de fortaleza de contraseña
+        password1.addEventListener('input', function() {
+            var val = this.value;
+            var score = 0;
+            if (val.length >= 8) score++;
+            if (/[a-z]/.test(val) && /[A-Z]/.test(val)) score++;
+            if (/\d/.test(val)) score++;
+            if (/[^a-zA-Z0-9]/.test(val)) score++;
+
+            var labels = ['', 'Débil', 'Regular', 'Buena', 'Fuerte'];
+            var classes = ['', 'active-weak', 'active-medium', 'active-medium', 'active-strong'];
+
+            bars.forEach(function(bar, i) {
+                bar.className = 'password-strength__bar';
+                if (i < score) bar.classList.add(classes[score]);
+            });
+
+            if (val.length > 0) {
+                passwordText.textContent = labels[score] || 'Muy corta';
+                passwordText.style.color = score <= 1 ? '#dc3545' : score <= 2 ? '#f0ad4e' : '#28a745';
+            } else {
+                passwordText.textContent = '';
+            }
+
+            checkPasswordMatch();
+        });
+
+        // Validacion de coincidencia de contraseñas
+        function checkPasswordMatch() {
+            if (password2.value.length === 0) {
+                passwordMatchHint.classList.remove('visible');
+                password2.classList.remove('field-error', 'field-success');
+                return;
+            }
+            if (password1.value !== password2.value) {
+                passwordMatchHint.classList.add('visible');
+                password2.classList.add('field-error');
+                password2.classList.remove('field-success');
+            } else {
+                passwordMatchHint.classList.remove('visible');
+                password2.classList.remove('field-error');
+                password2.classList.add('field-success');
+            }
+        }
+
+        password2.addEventListener('input', checkPasswordMatch);
+
+        // Validacion de email
+        emailInput.addEventListener('blur', function() {
+            var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (this.value.length > 0 && !emailRegex.test(this.value)) {
+                emailHint.classList.add('visible');
+                this.classList.add('field-error');
+                this.classList.remove('field-success');
+            } else if (this.value.length > 0) {
+                emailHint.classList.remove('visible');
+                this.classList.remove('field-error');
+                this.classList.add('field-success');
+            } else {
+                emailHint.classList.remove('visible');
+                this.classList.remove('field-error', 'field-success');
+            }
+        });
+
+        // Validacion al enviar
+        document.getElementById('registerForm').addEventListener('submit', function(e) {
+            var pw1 = password1.value;
+            var pw2 = password2.value;
+
+            if (pw1.length < 8) {
+                e.preventDefault();
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Contraseña muy corta',
+                    text: 'La contraseña debe tener al menos 8 caracteres.',
+                    confirmButtonColor: '#0d83fd'
+                });
+                return;
+            }
+
+            if (pw1 !== pw2) {
+                e.preventDefault();
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Las contraseñas no coinciden',
+                    text: 'Por favor verifica que ambas contraseñas sean iguales.',
+                    confirmButtonColor: '#0d83fd'
+                });
+                return;
+            }
+        });
+    });
+    </script>
+</body>
+
+</html>

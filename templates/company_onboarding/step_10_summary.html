@@ -1,0 +1,130 @@
+{% extends "company_onboarding/base.html" %}
+{% load static %} {% load i18n %}
+
+{% block wizard_content %}
+<div class="text-center mb-4">
+    <div class="section-icon section-icon--success" style="margin: 0 auto; width: 64px; height: 64px; border-radius: 20px; font-size: 2rem; animation: popIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);">
+        <ion-icon name="checkmark-done-outline"></ion-icon>
+    </div>
+    <h2 class="section-title">{% trans "¡Todo Listo!" %}</h2>
+    <p class="section-subtitle">{% trans "Resumen de la configuración de tu empresa." %}</p>
+</div>
+
+<!-- Nombre de empresa -->
+<div style="text-align: center; margin-bottom: 1.5rem;">
+    <div style="display: inline-flex; align-items: center; gap: 10px; background: var(--gray-50); border: 1px solid var(--gray-200); border-radius: var(--radius); padding: 12px 24px;">
+        {% if summary.company.icon %}
+        <img src="{{ summary.company.icon.url }}" alt="" style="width: 32px; height: 32px; border-radius: 8px; object-fit: cover;">
+        {% else %}
+        <div style="width: 32px; height: 32px; border-radius: 8px; background: var(--primary-subtle); display: flex; align-items: center; justify-content: center;">
+            <ion-icon name="business" style="color: var(--primary); font-size: 1.1rem;"></ion-icon>
+        </div>
+        {% endif %}
+        <span style="font-weight: 700; font-size: 1.05rem; color: var(--gray-800);">{{ summary.company.company }}</span>
+    </div>
+</div>
+
+<!-- Grid de resumen -->
+<div class="row g-3 mb-4">
+    <div class="col-6 col-md-4">
+        <div style="background: white; border: 1px solid var(--gray-200); border-radius: var(--radius); padding: 1rem; text-align: center; transition: all 0.2s; animation: popIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) 0.05s both;">
+            <div style="font-size: 1.8rem; font-weight: 800; color: {% if summary.departments > 0 %}var(--success){% else %}var(--gray-300){% endif %}; line-height: 1;">
+                {{ summary.departments }}
+            </div>
+            <div style="font-size: 0.75rem; font-weight: 600; color: var(--gray-500); margin-top: 4px;">
+                <ion-icon name="git-branch-outline" style="vertical-align: middle;"></ion-icon>
+                {% trans "Departamentos" %}
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-md-4">
+        <div style="background: white; border: 1px solid var(--gray-200); border-radius: var(--radius); padding: 1rem; text-align: center; transition: all 0.2s; animation: popIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) 0.1s both;">
+            <div style="font-size: 1.8rem; font-weight: 800; color: {% if summary.positions > 0 %}var(--success){% else %}var(--gray-300){% endif %}; line-height: 1;">
+                {{ summary.positions }}
+            </div>
+            <div style="font-size: 0.75rem; font-weight: 600; color: var(--gray-500); margin-top: 4px;">
+                <ion-icon name="briefcase-outline" style="vertical-align: middle;"></ion-icon>
+                {% trans "Puestos" %}
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-md-4">
+        <div style="background: white; border: 1px solid var(--gray-200); border-radius: var(--radius); padding: 1rem; text-align: center; transition: all 0.2s; animation: popIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) 0.15s both;">
+            <div style="font-size: 1.8rem; font-weight: 800; color: {% if summary.shifts > 0 %}var(--success){% else %}var(--gray-300){% endif %}; line-height: 1;">
+                {{ summary.shifts }}
+            </div>
+            <div style="font-size: 0.75rem; font-weight: 600; color: var(--gray-500); margin-top: 4px;">
+                <ion-icon name="time-outline" style="vertical-align: middle;"></ion-icon>
+                {% trans "Turnos" %}
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-md-4">
+        <div style="background: white; border: 1px solid var(--gray-200); border-radius: var(--radius); padding: 1rem; text-align: center; transition: all 0.2s; animation: popIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) 0.2s both;">
+            <div style="font-size: 1.8rem; font-weight: 800; color: {% if summary.employee_types > 0 %}var(--success){% else %}var(--gray-300){% endif %}; line-height: 1;">
+                {{ summary.employee_types }}
+            </div>
+            <div style="font-size: 0.75rem; font-weight: 600; color: var(--gray-500); margin-top: 4px;">
+                <ion-icon name="people-outline" style="vertical-align: middle;"></ion-icon>
+                {% trans "Tipos Empleado" %}
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-md-4">
+        <div style="background: white; border: 1px solid var(--gray-200); border-radius: var(--radius); padding: 1rem; text-align: center; transition: all 0.2s; animation: popIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) 0.25s both;">
+            <div style="font-size: 1.8rem; font-weight: 800; color: {% if summary.work_types > 0 %}var(--success){% else %}var(--gray-300){% endif %}; line-height: 1;">
+                {{ summary.work_types }}
+            </div>
+            <div style="font-size: 0.75rem; font-weight: 600; color: var(--gray-500); margin-top: 4px;">
+                <ion-icon name="laptop-outline" style="vertical-align: middle;"></ion-icon>
+                {% trans "Tipos Trabajo" %}
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-md-4">
+        <div style="background: white; border: 1px solid var(--gray-200); border-radius: var(--radius); padding: 1rem; text-align: center; transition: all 0.2s; animation: popIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) 0.3s both;">
+            <div style="font-size: 1.8rem; font-weight: 800; color: {% if summary.holidays > 0 %}var(--success){% else %}var(--gray-300){% endif %}; line-height: 1;">
+                {{ summary.holidays }}
+            </div>
+            <div style="font-size: 0.75rem; font-weight: 600; color: var(--gray-500); margin-top: 4px;">
+                <ion-icon name="calendar-outline" style="vertical-align: middle;"></ion-icon>
+                {% trans "Festivos" %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Leave types separado -->
+<div style="background: white; border: 1px solid var(--gray-200); border-radius: var(--radius); padding: 1rem; text-align: center; margin-bottom: 1.5rem; animation: popIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) 0.35s both;">
+    <div style="display: flex; align-items: center; justify-content: center; gap: 12px;">
+        <div>
+            <span style="font-size: 1.8rem; font-weight: 800; color: {% if summary.leave_types > 0 %}var(--success){% else %}var(--gray-300){% endif %};">
+                {{ summary.leave_types }}
+            </span>
+        </div>
+        <div style="text-align: left;">
+            <div style="font-size: 0.82rem; font-weight: 600; color: var(--gray-700);">{% trans "Tipos de Permisos" %}</div>
+            <div style="font-size: 0.72rem; color: var(--gray-400);">{% trans "Vacaciones, incapacidades, licencias..." %}</div>
+        </div>
+    </div>
+</div>
+
+<!-- Mensaje -->
+<div style="background: linear-gradient(135deg, rgba(16,185,129,0.04), rgba(16,185,129,0.1)); border: 1px solid rgba(16,185,129,0.2); border-radius: var(--radius); padding: 1rem; text-align: center; margin-bottom: 0.5rem;">
+    <p style="font-size: 0.88rem; color: var(--gray-600); margin: 0; font-weight: 500;">
+        <ion-icon name="information-circle-outline" style="vertical-align: middle; color: var(--success);"></ion-icon>
+        {% trans "Puedes editar toda esta configuración después desde el menú de Ajustes." %}
+    </p>
+</div>
+
+<div class="d-flex justify-content-between align-items-center mt-4">
+    <a href="{% url 'company-onboarding-step9' %}" class="btn-back">
+        <ion-icon name="arrow-back-outline"></ion-icon>
+        {% trans "Atrás" %}
+    </a>
+    <a href="{% url 'company-onboarding-complete' %}" class="btn-finish" style="padding: 14px 36px; font-size: 0.95rem;">
+        <ion-icon name="rocket-outline"></ion-icon>
+        {% trans "Comenzar a Usar EasyTalent" %}
+    </a>
+</div>
+{% endblock %}

@@ -1,0 +1,116 @@
+{% extends "company_onboarding/base.html" %}
+{% load static %} {% load i18n %}
+
+{% block wizard_content %}
+<div class="text-center mb-4">
+    <div class="section-icon section-icon--primary" style="margin: 0 auto;">
+        <ion-icon name="laptop-outline"></ion-icon>
+    </div>
+    <h2 class="section-title">{% trans "Tipos de Trabajo" %}</h2>
+    <p class="section-subtitle">{% trans "Define las modalidades de trabajo disponibles." %}</p>
+</div>
+
+<!-- Tipos creados -->
+{% if work_types %}
+<div class="items-panel">
+    <div class="items-panel__header">
+        <span class="items-panel__count">{% trans "Creados" %}</span>
+        <span class="items-panel__badge">{{ work_types|length }}</span>
+    </div>
+    <div>
+        {% for wt in work_types %}
+        <span class="chip chip-success">
+            <ion-icon name="checkmark-circle" style="color: var(--success); font-size: 0.95rem;"></ion-icon>
+            {{ wt.work_type }}
+            <form method="post" action="{% url 'company-onboarding-wt-delete' wt.id %}" style="display:inline; margin:0;">
+                {% csrf_token %}
+                <button type="submit" class="chip-delete" title="{% trans 'Eliminar' %}"
+                        onclick="return confirm('{% trans "¿Eliminar este tipo?" %}')">
+                    <ion-icon name="close-circle"></ion-icon>
+                </button>
+            </form>
+        </span>
+        {% endfor %}
+    </div>
+</div>
+{% else %}
+<div class="empty-state mb-3">
+    <ion-icon name="laptop-outline"></ion-icon>
+    <p>{% trans "Agrega tu primer tipo de trabajo" %}</p>
+</div>
+{% endif %}
+
+<!-- Sugerencias -->
+<div class="mb-3">
+    <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 8px;">
+        <ion-icon name="bulb-outline" style="color: var(--primary); font-size: 0.95rem;"></ion-icon>
+        <span style="font-size: 0.78rem; font-weight: 600; color: var(--gray-500);">{% trans "Sugerencias" %}</span>
+    </div>
+    <div id="suggestions">
+        {% for s in suggestions %}
+        <span class="suggestion-chip {% if s in existing_names %}used{% endif %}"
+              data-name="{{ s }}" onclick="addSuggestion(this)">
+            <ion-icon name="add-circle-outline" style="font-size: 0.85rem;"></ion-icon>
+            {{ s }}
+        </span>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- Formulario -->
+<form method="post" id="wtForm" class="form-panel">
+    {% csrf_token %}
+    <label for="work_type" class="form-label">{% trans "O escribe el nombre" %}</label>
+    <div class="d-flex gap-2">
+        <div style="flex: 1;">
+            <input type="text" name="work_type" id="work_type"
+                   placeholder="{% trans 'ej. Presencial' %}"
+                   style="border: 1.5px solid var(--gray-200); border-radius: var(--radius-sm); padding: 10px 14px; font-size: 0.88rem; width: 100%; transition: all 0.2s; background: white; font-family: inherit;"
+                   onfocus="this.style.borderColor='var(--primary)'; this.style.boxShadow='0 0 0 3px var(--primary-glow)'"
+                   onblur="this.style.borderColor='var(--gray-200)'; this.style.boxShadow='none'" />
+        </div>
+        <button type="submit" class="btn-add">
+            <ion-icon name="add-outline"></ion-icon>
+            {% trans "Agregar" %}
+        </button>
+    </div>
+    {% if error %}
+    <div class="error-msg"><ion-icon name="alert-circle"></ion-icon> {{ error }}</div>
+    {% endif %}
+</form>
+
+<div class="d-flex justify-content-between align-items-center mt-4">
+    <a href="{% url 'company-onboarding-step6' %}" class="btn-back">
+        <ion-icon name="arrow-back-outline"></ion-icon>
+        {% trans "Atrás" %}
+    </a>
+    <a href="{% url 'company-onboarding-step8' %}" class="btn-next">
+        {% trans "Siguiente" %}
+        <ion-icon name="arrow-forward-outline"></ion-icon>
+    </a>
+</div>
+<div class="text-center mt-3">
+    <a href="{% url 'company-onboarding-step8' %}" class="skip-link">
+        {% trans "Saltar este paso" %}
+        <ion-icon name="arrow-forward-outline" style="font-size: 0.75rem;"></ion-icon>
+    </a>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function addSuggestion(el) {
+    if (el.classList.contains('used')) return;
+    el.style.transform = 'scale(0.92)';
+    el.style.opacity = '0.4';
+    el.style.borderStyle = 'solid';
+    el.style.borderColor = 'var(--success)';
+    el.style.color = 'var(--success)';
+    document.getElementById('work_type').value = el.getAttribute('data-name');
+    setTimeout(function() { document.getElementById('wtForm').submit(); }, 200);
+}
+document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('work_type').focus();
+});
+</script>
+{% endblock %}

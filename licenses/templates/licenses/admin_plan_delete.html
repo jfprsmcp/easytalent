@@ -1,0 +1,62 @@
+{% extends "index.html" %}
+{% load i18n %}
+{% load static %}
+
+{% block content %}
+<div class="oh-wrapper">
+  <div class="oh-modal" id="deleteModal" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="false" style="display: block;">
+    <div class="oh-modal__dialog">
+      <div class="oh-modal__dialog-header">
+        <span class="oh-modal__dialog-title" id="deleteModalLabel">
+          <h5>{% trans "Confirmar Eliminación" %}</h5>
+        </span>
+        <button class="oh-modal__close" aria-label="Close" onclick="window.location.href='{% url 'admin_plan_list' %}'">
+          <ion-icon name="close-outline"></ion-icon>
+        </button>
+      </div>
+      <div class="oh-modal__dialog-body">
+        {% if licenses_count > 0 %}
+          <div class="oh-alert oh-alert--animated oh-alert--danger">
+            <p>{% trans "No se puede eliminar este plan porque tiene" %} {{ licenses_count }} {% trans "licencia(s) asociada(s)." %}</p>
+            <p>{% trans "Por favor, elimine o cambie las licencias asociadas antes de eliminar el plan." %}</p>
+          </div>
+        {% else %}
+          <p>{% trans "¿Está seguro de que desea eliminar este plan?" %}</p>
+        {% endif %}
+        
+        <div class="oh-card mt-3">
+          <div class="oh-card__body">
+            <div class="row">
+              <div class="col-12 col-md-6">
+                <p><strong>{% trans "ID" %}:</strong> {{ plan.id }}</p>
+                <p><strong>{% trans "Nombre del Plan" %}:</strong> {{ plan.plan_name }}</p>
+                <p><strong>{% trans "Descripción" %}:</strong> {{ plan.description|default:"-" }}</p>
+                <p><strong>{% trans "Activo" %}:</strong> {% if plan.is_active %}{% trans "Sí" %}{% else %}{% trans "No" %}{% endif %}</p>
+              </div>
+              <div class="col-12 col-md-6">
+                <p><strong>{% trans "Precio Mensual" %}:</strong> {{ plan.price_monthly|default:"-" }} {{ plan.currency }}</p>
+                <p><strong>{% trans "Precio Anual" %}:</strong> {{ plan.price_yearly|default:"-" }} {{ plan.currency }}</p>
+                <p><strong>{% trans "Máx. Empleados" %}:</strong> {{ plan.max_employees }}</p>
+                <p><strong>{% trans "Creado" %}:</strong> {{ plan.created_at|date:"Y-m-d H:i" }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="d-flex justify-content-end gap-2 mt-4">
+        <button type="button" class="oh-btn oh-btn--secondary" onclick="window.location.href='{% url 'admin_plan_list' %}'">
+          {% trans "Cancelar" %}
+        </button>
+        {% if licenses_count == 0 %}
+          <form method="post" style="display: inline;">
+            {% csrf_token %}
+            <button type="submit" class="oh-btn oh-btn--primary">
+              {% trans "Eliminar" %}
+            </button>
+          </form>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

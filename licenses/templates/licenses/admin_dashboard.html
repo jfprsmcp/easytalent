@@ -1,0 +1,405 @@
+{% extends "index.html" %}
+{% load i18n %}
+{% load static %}
+{% load license_filters %}
+
+{% block content %}
+
+<!-- Onboarding Banner -->
+{% if show_onboarding_banner %}
+<div id="onboarding-banner" style="
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #2d3a4f 100%);
+    border-radius: 16px;
+    padding: 1.5rem 2rem;
+    margin-bottom: 1.5rem;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 10px 25px -5px rgba(0,0,0,0.15);
+">
+    <!-- Pattern decorativo -->
+    <div style="position:absolute;top:0;left:0;right:0;bottom:0;background:url('data:image/svg+xml,%3Csvg width=&quot;60&quot; height=&quot;60&quot; viewBox=&quot;0 0 60 60&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot;%3E%3Cg fill=&quot;none&quot; fill-rule=&quot;evenodd&quot;%3E%3Cg fill=&quot;%23ffffff&quot; fill-opacity=&quot;0.03&quot;%3E%3Cpath d=&quot;M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z&quot;/%3E%3C/g%3E%3C/g%3E%3C/svg%3E');pointer-events:none;"></div>
+    <!-- Glow -->
+    <div style="position:absolute;top:-50%;right:-10%;width:300px;height:300px;background:radial-gradient(circle,rgba(229,79,56,0.15) 0%,transparent 70%);pointer-events:none;"></div>
+
+    <div style="position:relative;z-index:1;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;">
+        <div style="flex:1;min-width:250px;">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:0.6rem;">
+                <div style="width:40px;height:40px;border-radius:12px;background:linear-gradient(135deg,#e54f38,#ff6b52);display:flex;align-items:center;justify-content:center;">
+                    <ion-icon name="settings-outline" style="color:white;font-size:1.3rem;"></ion-icon>
+                </div>
+                <div>
+                    <h3 style="color:white;font-size:1rem;font-weight:700;margin:0;line-height:1.2;">
+                        {% trans "Completa la configuración de tu empresa" %}
+                    </h3>
+                    <p style="color:rgba(255,255,255,0.5);font-size:0.78rem;margin:0;">
+                        {{ onboarding_progress.total_configured }}/{{ onboarding_progress.total_sections }} {% trans "secciones configuradas" %}
+                    </p>
+                </div>
+            </div>
+
+            <!-- Barra de progreso -->
+            <div style="background:rgba(255,255,255,0.1);border-radius:8px;height:6px;margin-top:0.5rem;overflow:hidden;max-width:400px;">
+                <div style="height:100%;border-radius:8px;background:linear-gradient(90deg,#e54f38,#ff6b52);transition:width 0.8s cubic-bezier(0.34,1.56,0.64,1);width:{% widthratio onboarding_progress.total_configured onboarding_progress.total_sections 100 %}%;position:relative;">
+                </div>
+            </div>
+
+            <!-- Mini indicadores -->
+            <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:0.7rem;">
+                <span style="font-size:0.68rem;padding:3px 10px;border-radius:20px;font-weight:600;
+                    {% if onboarding_progress.departments > 0 %}background:rgba(16,185,129,0.15);color:#10b981;{% else %}background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.35);{% endif %}">
+                    {% if onboarding_progress.departments > 0 %}✓{% endif %} {% trans "Deptos" %}
+                </span>
+                <span style="font-size:0.68rem;padding:3px 10px;border-radius:20px;font-weight:600;
+                    {% if onboarding_progress.positions > 0 %}background:rgba(16,185,129,0.15);color:#10b981;{% else %}background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.35);{% endif %}">
+                    {% if onboarding_progress.positions > 0 %}✓{% endif %} {% trans "Puestos" %}
+                </span>
+                <span style="font-size:0.68rem;padding:3px 10px;border-radius:20px;font-weight:600;
+                    {% if onboarding_progress.shifts > 0 %}background:rgba(16,185,129,0.15);color:#10b981;{% else %}background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.35);{% endif %}">
+                    {% if onboarding_progress.shifts > 0 %}✓{% endif %} {% trans "Horarios" %}
+                </span>
+                <span style="font-size:0.68rem;padding:3px 10px;border-radius:20px;font-weight:600;
+                    {% if onboarding_progress.employee_types > 0 %}background:rgba(16,185,129,0.15);color:#10b981;{% else %}background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.35);{% endif %}">
+                    {% if onboarding_progress.employee_types > 0 %}✓{% endif %} {% trans "Empleados" %}
+                </span>
+                <span style="font-size:0.68rem;padding:3px 10px;border-radius:20px;font-weight:600;
+                    {% if onboarding_progress.work_types > 0 %}background:rgba(16,185,129,0.15);color:#10b981;{% else %}background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.35);{% endif %}">
+                    {% if onboarding_progress.work_types > 0 %}✓{% endif %} {% trans "Trabajo" %}
+                </span>
+                <span style="font-size:0.68rem;padding:3px 10px;border-radius:20px;font-weight:600;
+                    {% if onboarding_progress.holidays > 0 %}background:rgba(16,185,129,0.15);color:#10b981;{% else %}background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.35);{% endif %}">
+                    {% if onboarding_progress.holidays > 0 %}✓{% endif %} {% trans "Festivos" %}
+                </span>
+                <span style="font-size:0.68rem;padding:3px 10px;border-radius:20px;font-weight:600;
+                    {% if onboarding_progress.leave_types > 0 %}background:rgba(16,185,129,0.15);color:#10b981;{% else %}background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.35);{% endif %}">
+                    {% if onboarding_progress.leave_types > 0 %}✓{% endif %} {% trans "Permisos" %}
+                </span>
+            </div>
+        </div>
+
+        <div style="display:flex;flex-direction:column;align-items:center;gap:8px;">
+            <a href="{% url 'company-onboarding' %}"
+               style="background:linear-gradient(135deg,#e54f38,#cc3d28);color:white;padding:10px 24px;border-radius:10px;font-weight:600;font-size:0.85rem;text-decoration:none;display:inline-flex;align-items:center;gap:8px;transition:all 0.3s;box-shadow:0 4px 12px rgba(229,79,56,0.3);"
+               onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 8px 20px rgba(229,79,56,0.4)'"
+               onmouseout="this.style.transform='';this.style.boxShadow='0 4px 12px rgba(229,79,56,0.3)'">
+                <ion-icon name="settings-outline"></ion-icon>
+                {% trans "Continuar Configuración" %}
+            </a>
+            <a href="{% url 'company-onboarding-dismiss-banner' %}"
+               style="background:none;border:none;color:rgba(255,255,255,0.35);font-size:0.72rem;cursor:pointer;padding:2px 8px;transition:color 0.2s;text-decoration:none;"
+               onmouseover="this.style.color='rgba(255,255,255,0.7)'"
+               onmouseout="this.style.color='rgba(255,255,255,0.35)'">
+                {% trans "Ocultar por ahora" %}
+            </a>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<div class="oh-wrapper">
+  <div class="oh-dashboard row">
+    <div class="oh-dashboard__left col-12 col-sm-12 col-md-12 col-lg-9">
+      <!-- Tarjetas de indicadores -->
+      <div class="oh-dashboard__cards row">
+        <div class="col-12 col-sm-12 col-md-6 col-lg-4 mb-3">
+          <div class="oh-card-dashboard oh-card-dashboard--success">
+            <div class="oh-card-dashboard__header">
+              <span class="oh-card-dashboard__title">{% trans "Licencias Activas" %}</span>
+            </div>
+            <div class="oh-card-dashboard__body">
+              <div class="oh-card-dashboard__counts">
+                <span class="oh-card-dashboard__sign"><ion-icon name="checkmark-circle"></ion-icon></span>
+                <span class="oh-card-dashboard__count">{{ active_licenses }}</span>
+              </div>
+              <span class="oh-badge oh-card-dashboard__badge">
+                {% if total_licenses > 0 %}
+                  {{ active_licenses|mul:100|div:total_licenses|floatformat:0 }}%
+                {% else %}
+                  0%
+                {% endif %}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-12 col-sm-12 col-md-6 col-lg-4">
+          <div class="oh-card-dashboard oh-card-dashboard--neutral">
+            <div class="oh-card-dashboard__header">
+              <span class="oh-card-dashboard__title">{% trans "Total Licencias" %}</span>
+            </div>
+            <div class="oh-card-dashboard__body">
+              <div class="oh-card-dashboard__counts">
+                <span class="oh-card-dashboard__count">{{ total_licenses }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-12 col-sm-12 col-md-6 col-lg-4">
+          <div class="oh-card-dashboard oh-card-dashboard--danger">
+            <div class="oh-card-dashboard__header">
+              <span class="oh-card-dashboard__title">{% trans "Licencias Inactivas/Canceladas" %}</span>
+            </div>
+            <div class="oh-card-dashboard__body">
+              <div class="oh-card-dashboard__counts">
+                <span class="oh-card-dashboard__sign"><ion-icon name="close-circle"></ion-icon></span>
+                <span class="oh-card-dashboard__count">{{ inactive_or_cancelled }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-12 col-sm-12 col-md-6 col-lg-4 mb-3">
+          <div class="oh-card-dashboard oh-card-dashboard--danger">
+            <div class="oh-card-dashboard__header">
+              <span class="oh-card-dashboard__title">{% trans "Licencias Expiradas" %}</span>
+            </div>
+            <div class="oh-card-dashboard__body">
+              <div class="oh-card-dashboard__counts">
+                <span class="oh-card-dashboard__sign"><ion-icon name="warning"></ion-icon></span>
+                <span class="oh-card-dashboard__count">{{ expired_licenses }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-12 col-sm-12 col-md-6 col-lg-4">
+          <div class="oh-card-dashboard oh-card-dashboard--warning">
+            <div class="oh-card-dashboard__header">
+              <span class="oh-card-dashboard__title">{% trans "Licencias de Prueba" %}</span>
+            </div>
+            <div class="oh-card-dashboard__body">
+              <div class="oh-card-dashboard__counts">
+                <span class="oh-card-dashboard__sign"><ion-icon name="time"></ion-icon></span>
+                <span class="oh-card-dashboard__count">{{ trial_licenses }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-12 col-sm-12 col-md-6 col-lg-4">
+          <div class="oh-card-dashboard oh-card-dashboard--info">
+            <div class="oh-card-dashboard__header">
+              <span class="oh-card-dashboard__title">{% trans "Por Vencer (30 días)" %}</span>
+            </div>
+            <div class="oh-card-dashboard__body">
+              <div class="oh-card-dashboard__counts">
+                <span class="oh-card-dashboard__sign"><ion-icon name="calendar"></ion-icon></span>
+                <span class="oh-card-dashboard__count">{{ expiring_soon }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-12 col-sm-12 col-md-6 col-lg-4">
+          <div class="oh-card-dashboard oh-card-dashboard--neutral">
+            <div class="oh-card-dashboard__header">
+              <span class="oh-card-dashboard__title">{% trans "Empresas con Licencias" %}</span>
+            </div>
+            <div class="oh-card-dashboard__body">
+              <div class="oh-card-dashboard__counts">
+                <span class="oh-card-dashboard__sign"><ion-icon name="business"></ion-icon></span>
+                <span class="oh-card-dashboard__count">{{ companies_with_licenses }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-12 col-sm-12 col-md-6 col-lg-4">
+          <div class="oh-card-dashboard oh-card-dashboard--primary">
+            <div class="oh-card-dashboard__header">
+              <span class="oh-card-dashboard__title">{% trans "Nuevos Usuarios (30 días)" %}</span>
+            </div>
+            <div class="oh-card-dashboard__body">
+              <div class="oh-card-dashboard__counts">
+                <span class="oh-card-dashboard__sign"><ion-icon name="person-add"></ion-icon></span>
+                <span class="oh-card-dashboard__count">{{ new_users }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tarjetas de usuarios por plan (DINÁMICO) -->
+      <div class="oh-dashboard__cards row mt-4">
+        <div class="col-12">
+          <h5 class="mb-3">{% trans "Usuarios Activos por Plan" %}</h5>
+        </div>
+        {% for plan_data in plans_with_users %}
+        <div class="col-12 col-sm-12 col-md-6 col-lg-3">
+          <div class="oh-card-dashboard oh-card-dashboard--{% cycle 'warning' 'info' 'primary' 'danger' 'success' %}">
+            <div class="oh-card-dashboard__header">
+              <span class="oh-card-dashboard__title">{% trans "Plan" %} {{ plan_data.plan_name }}</span>
+            </div>
+            <div class="oh-card-dashboard__body">
+              <div class="oh-card-dashboard__counts">
+                <span class="oh-card-dashboard__sign">
+                  {% if plan_data.plan_name|lower == 'trial' %}
+                    <ion-icon name="hourglass"></ion-icon>
+                  {% elif plan_data.plan_name|lower == 'basic' %}
+                    <ion-icon name="star"></ion-icon>
+                  {% elif plan_data.plan_name|lower == 'pro' %}
+                    <ion-icon name="diamond"></ion-icon>
+                  {% elif plan_data.plan_name|lower == 'enterprise' %}
+                    <ion-icon name="business"></ion-icon>
+                  {% else %}
+                    <ion-icon name="card"></ion-icon>
+                  {% endif %}
+                </span>
+                <span class="oh-card-dashboard__count">{{ plan_data.user_count }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+          <div class="alert alert-info">
+            {% trans "No hay planes activos disponibles" %}
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+
+      <!-- Gráficas -->
+      <div class="oh-dashboard__movable-cards row mt-4">
+        <div class="col-12 col-sm-12 col-md-12 col-lg-6 oh-card-dashboard--moveable">
+          <div class="oh-card-dashboard oh-card-dashboard--no-scale oh-card-dashboard--transparent">
+            <div class="oh-card-dashboard__header oh-card-dashboard__header--divider">
+              <span class="oh-card-dashboard__title">{% trans "Distribución por Plan" %}</span>
+            </div>
+            <div class="oh-card-dashboard__body">
+              <canvas id="planChart"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-12 col-sm-12 col-md-12 col-lg-6 oh-card-dashboard--moveable">
+          <div class="oh-card-dashboard oh-card-dashboard--no-scale oh-card-dashboard--transparent">
+            <div class="oh-card-dashboard__header oh-card-dashboard__header--divider">
+              <span class="oh-card-dashboard__title">{% trans "Licencias por Estado" %}</span>
+            </div>
+            <div class="oh-card-dashboard__body">
+              <canvas id="statusChart"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-12 col-sm-12 col-md-12 col-lg-6 oh-card-dashboard--moveable mt-2">
+          <div class="oh-card-dashboard oh-card-dashboard--no-scale oh-card-dashboard--transparent">
+            <div class="oh-card-dashboard__header oh-card-dashboard__header--divider">
+              <span class="oh-card-dashboard__title">{% trans "Licencias Activas por Plan" %}</span>
+            </div>
+            <div class="oh-card-dashboard__body">
+              <canvas id="activePlanChart"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="oh-dashboard__right col-12 col-sm-12 col-md-12 col-lg-3">
+      <div class="oh-card-dashboard oh-card-dashboard--no-scale oh-card-dashboard--transparent">
+        <div class="oh-card-dashboard__header oh-card-dashboard__header--divider mb-3">
+          <span class="oh-card-dashboard__title">{% trans "Acciones Rápidas" %}</span>
+        </div>
+        <div class="oh-card-dashboard__body">
+          <a href="{% url 'admin_license_list' %}" class="oh-btn oh-btn--secondary w-100 mb-2">
+            <ion-icon name="list-outline"></ion-icon>
+            {% trans "Ver Todas las Licencias" %}
+          </a>
+          <a href="{% url 'admin_plan_list' %}" class="oh-btn oh-btn--secondary w-100 mb-2">
+            <ion-icon name="grid-outline"></ion-icon>
+            {% trans "Gestionar Planes" %}
+          </a>
+          <a href="{% url 'admin_plan_create' %}" class="oh-btn oh-btn--primary w-100">
+            <ion-icon name="add-circle-outline"></ion-icon>
+            {% trans "Crear Nuevo Plan" %}
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  // Gráfica de distribución por plan
+  const planCtx = document.getElementById('planChart').getContext('2d');
+  const planData = {
+    labels: [{% for item in licenses_by_plan %}'{{ item.plan__plan_name }}'{% if not forloop.last %},{% endif %}{% endfor %}],
+    datasets: [{
+      label: '{% trans "Licencias" %}',
+      data: [{% for item in licenses_by_plan %}{{ item.count }}{% if not forloop.last %},{% endif %}{% endfor %}],
+      backgroundColor: [
+        'rgba(54, 162, 235, 0.6)',
+        'rgba(255, 99, 132, 0.6)',
+        'rgba(255, 206, 86, 0.6)',
+        'rgba(75, 192, 192, 0.6)',
+        'rgba(153, 102, 255, 0.6)',
+      ]
+    }]
+  };
+  new Chart(planCtx, {
+    type: 'doughnut',
+    data: planData,
+    options: {
+      responsive: true,
+      maintainAspectRatio: true
+    }
+  });
+
+  // Gráfica de licencias por estado
+  const statusCtx = document.getElementById('statusChart').getContext('2d');
+  const statusData = {
+    labels: [{% for item in licenses_by_status %}'{{ item.license_status|title }}'{% if not forloop.last %},{% endif %}{% endfor %}],
+    datasets: [{
+      label: '{% trans "Cantidad" %}',
+      data: [{% for item in licenses_by_status %}{{ item.count }}{% if not forloop.last %},{% endif %}{% endfor %}],
+      backgroundColor: [
+        'rgba(75, 192, 192, 0.6)',
+        'rgba(255, 99, 132, 0.6)',
+        'rgba(255, 206, 86, 0.6)',
+        'rgba(153, 102, 255, 0.6)',
+      ]
+    }]
+  };
+  new Chart(statusCtx, {
+    type: 'bar',
+    data: statusData,
+    options: {
+      responsive: true,
+      maintainAspectRatio: true,
+      scales: {
+        y: {
+          beginAtZero: true
+        }
+      }
+    }
+  });
+
+  // Gráfica de licencias activas por plan
+  const activePlanCtx = document.getElementById('activePlanChart').getContext('2d');
+  const activePlanData = {
+    labels: [{% for item in active_by_plan %}'{{ item.plan__plan_name }}'{% if not forloop.last %},{% endif %}{% endfor %}],
+    datasets: [{
+      label: '{% trans "Licencias Activas" %}',
+      data: [{% for item in active_by_plan %}{{ item.count }}{% if not forloop.last %},{% endif %}{% endfor %}],
+      backgroundColor: 'rgba(54, 162, 235, 0.6)',
+      borderColor: 'rgba(54, 162, 235, 1)',
+      borderWidth: 1
+    }]
+  };
+  new Chart(activePlanCtx, {
+    type: 'bar',
+    data: activePlanData,
+    options: {
+      responsive: true,
+      maintainAspectRatio: true,
+      scales: {
+        y: {
+          beginAtZero: true
+        }
+      }
+    }
+  });
+</script>
+{% endblock %}

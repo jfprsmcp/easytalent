@@ -1,0 +1,118 @@
+{% extends "company_onboarding/base.html" %}
+{% load static %} {% load i18n %}
+
+{% block wizard_content %}
+<div class="text-center mb-4">
+    <div class="section-icon section-icon--primary" style="margin: 0 auto;">
+        <ion-icon name="calendar-outline"></ion-icon>
+    </div>
+    <h2 class="section-title">{% trans "Días Festivos" %}</h2>
+    <p class="section-subtitle">{% trans "Configura los festivos de tu empresa." %}</p>
+</div>
+
+<!-- Carga rápida Colombia -->
+<div style="background: linear-gradient(135deg, var(--primary-subtle), rgba(229,79,56,0.08)); border: 1px solid rgba(229,79,56,0.15); border-radius: var(--radius); padding: 1rem 1.2rem; margin-bottom: 1rem; text-align: center;">
+    <div style="font-size: 1.5rem; margin-bottom: 0.3rem;">🇨🇴</div>
+    <p style="font-size: 0.85rem; color: var(--gray-600); font-weight: 500; margin: 0 0 0.6rem;">
+        {% trans "Carga los 13 festivos oficiales de Colombia con un clic" %}
+    </p>
+    <form method="post" style="display: inline;">
+        {% csrf_token %}
+        <input type="hidden" name="action" value="load_colombia">
+        <button type="submit" class="btn-next" style="font-size: 0.82rem; padding: 8px 20px;">
+            <ion-icon name="download-outline"></ion-icon>
+            {% trans "Cargar Festivos de Colombia" %}
+        </button>
+    </form>
+</div>
+
+<!-- Festivos creados -->
+{% if holidays %}
+<div class="items-panel">
+    <div class="items-panel__header">
+        <span class="items-panel__count">{% trans "Festivos" %}</span>
+        <span class="items-panel__badge">{{ holidays|length }}</span>
+    </div>
+    <div>
+        {% for h in holidays %}
+        <span class="chip chip-dept">
+            <ion-icon name="calendar" style="color: var(--primary); font-size: 0.9rem;"></ion-icon>
+            {{ h.name }}
+            <small style="color: var(--gray-400); font-size: 0.7rem;">{{ h.start_date|date:"d M" }}</small>
+            {% if h.recurring %}
+            <small style="background: var(--primary-subtle); color: var(--primary); padding: 1px 6px; border-radius: 8px; font-size: 0.6rem; font-weight: 700;">{% trans "Anual" %}</small>
+            {% endif %}
+            <form method="post" action="{% url 'company-onboarding-holiday-delete' h.id %}" style="display:inline; margin:0;">
+                {% csrf_token %}
+                <button type="submit" class="chip-delete" title="{% trans 'Eliminar' %}"
+                        onclick="return confirm('{% trans "¿Eliminar este festivo?" %}')">
+                    <ion-icon name="close-circle"></ion-icon>
+                </button>
+            </form>
+        </span>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+
+<!-- Formulario manual -->
+<form method="post" class="form-panel">
+    {% csrf_token %}
+    <input type="hidden" name="action" value="add">
+    <div style="font-size: 0.78rem; font-weight: 600; color: var(--gray-500); margin-bottom: 0.8rem;">
+        <ion-icon name="create-outline" style="vertical-align: middle;"></ion-icon>
+        {% trans "O agrega uno manualmente" %}
+    </div>
+    <div class="row g-2 align-items-end">
+        <div class="col-12 col-md-4">
+            <label for="holiday_name" class="form-label">{% trans "Nombre" %}</label>
+            <input type="text" name="holiday_name" id="holiday_name"
+                   placeholder="{% trans 'ej. Día de la Empresa' %}"
+                   style="border: 1.5px solid var(--gray-200); border-radius: var(--radius-sm); padding: 10px 14px; font-size: 0.88rem; width: 100%; background: white; font-family: inherit;"
+                   onfocus="this.style.borderColor='var(--primary)'; this.style.boxShadow='0 0 0 3px var(--primary-glow)'"
+                   onblur="this.style.borderColor='var(--gray-200)'; this.style.boxShadow='none'" />
+        </div>
+        <div class="col-6 col-md-3">
+            <label for="start_date" class="form-label">{% trans "Inicio" %}</label>
+            <input type="date" name="start_date" id="start_date"
+                   style="border: 1.5px solid var(--gray-200); border-radius: var(--radius-sm); padding: 10px 14px; font-size: 0.88rem; width: 100%; background: white; font-family: inherit;" />
+        </div>
+        <div class="col-6 col-md-3">
+            <label for="end_date" class="form-label">{% trans "Fin" %}</label>
+            <input type="date" name="end_date" id="end_date"
+                   style="border: 1.5px solid var(--gray-200); border-radius: var(--radius-sm); padding: 10px 14px; font-size: 0.88rem; width: 100%; background: white; font-family: inherit;" />
+        </div>
+        <div class="col-12 col-md-2">
+            <button type="submit" class="btn-add w-100" style="height: 44px;">
+                <ion-icon name="add-outline"></ion-icon>
+            </button>
+        </div>
+    </div>
+    <div class="mt-2">
+        <label style="display: inline-flex; align-items: center; gap: 6px; cursor: pointer; font-size: 0.82rem; color: var(--gray-500);">
+            <input type="checkbox" name="recurring" style="accent-color: var(--primary);">
+            {% trans "Se repite cada año" %}
+        </label>
+    </div>
+    {% if error %}
+    <div class="error-msg"><ion-icon name="alert-circle"></ion-icon> {{ error }}</div>
+    {% endif %}
+</form>
+
+<div class="d-flex justify-content-between align-items-center mt-4">
+    <a href="{% url 'company-onboarding-step7' %}" class="btn-back">
+        <ion-icon name="arrow-back-outline"></ion-icon>
+        {% trans "Atrás" %}
+    </a>
+    <a href="{% url 'company-onboarding-step9' %}" class="btn-next">
+        {% trans "Siguiente" %}
+        <ion-icon name="arrow-forward-outline"></ion-icon>
+    </a>
+</div>
+<div class="text-center mt-3">
+    <a href="{% url 'company-onboarding-step9' %}" class="skip-link">
+        {% trans "Saltar este paso" %}
+        <ion-icon name="arrow-forward-outline" style="font-size: 0.75rem;"></ion-icon>
+    </a>
+</div>
+{% endblock %}

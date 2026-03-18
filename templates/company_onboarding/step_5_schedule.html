@@ -112,6 +112,11 @@
         <ion-icon name="arrow-forward-outline" style="font-size: 0.75rem;"></ion-icon>
     </a>
 </div>
+<div class="text-center mt-2">
+    <a href="{% url 'company-onboarding-step10' %}" class="skip-link" style="opacity: 0.6; font-size: 0.8rem;">
+        {% trans "Ir al resumen y finalizar" %}
+    </a>
+</div>
 {% endblock %}
 
 {% block extra_js %}

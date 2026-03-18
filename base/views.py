@@ -615,189 +615,144 @@ def module_detail(request, module_slug):
         'gestion-empleados': {
             'title': 'Gestión de Empleados',
             'image': 'landing/images/horilla-employee-screenshot.webp',
-            'description': 'Centraliza toda la información de tus empleados en un solo lugar.',
-            'content': '''
-                <p>EasyTalent te permite gestionar perfiles completos, historiales laborales, documentos, y mucho más. 
-                Con integración LDAP, sincroniza automáticamente los datos de tus empleados desde tu directorio activo.</p>
-                <h4>Características principales:</h4>
-                <ul>
-                    <li>Perfiles completos de empleados con toda su información</li>
-                    <li>Historial laboral y documentos digitalizados</li>
-                    <li>Integración LDAP para sincronización automática</li>
-                    <li>Organigrama interactivo de la empresa</li>
-                    <li>Gestión de departamentos y cargos</li>
-                    <li>Documentos y certificaciones</li>
-                    <li>Información de contacto y emergencias</li>
-                </ul>
-            ''',
+            'description': 'Centraliza toda la información de tus empleados en un solo lugar. Con integración LDAP, sincroniza automáticamente los datos desde tu directorio activo.',
+            'features': [
+                'Perfiles completos de empleados con toda su información',
+                'Historial laboral y documentos digitalizados',
+                'Integración LDAP para sincronización automática',
+                'Organigrama interactivo de la empresa',
+                'Gestión de departamentos y cargos',
+                'Documentos y certificaciones',
+                'Información de contacto y emergencias',
+            ],
             'icon': 'bi-people-fill',
             'color': 'orange'
         },
         'control-asistencia': {
             'title': 'Control de Asistencia',
             'image': 'landing/images/horilla-attendance-screenshot.webp',
-            'description': 'Automatiza el registro de entrada y salida de tus empleados.',
-            'content': '''
-                <p>Compatible con dispositivos biométricos, permite un seguimiento preciso de las horas trabajadas, 
-                ausencias y tardanzas. Genera reportes detallados para una gestión eficiente.</p>
-                <h4>Características principales:</h4>
-                <ul>
-                    <li>Registro automático de entrada y salida</li>
-                    <li>Integración con dispositivos biométricos</li>
-                    <li>Control de horas trabajadas y extras</li>
-                    <li>Reportes de asistencia detallados</li>
-                    <li>Gestión de horarios y turnos</li>
-                    <li>Validación de asistencia</li>
-                    <li>Notificaciones de ausencias</li>
-                </ul>
-            ''',
+            'description': 'Automatiza el registro de entrada y salida de tus empleados. Compatible con dispositivos biométricos para un seguimiento preciso.',
+            'features': [
+                'Registro automático de entrada y salida',
+                'Integración con dispositivos biométricos',
+                'Control de horas trabajadas y extras',
+                'Reportes de asistencia detallados',
+                'Gestión de horarios y turnos',
+                'Validación de asistencia',
+                'Notificaciones de ausencias',
+            ],
             'icon': 'bi-clock-history',
             'color': 'blue'
         },
         'gestion-permisos': {
             'title': 'Gestión de Permisos',
             'image': 'landing/images/horilla-leave-screenshot.webp',
-            'description': 'Simplifica las solicitudes de permisos con flujos de aprobación personalizables.',
-            'content': '''
-                <p>Gestiona todos los tipos de permisos y licencias de tus empleados de manera eficiente. 
-                Sistema de aprobación flexible que se adapta a las necesidades de tu empresa.</p>
-                <h4>Características principales:</h4>
-                <ul>
-                    <li>Solicitudes de permisos digitales</li>
-                    <li>Flujos de aprobación personalizables</li>
-                    <li>Diferentes tipos de permisos y licencias</li>
-                    <li>Calendario de ausencias</li>
-                    <li>Asignación de días de vacaciones</li>
-                    <li>Reportes de permisos</li>
-                    <li>Notificaciones automáticas</li>
-                </ul>
-            ''',
+            'description': 'Gestiona todos los tipos de permisos y licencias de tus empleados. Sistema de aprobación flexible que se adapta a tu empresa.',
+            'features': [
+                'Solicitudes de permisos digitales',
+                'Flujos de aprobación personalizables',
+                'Diferentes tipos de permisos y licencias',
+                'Calendario de ausencias',
+                'Asignación de días de vacaciones',
+                'Reportes de permisos',
+                'Notificaciones automáticas',
+            ],
             'icon': 'bi-calendar-check',
             'color': 'green'
         },
         'nomina': {
             'title': 'Nómina',
             'image': 'landing/images/horilla-payroll-screenshot.webp',
-            'description': 'Simplifica la gestión de nóminas con cálculos automáticos.',
-            'content': '''
-                <p>Gestiona contratos, asignaciones y deducciones con cálculos automáticos de impuestos. 
-                Genera recibos de pago y reportes financieros completos.</p>
-                <h4>Características principales:</h4>
-                <ul>
-                    <li>Cálculo automático de nóminas</li>
-                    <li>Gestión de contratos y asignaciones</li>
-                    <li>Cálculo de impuestos y deducciones</li>
-                    <li>Generación de recibos de pago</li>
-                    <li>Reportes financieros completos</li>
-                    <li>Gestión de bonificaciones</li>
-                    <li>Historial de pagos</li>
-                </ul>
-            ''',
+            'description': 'Gestiona contratos, asignaciones y deducciones con cálculos automáticos de impuestos. Genera recibos de pago y reportes completos.',
+            'features': [
+                'Cálculo automático de nóminas',
+                'Gestión de contratos y asignaciones',
+                'Cálculo de impuestos y deducciones',
+                'Generación de recibos de pago',
+                'Reportes financieros completos',
+                'Gestión de bonificaciones',
+                'Historial de pagos',
+            ],
             'icon': 'bi-cash-stack',
             'color': 'red'
         },
         'gestion-rendimiento': {
             'title': 'Gestión del Rendimiento',
             'image': 'landing/images/horilla-pms-screenshot.webp',
-            'description': 'OKRs y retroalimentación 360° para mejorar continuamente el rendimiento.',
-            'content': '''
-                <p>Evalúa y mejora el rendimiento de tus empleados con objetivos claros y retroalimentación continua. 
-                Sistema completo de gestión del rendimiento con OKRs y evaluaciones 360°.</p>
-                <h4>Características principales:</h4>
-                <ul>
-                    <li>Gestión de OKRs (Objetivos y Resultados Clave)</li>
-                    <li>Evaluaciones 360°</li>
-                    <li>Retroalimentación continua</li>
-                    <li>Planes de desarrollo individual</li>
-                    <li>Métricas de rendimiento</li>
-                    <li>Reportes de evaluación</li>
-                    <li>Seguimiento de objetivos</li>
-                </ul>
-            ''',
+            'description': 'Evalúa y mejora el rendimiento de tus empleados con objetivos claros y retroalimentación continua.',
+            'features': [
+                'Gestión de OKRs (Objetivos y Resultados Clave)',
+                'Evaluaciones 360°',
+                'Retroalimentación continua',
+                'Planes de desarrollo individual',
+                'Métricas de rendimiento',
+                'Reportes de evaluación',
+                'Seguimiento de objetivos',
+            ],
             'icon': 'bi-graph-up-arrow',
             'color': 'orange'
         },
         'reclutamiento': {
             'title': 'Reclutamiento',
             'image': 'landing/images/horilla-recruitment-screenshot.webp',
-            'description': 'Gestiona candidatos y procesos de reclutamiento con seguimiento en tiempo real.',
-            'content': '''
-                <p>Optimiza tu proceso de reclutamiento desde la publicación de vacantes hasta la contratación. 
-                Gestiona candidatos, entrevistas y ofertas de manera eficiente.</p>
-                <h4>Características principales:</h4>
-                <ul>
-                    <li>Gestión de vacantes y ofertas de trabajo</li>
-                    <li>Base de datos de candidatos</li>
-                    <li>Seguimiento de procesos de selección</li>
-                    <li>Gestión de entrevistas</li>
-                    <li>Evaluación de candidatos</li>
-                    <li>Reportes de reclutamiento</li>
-                    <li>Integración con portales de empleo</li>
-                </ul>
-            ''',
+            'description': 'Optimiza tu proceso de reclutamiento desde la publicación de vacantes hasta la contratación.',
+            'features': [
+                'Gestión de vacantes y ofertas de trabajo',
+                'Base de datos de candidatos',
+                'Seguimiento de procesos de selección',
+                'Gestión de entrevistas',
+                'Evaluación de candidatos',
+                'Reportes de reclutamiento',
+                'Integración con portales de empleo',
+            ],
             'icon': 'bi-person-badge',
             'color': 'blue'
         },
         'desembarco': {
             'title': 'Desembarco',
             'image': 'landing/images/horilla-offboarding-screenshot.webp',
-            'description': 'Gestiona el proceso de salida de empleados de manera eficiente y organizada.',
-            'content': '''
-                <p>Asegura que todas las tareas necesarias se completen, desde la devolución de equipos hasta 
-                la finalización de documentos legales. Proceso estructurado y completo.</p>
-                <h4>Características principales:</h4>
-                <ul>
-                    <li>Proceso de salida estructurado</li>
-                    <li>Checklist de tareas de salida</li>
-                    <li>Devolución de activos y equipos</li>
-                    <li>Finalización de documentos</li>
-                    <li>Encuestas de salida</li>
-                    <li>Seguimiento del proceso</li>
-                    <li>Archivo de información</li>
-                </ul>
-            ''',
+            'description': 'Asegura que todas las tareas de salida se completen, desde la devolución de equipos hasta documentos legales.',
+            'features': [
+                'Proceso de salida estructurado',
+                'Checklist de tareas de salida',
+                'Devolución de activos y equipos',
+                'Finalización de documentos',
+                'Encuestas de salida',
+                'Seguimiento del proceso',
+                'Archivo de información',
+            ],
             'icon': 'bi-box-arrow-right',
             'color': 'red'
         },
         'soporte': {
             'title': 'Soporte',
             'image': 'landing/images/horilla-helpdesk-screenshot.webp',
-            'description': 'Sistema de tickets y gestión de solicitudes de soporte para resolver problemas rápidamente.',
-            'content': '''
-                <p>Gestiona todas las solicitudes de soporte de manera organizada. Sistema de tickets que permite 
-                un seguimiento eficiente y una resolución rápida de problemas.</p>
-                <h4>Características principales:</h4>
-                <ul>
-                    <li>Sistema de tickets</li>
-                    <li>Gestión de solicitudes de soporte</li>
-                    <li>Asignación de tickets</li>
-                    <li>Seguimiento de estado</li>
-                    <li>Base de conocimientos</li>
-                    <li>Reportes de soporte</li>
-                    <li>Notificaciones automáticas</li>
-                </ul>
-            ''',
+            'description': 'Gestiona todas las solicitudes de soporte de manera organizada con un sistema de tickets eficiente.',
+            'features': [
+                'Sistema de tickets',
+                'Gestión de solicitudes de soporte',
+                'Asignación de tickets',
+                'Seguimiento de estado',
+                'Base de conocimientos',
+                'Reportes de soporte',
+                'Notificaciones automáticas',
+            ],
             'icon': 'bi-headset',
             'color': 'orange'
         },
         'activos': {
             'title': 'Gestión de Activos',
             'image': 'landing/images/horilla-assets-screenshot.webp',
-            'description': 'Gestiona y rastrea los activos de la empresa asignados a empleados y departamentos.',
-            'content': '''
-                <p>Mantén un control completo sobre los activos de tu empresa. Rastrea equipos, herramientas y recursos 
-                asignados a empleados y departamentos, con historial completo de movimientos y mantenimientos.</p>
-                <h4>Características principales:</h4>
-                <ul>
-                    <li>Inventario completo de activos</li>
-                    <li>Asignación a empleados y departamentos</li>
-                    <li>Historial de movimientos</li>
-                    <li>Gestión de mantenimientos</li>
-                    <li>Reportes de activos</li>
-                    <li>Seguimiento de estado</li>
-                    <li>Valoración de activos</li>
-                </ul>
-            ''',
+            'description': 'Mantén un control completo sobre los activos de tu empresa. Rastrea equipos y recursos con historial de movimientos.',
+            'features': [
+                'Inventario completo de activos',
+                'Asignación a empleados y departamentos',
+                'Historial de movimientos',
+                'Gestión de mantenimientos',
+                'Reportes de activos',
+                'Seguimiento de estado',
+                'Valoración de activos',
+            ],
             'icon': 'bi-briefcase',
             'color': 'blue'
         }
@@ -883,7 +838,6 @@ def login_user(request):
         if (
             needs_onboarding(user)
             and not request.session.get("company_onboarding_done")
-            and not request.session.get("company_onboarding_skipped")
         ):
             return redirect("company-onboarding")
 
@@ -992,10 +946,6 @@ def register_user(request):
                     city="Santa Cruz",  # Valor por defecto
                 )
 
-                # Obtener departamento y tipo de empleado por defecto
-                default_department = Department.objects.filter(id=6).first()
-                default_employee_type = EmployeeType.objects.filter(id=2).first()
-
                 # Create EmployeeWorkInformation with all required fields
                 from employee.models import EmployeeWorkInformation
 
@@ -1011,8 +961,6 @@ def register_user(request):
                         "salary_hour": 0,
                         "additional_info": "",
                         "experience": 0,
-                        "department_id": default_department,
-                        "employee_type_id": default_employee_type,
                     }
                 )
 

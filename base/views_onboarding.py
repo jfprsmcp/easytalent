@@ -107,19 +107,13 @@ LEAVE_TYPE_SUGGESTIONS = [
     },
 ]
 
-COLOMBIA_HOLIDAYS = [
+BOLIVIA_HOLIDAYS = [
     {"name": "Año Nuevo", "date": "01-01", "recurring": True},
-    {"name": "Día de los Reyes Magos", "date": "01-06", "recurring": True},
-    {"name": "Día de San José", "date": "03-19", "recurring": True},
+    {"name": "Estado Plurinacional", "date": "01-22", "recurring": True},
     {"name": "Día del Trabajo", "date": "05-01", "recurring": True},
-    {"name": "Día de la Ascensión", "date": "05-29", "recurring": True},
-    {"name": "Corpus Christi", "date": "06-19", "recurring": True},
-    {"name": "Sagrado Corazón", "date": "06-26", "recurring": True},
-    {"name": "Grito de Independencia", "date": "07-20", "recurring": True},
-    {"name": "Batalla de Boyacá", "date": "08-07", "recurring": True},
-    {"name": "Día de la Raza", "date": "10-12", "recurring": True},
-    {"name": "Día de Todos los Santos", "date": "11-01", "recurring": True},
-    {"name": "Independencia de Cartagena", "date": "11-11", "recurring": True},
+    {"name": "Año Nuevo Aymara", "date": "06-21", "recurring": True},
+    {"name": "Día de la Independencia", "date": "08-06", "recurring": True},
+    {"name": "Día de Todos los Santos", "date": "11-02", "recurring": True},
     {"name": "Navidad", "date": "12-25", "recurring": True},
 ]
 
@@ -531,12 +525,12 @@ def step8_holidays(request):
     if request.method == "POST":
         action = request.POST.get("action", "add")
 
-        if action == "load_colombia":
+        if action == "load_bolivia":
             import datetime
 
             current_year = datetime.date.today().year
             added = 0
-            for h in COLOMBIA_HOLIDAYS:
+            for h in BOLIVIA_HOLIDAYS:
                 month, day = h["date"].split("-")
                 start = datetime.date(current_year, int(month), int(day))
                 exists = Holidays.objects.filter(
@@ -554,7 +548,7 @@ def step8_holidays(request):
             if added:
                 messages.success(
                     request,
-                    _("%(count)s festivos de Colombia agregados.") % {"count": added},
+                    _("%(count)s festivos de Bolivia agregados.") % {"count": added},
                 )
             else:
                 messages.info(request, _("Los festivos ya estaban cargados."))
@@ -751,9 +745,12 @@ def step10_summary(request):
 @login_required
 def onboarding_complete(request):
     request.session["company_onboarding_done"] = True
+    # Limpiar breadcrumbs del wizard para que el dashboard no los muestre
+    if "breadcrumbs" in request.session:
+        del request.session["breadcrumbs"]
     messages.success(
         request,
-        _("¡Configuración completada! Tu empresa está lista para usar."),
+        _("Configuracion completada! Tu empresa esta lista para usar."),
     )
     return redirect("home-page")
 
@@ -767,9 +764,23 @@ def onboarding_dismiss_banner(request):
 
 @login_required
 def onboarding_skip(request):
+    """Only allow skipping if the company has completed the minimum setup (departments + positions)."""
+    company = _get_user_company(request)
+    has_departments = Department.objects.filter(company_id=company).exists()
+    has_positions = JobPosition.objects.filter(department_id__company_id=company).exists()
+
+    if not has_departments or not has_positions:
+        messages.warning(
+            request,
+            _("Debes completar al menos los departamentos y puestos de trabajo antes de continuar."),
+        )
+        return redirect("company-onboarding")
+
     request.session["company_onboarding_skipped"] = True
+    if "breadcrumbs" in request.session:
+        del request.session["breadcrumbs"]
     messages.info(
         request,
-        _("Puedes configurar tu empresa desde el menú de Ajustes cuando lo necesites."),
+        _("Puedes completar la configuración restante desde el menú de Ajustes."),
     )
     return redirect("home-page")

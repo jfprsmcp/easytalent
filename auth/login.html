@@ -1,140 +1,516 @@
 {% load static %} {% load i18n %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 
 <head>
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Login - {{white_label_company_name}} Dashboard</title>
-    <link rel="apple-touch-icon" sizes="180x180"
-        href="{% if white_label_company.icon %}{{white_label_company.icon.url}} {% else %}{% static 'favicons/apple-touch-icon.png' %}{% endif %}">
-    <link rel="icon" type="image/png" sizes="32x32"
-        href="{% if white_label_company.icon %}{{white_label_company.icon.url}} {% else %}{% static 'favicons/favicon-32x32.png' %}{% endif %}">
-    <link rel="icon" type="image/png" sizes="16x16"
-        href="{% if white_label_company.icon %}{{white_label_company.icon.url}} {% else %}{% static 'favicons/favicon-16x16.png' %}{% endif %}">
+    <title>{% trans "Iniciar Sesion" %} - EasyTalent</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="{% static 'landing/images/easy-logo.png' %}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{% static 'landing/images/easy-logo.png' %}">
     <link rel="stylesheet" href="{% static '/build/css/style.min.css' %}" />
-    <link rel="manifest" href="{% static 'build/manifest.json' %}" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            background: #f6f6f6;
+        }
+
+        /* ===== Panel izquierdo ===== */
+        .side-panel {
+            display: none;
+            width: 50%;
+            background: linear-gradient(160deg, #0f172a 0%, #1a2540 60%, #243352 100%);
+            position: relative;
+            overflow: hidden;
+            padding: 4rem 3rem;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .side-panel::before {
+            content: '';
+            position: absolute;
+            top: -20%; right: -15%;
+            width: 600px; height: 600px;
+            background: radial-gradient(circle, rgba(229,79,56,0.18) 0%, transparent 65%);
+            pointer-events: none;
+        }
+
+        .side-panel::after {
+            content: '';
+            position: absolute;
+            bottom: -25%; left: -10%;
+            width: 400px; height: 400px;
+            background: radial-gradient(circle, rgba(229,79,56,0.1) 0%, transparent 65%);
+            pointer-events: none;
+        }
+
+        .side-content {
+            position: relative;
+            z-index: 1;
+            max-width: 420px;
+        }
+
+        .side-logo {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 3rem;
+        }
+
+        .side-logo img {
+            width: 48px; height: 48px;
+            filter: drop-shadow(0 2px 8px rgba(0,0,0,0.3));
+        }
+
+        .side-logo span {
+            color: #fff;
+            font-size: 1.4rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+        }
+
+        .side-title {
+            color: #fff;
+            font-size: 2.4rem;
+            font-weight: 800;
+            line-height: 1.15;
+            letter-spacing: -1px;
+            margin-bottom: 1rem;
+        }
+
+        .side-title span {
+            color: #e54f38;
+        }
+
+        .side-desc {
+            color: rgba(255,255,255,0.45);
+            font-size: 1.05rem;
+            line-height: 1.7;
+            margin-bottom: 2.5rem;
+        }
+
+        .side-features {
+            display: flex;
+            flex-direction: column;
+            gap: 1.1rem;
+        }
+
+        .side-feature {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            color: rgba(255,255,255,0.55);
+            font-size: 0.95rem;
+        }
+
+        .side-feature-icon {
+            width: 40px; height: 40px;
+            border-radius: 10px;
+            background: rgba(229,79,56,0.12);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .side-feature-icon ion-icon {
+            color: #e54f38;
+            font-size: 1.2rem;
+        }
+
+        /* ===== Panel derecho ===== */
+        .main-panel {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .form-container {
+            width: 100%;
+            max-width: 540px;
+            animation: fadeUp 0.5s ease-out;
+        }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(16px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Logo mobile */
+        .mobile-brand {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .mobile-brand img {
+            width: 52px; height: 52px;
+            margin-bottom: 0.5rem;
+        }
+
+        .mobile-brand h2 {
+            font-size: 1.2rem;
+            font-weight: 800;
+            color: #0f172a;
+        }
+
+        /* Card */
+        .card {
+            background: #fff;
+            border-radius: 16px;
+            padding: 2.5rem 2.5rem 2rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 8px 30px rgba(0,0,0,0.06);
+            border: 1px solid #e6e6e6;
+        }
+
+        .card-title {
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: #0f172a;
+            margin-bottom: 0.3rem;
+        }
+
+        .card-subtitle {
+            color: #64748b;
+            font-size: 0.95rem;
+            margin-bottom: 2rem;
+        }
+
+        /* Form fields */
+        .field {
+            margin-bottom: 1.4rem;
+        }
+
+        .field label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #475569;
+            margin-bottom: 8px;
+        }
+
+        .field-input {
+            position: relative;
+        }
+
+        .field-input input {
+            width: 100%;
+            padding: 14px 16px 14px 48px;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-family: inherit;
+            color: #1e293b;
+            background: #fff;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            outline: none;
+        }
+
+        .field-input input:focus {
+            border-color: #e54f38;
+            box-shadow: 0 0 0 3px rgba(229,79,56,0.12);
+        }
+
+        .field-input input::placeholder {
+            color: #94a3b8;
+        }
+
+        .field-input ion-icon {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #94a3b8;
+            font-size: 1.2rem;
+            pointer-events: none;
+        }
+
+        .field-input input:focus ~ ion-icon {
+            color: #e54f38;
+        }
+
+        /* Password field */
+        .pw-field input {
+            padding-right: 50px;
+        }
+
+        .pw-toggle {
+            position: absolute;
+            right: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #94a3b8;
+            font-size: 1.2rem;
+            display: flex;
+            padding: 4px;
+        }
+
+        .pw-toggle:hover { color: #64748b; }
+
+        /* Button */
+        .btn-submit {
+            width: 100%;
+            padding: 15px;
+            background: #e54f38;
+            color: #fff;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            font-family: inherit;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: background 0.2s, box-shadow 0.2s, transform 0.15s;
+            margin-top: 0.5rem;
+        }
+
+        .btn-submit:hover {
+            background: #cc3d28;
+            box-shadow: 0 6px 20px rgba(229,79,56,0.3);
+            transform: translateY(-1px);
+        }
+
+        .btn-submit:active {
+            transform: translateY(0);
+        }
+
+        /* Links */
+        .links {
+            text-align: center;
+            margin-top: 1.5rem;
+        }
+
+        .links a {
+            color: #64748b;
+            font-size: 0.88rem;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .links a:hover { color: #e54f38; }
+
+        .links-register {
+            display: block;
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            color: #64748b;
+        }
+
+        .links-register a {
+            color: #e54f38;
+            font-weight: 600;
+        }
+
+        /* Init DB */
+        .init-btns {
+            display: flex;
+            gap: 10px;
+            margin-top: 1.2rem;
+        }
+
+        .btn-init {
+            flex: 1;
+            padding: 12px;
+            border-radius: 10px;
+            border: 1.5px solid #e2e8f0;
+            background: #fff;
+            color: #475569;
+            font-size: 0.85rem;
+            font-weight: 600;
+            font-family: inherit;
+            cursor: pointer;
+            text-decoration: none;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: border-color 0.2s, color 0.2s;
+        }
+
+        .btn-init:hover {
+            border-color: #e54f38;
+            color: #e54f38;
+        }
+
+        /* Alerts */
+        .alert-box {
+            position: fixed;
+            top: 1.5rem;
+            right: 1.5rem;
+            z-index: 9999;
+        }
+
+        .alert-item {
+            background: #fff;
+            border-radius: 10px;
+            padding: 14px 20px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+            font-size: 0.9rem;
+            font-weight: 500;
+            margin-bottom: 8px;
+            border-left: 4px solid #e54f38;
+            animation: slideIn 0.4s ease-out;
+        }
+
+        .alert-item.error { border-left-color: #ef4444; }
+        .alert-item.success { border-left-color: #10b981; }
+        .alert-item.warning { border-left-color: #f59e0b; }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(80px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        /* Responsive */
+        @media (min-width: 1024px) {
+            .side-panel { display: flex; }
+            .mobile-brand { display: none; }
+        }
+
+        @media (max-width: 600px) {
+            .card { padding: 2rem 1.5rem; }
+            .main-panel { padding: 1.5rem 1rem; }
+        }
+    </style>
 </head>
 
 <body>
-    <div id="main">
-        <div class="oh-alert-container">
-            {% for message in messages %}
-            <div class="oh-alert oh-alert--animated {{ message.tags }}">
-                {{ message }}
+    <div class="alert-box">
+        {% for message in messages %}
+        <div class="alert-item {{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+    </div>
+
+    <div class="side-panel">
+        <div class="side-content">
+            <div class="side-logo">
+                <img src="{% static 'landing/images/easy-logo.png' %}" alt="EasyTalent">
+                <span>EasyTalent</span>
             </div>
-            {% endfor %}
+            <h1 class="side-title">{% trans "Gestiona tu equipo de forma" %} <span>{% trans "simple" %}</span></h1>
+            <p class="side-desc">{% trans "Todo lo que necesitas para administrar empleados, asistencia, nomina y mas en un solo lugar." %}</p>
+            <div class="side-features">
+                <div class="side-feature">
+                    <div class="side-feature-icon"><ion-icon name="people-outline"></ion-icon></div>
+                    {% trans "Gestion completa de empleados" %}
+                </div>
+                <div class="side-feature">
+                    <div class="side-feature-icon"><ion-icon name="time-outline"></ion-icon></div>
+                    {% trans "Control de asistencia y horarios" %}
+                </div>
+                <div class="side-feature">
+                    <div class="side-feature-icon"><ion-icon name="wallet-outline"></ion-icon></div>
+                    {% trans "Nomina y planilla automatizada" %}
+                </div>
+                <div class="side-feature">
+                    <div class="side-feature-icon"><ion-icon name="stats-chart-outline"></ion-icon></div>
+                    {% trans "Reportes en tiempo real" %}
+                </div>
+            </div>
         </div>
-        <main class="oh-auth">
-            <div class="oh-auth-card mb-4">
-                <h1 class="oh-onboarding-card__title oh-onboarding-card__title--h2 text-center my-3">
-                    {% trans "Sign In" %}
-                </h1>
-                <p class="text-muted text-center">
-                    {% trans "Please login to access the dashboard." %}
-                </p>
-                <form method="post" class="oh-form-group">
+    </div>
+
+    <div class="main-panel">
+        <div class="form-container">
+            <div class="mobile-brand">
+                <img src="{% static 'landing/images/easy-logo.png' %}" alt="EasyTalent">
+                <h2>EasyTalent</h2>
+            </div>
+
+            <div class="card">
+                <h2 class="card-title">{% trans "Bienvenido" %}</h2>
+                <p class="card-subtitle">{% trans "Ingresa tus credenciales para continuar" %}</p>
+
+                <form method="post">
                     {% csrf_token %}
-                    <div class="oh-input-group">
-                        <label class="oh-label" for="username">{% trans "Username" %}</label>
-                        <input type="text" id="username" name="username" class="oh-input w-100"
-                            placeholder="e.g. adam.luis@horilla.com" />
+                    <div class="field">
+                        <label for="username">{% trans "Correo electronico" %}</label>
+                        <div class="field-input">
+                            <input type="text" id="username" name="username" placeholder="{% trans 'tu@empresa.com' %}" autofocus />
+                            <ion-icon name="mail-outline"></ion-icon>
+                        </div>
                     </div>
-                    <div class="oh-input-group">
-                        <label class="oh-label" for="password">{% trans "Password" %}</label>
-                        <div class="oh-password-input-container">
-                            <input type="password" id="password" name="password"
-                                class="oh-input oh-input--password w-100" placeholder="Use alphanumeric characters" />
-                            <button type="button" class="oh-btn oh-btn--transparent oh-password-input--toggle">
-                                <ion-icon class="oh-passowrd-input__show-icon" title="{% trans 'Show Password' %}"
-                                    name="eye-outline"></ion-icon>
-                                <ion-icon class="oh-passowrd-input__hide-icon d-none" title="{% trans 'Hide Password' %}"
-                                    name="eye-off-outline"></ion-icon>
+                    <div class="field">
+                        <label for="password">{% trans "Contrasena" %}</label>
+                        <div class="field-input pw-field">
+                            <input type="password" id="password" name="password" placeholder="{% trans 'Ingresa tu contrasena' %}" />
+                            <ion-icon name="lock-closed-outline"></ion-icon>
+                            <button type="button" class="pw-toggle" onclick="togglePw()">
+                                <ion-icon name="eye-outline" id="eyeIcon"></ion-icon>
                             </button>
                         </div>
                     </div>
-                    <button type="submit"
-                        class="oh-btn oh-onboarding-card__button mt-4 oh-btn--secondary oh-btn--shadow w-100 mb-4"
-                        role="button">
-                        <ion-icon class="me-2" name="lock-closed-outline"></ion-icon>
-                        {% trans "Secure Sign-in" %}
+                    <button type="submit" class="btn-submit">
+                        <ion-icon name="log-in-outline" style="font-size:1.2rem;"></ion-icon>
+                        {% trans "Iniciar Sesion" %}
                     </button>
-                    {% if not initialize_database %}
-                    <small class="text-center">
-                        <a href="{% url 'forgot-password' %}" class="oh-link oh-link--secondary justify-content-center">
-                            {% trans "Forgot password" %}?
-                        </a>
-                    </small>
-                    <small class="text-center d-block">
-                        <a href="{% url 'register' %}" class="oh-link oh-link--secondary justify-content-center">
-                            {% trans "Don't have an account? Create one" %}
-                        </a>
-                    </small>
-                {% endif %}
                 </form>
-                {% if initialize_database %}
-                    <div>
-                        <div class="d-flex gap-2">
-                            <a href="{% url 'initialize-database' %}"
-                                class="oh-btn oh-onboarding-card__button mt-4 oh-btn--secondary oh-btn--shadow w-100 mb-4"
-                                role="button" style="
-                                background-color: rgba(229, 79, 56, 0.1);
-                                color: hsl(8, 77%, 56%);
-                                ">
-                                {% trans "Initialize Database" %}
-                                <ion-icon class="ms-2" name="arrow-forward-outline"></ion-icon>
-                            </a>
-                            <a
-                                onclick="$('#dataLoadAuthentication').toggleClass('oh-modal--show');"
-                                class="oh-btn oh-onboarding-card__button mt-4 oh-btn--secondary oh-btn--shadow w-100 mb-4"
-                                style="background-color: #31b46e1f; color: #1fad61" role="button">
-                                {% trans "Load Demo Data" %}
-                                <ion-icon class="ms-2" name="arrow-forward-outline"></ion-icon>
-                            </a>
-                        </div>
-                    </div>
-                    <div class="oh-modal" id="dataLoadAuthentication" role="dialog" aria-labelledby="dataLoadAuthenticationLabel" aria-hidden="true" style="backdrop-filter: blur(8px);">
-                        <div class="oh-modal__dialog">
-                            {% include "demo_database/auth_load_data.html" %}
-                        </div>
-                    </div>
-                {% endif %}
-            </div>
-            <div style="display: contents;">
-                <img src={% if white_label_company.icon %}
-                        "{{white_label_company.icon.url}}"
-                        alt="{{white_label_company_name}}"
-                        style=" opacity:.90; 200px; height: 140px;"
-                    {% else %}
-                        "{% static 'images/ui/auth-logo.png' %}" alt="Horilla"
-                    {% endif %}
-                />
-                {% if white_label_company %}
-                <p style=" font-size: large; color: gray; text-align: center;" class="mt-2">{{white_label_company}}</p>
-                {% endif %}
 
+                {% if initialize_database %}
+                <div class="init-btns">
+                    <a href="{% url 'initialize-database' %}" class="btn-init">
+                        <ion-icon name="server-outline"></ion-icon> {% trans "Inicializar BD" %}
+                    </a>
+                    <a onclick="$('#dataLoadAuthentication').toggleClass('oh-modal--show');" class="btn-init" style="cursor:pointer;">
+                        <ion-icon name="cloud-download-outline"></ion-icon> {% trans "Datos Demo" %}
+                    </a>
+                </div>
+                <div class="oh-modal" id="dataLoadAuthentication" role="dialog" aria-hidden="true" style="backdrop-filter:blur(8px);">
+                    <div class="oh-modal__dialog">
+                        {% include "demo_database/auth_load_data.html" %}
+                    </div>
+                </div>
+                {% endif %}
             </div>
-        </main>
+
+            {% if not initialize_database %}
+            <div class="links">
+                <a href="{% url 'forgot-password' %}">{% trans "Olvidaste tu contrasena?" %}</a>
+                <div class="links-register">
+                    {% trans "No tienes cuenta?" %}
+                    <a href="{% url 'register' %}">{% trans "Crear una cuenta" %}</a>
+                </div>
+            </div>
+            {% endif %}
+        </div>
     </div>
+
     <script src="{% static '/build/js/web.frontend.min.js' %}"></script>
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-    {% comment %} <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
-    <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script> {% endcomment %}
-    <script type="module"  src="{% static 'images/ionicons/ui_icons/ionicons/ionicons.esm.js' %}"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+    <script type="module" src="{% static 'images/ionicons/ui_icons/ionicons/ionicons.esm.js' %}"></script>
     <script>
-        $(document).ready(function () {
-            if ($(".oh-alert--warning").length > 0) {
-                Swal.fire({
-                    title: 'Access Denied !',
-                    text: 'Your login credentials are currently blocked. Please contact HR administrators for assistance.',
-                    icon: 'warning',
-                    confirmButtonText: 'OK',
-                });
-            }
+    function togglePw() {
+        var inp = document.getElementById('password');
+        var ico = document.getElementById('eyeIcon');
+        inp.type = inp.type === 'password' ? 'text' : 'password';
+        ico.setAttribute('name', inp.type === 'password' ? 'eye-outline' : 'eye-off-outline');
+    }
+    setTimeout(function() {
+        document.querySelectorAll('.alert-item').forEach(function(el) {
+            el.style.transition = 'all 0.4s';
+            el.style.opacity = '0';
+            el.style.transform = 'translateX(80px)';
+            setTimeout(function() { el.remove(); }, 400);
         });
+    }, 4000);
     </script>
 </body>
-
 </html>

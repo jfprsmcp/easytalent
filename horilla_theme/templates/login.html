@@ -1,151 +1,595 @@
 {% load static %} {% load i18n %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 
 <head>
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>{% trans "Iniciar Sesión" %} - {{white_label_company_name}} Dashboard</title>
-    <link rel="apple-touch-icon" sizes="180x180"
-        href="{% static 'landing/images/easy-logo.png' %}">
-    <link rel="icon" type="image/png" sizes="32x32"
-        href="{% static 'landing/images/easy-logo.png' %}">
-    <link rel="icon" type="image/png" sizes="16x16"
-        href="{% static 'landing/images/easy-logo.png' %}">
+    <title>{% trans "Iniciar Sesión" %} - EasyTalent</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="{% static 'landing/images/easy-logo.png' %}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{% static 'landing/images/easy-logo.png' %}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{% static 'landing/images/easy-logo.png' %}">
     <link rel="stylesheet" href="{% static '/build/css/style.min.css' %}" />
     <link rel="manifest" href="{% static 'build/manifest.json' %}" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <meta name="theme-color" content="#e54f38">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            background: #f6f6f6;
+        }
+
+        /* ===== Panel izquierdo ===== */
+        .side-panel {
+            display: none;
+            width: 42%;
+            background: linear-gradient(160deg, #0f172a 0%, #1a2540 60%, #243352 100%);
+            position: relative;
+            overflow: hidden;
+            padding: 4rem 3rem;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .side-panel::before {
+            content: '';
+            position: absolute;
+            top: -20%; right: -15%;
+            width: 600px; height: 600px;
+            background: radial-gradient(circle, rgba(229,79,56,0.18) 0%, transparent 65%);
+            pointer-events: none;
+        }
+
+        .side-panel::after {
+            content: '';
+            position: absolute;
+            bottom: -25%; left: -10%;
+            width: 400px; height: 400px;
+            background: radial-gradient(circle, rgba(229,79,56,0.1) 0%, transparent 65%);
+            pointer-events: none;
+        }
+
+        .side-content {
+            position: relative;
+            z-index: 1;
+            max-width: 380px;
+        }
+
+        .side-logo {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 3rem;
+        }
+
+        .side-logo img {
+            width: 48px; height: 48px;
+            filter: drop-shadow(0 2px 8px rgba(0,0,0,0.3));
+        }
+
+        .side-logo span {
+            color: #fff;
+            font-size: 1.4rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+        }
+
+        .side-title {
+            color: #fff;
+            font-size: 2.2rem;
+            font-weight: 800;
+            line-height: 1.15;
+            letter-spacing: -1px;
+            margin-bottom: 1rem;
+        }
+
+        .side-title span { color: #e54f38; }
+
+        .side-desc {
+            color: rgba(255,255,255,0.45);
+            font-size: 1rem;
+            line-height: 1.7;
+            margin-bottom: 2.5rem;
+        }
+
+        .side-features {
+            display: flex;
+            flex-direction: column;
+            gap: 1.2rem;
+        }
+
+        .side-feature {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .side-feature-icon {
+            width: 40px; height: 40px;
+            border-radius: 10px;
+            background: rgba(229,79,56,0.12);
+            color: #e54f38;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            flex-shrink: 0;
+        }
+
+        .side-feature-text {
+            color: rgba(255,255,255,0.65);
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+
+        .side-feature-text strong {
+            color: rgba(255,255,255,0.85);
+            display: block;
+            margin-bottom: 1px;
+        }
+
+        /* ===== Panel derecho ===== */
+        .main-panel {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            overflow-y: auto;
+        }
+
+        .form-container {
+            width: 100%;
+            max-width: 440px;
+            animation: fadeUp 0.5s ease-out;
+        }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(16px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .mobile-brand {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .mobile-brand img {
+            width: 56px; height: 56px;
+            margin-bottom: 0.5rem;
+        }
+
+        .mobile-brand h2 {
+            font-size: 1.2rem;
+            font-weight: 800;
+            color: #0f172a;
+        }
+
+        /* Card */
+        .card {
+            background: #fff;
+            border-radius: 16px;
+            padding: 2.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 8px 30px rgba(0,0,0,0.06);
+            border: 1px solid #e6e6e6;
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #0f172a;
+            margin-bottom: 0.3rem;
+            text-align: center;
+        }
+
+        .card-subtitle {
+            color: #64748b;
+            font-size: 0.92rem;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        /* Fields */
+        .field {
+            margin-bottom: 1.2rem;
+        }
+
+        .field label {
+            display: block;
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: #475569;
+            margin-bottom: 6px;
+        }
+
+        .field-input {
+            position: relative;
+        }
+
+        .field-input input {
+            width: 100%;
+            padding: 13px 16px 13px 46px;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 0.95rem;
+            font-family: inherit;
+            color: #1e293b;
+            background: #fff;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            outline: none;
+        }
+
+        .field-input input:focus {
+            border-color: #e54f38;
+            box-shadow: 0 0 0 3px rgba(229,79,56,0.12);
+        }
+
+        .field-input input::placeholder { color: #94a3b8; }
+
+        .field-input > ion-icon {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #94a3b8;
+            font-size: 1.15rem;
+            pointer-events: none;
+        }
+
+        .field-input input:focus ~ ion-icon { color: #e54f38; }
+
+        /* Password */
+        .pw-field input { padding-right: 48px; }
+
+        .pw-toggle {
+            position: absolute;
+            right: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #94a3b8;
+            font-size: 1.15rem;
+            display: flex;
+            padding: 4px;
+        }
+
+        .pw-toggle:hover { color: #64748b; }
+
+        /* Button */
+        .btn-submit {
+            width: 100%;
+            padding: 14px;
+            background: #e54f38;
+            color: #fff;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            font-family: inherit;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: background 0.2s, box-shadow 0.2s, transform 0.15s;
+            margin-top: 0.5rem;
+        }
+
+        .btn-submit:hover {
+            background: #cc3d28;
+            box-shadow: 0 6px 20px rgba(229,79,56,0.3);
+            transform: translateY(-1px);
+        }
+
+        .btn-submit:active { transform: translateY(0); }
+
+        .links {
+            text-align: center;
+            margin-top: 1.5rem;
+            font-size: 0.88rem;
+            color: #64748b;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .links a {
+            color: #e54f38;
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        .links a:hover { text-decoration: underline; }
+
+        /* Divider */
+        .divider {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin: 1.5rem 0;
+            color: #cbd5e1;
+            font-size: 0.75rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .divider::before, .divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: #e2e8f0;
+        }
+
+        /* Init buttons */
+        .init-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-init {
+            flex: 1;
+            padding: 12px 14px;
+            border-radius: 12px;
+            font-size: 0.82rem;
+            font-weight: 600;
+            font-family: inherit;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.2s;
+            text-decoration: none;
+            border: 1.5px solid transparent;
+        }
+
+        .btn-init--primary {
+            background: rgba(229, 79, 56, 0.08);
+            color: #e54f38;
+            border-color: rgba(229, 79, 56, 0.2);
+        }
+        .btn-init--primary:hover {
+            background: rgba(229, 79, 56, 0.15);
+            color: #cc3d28;
+        }
+
+        .btn-init--success {
+            background: rgba(16, 185, 129, 0.08);
+            color: #10b981;
+            border-color: rgba(16, 185, 129, 0.2);
+        }
+        .btn-init--success:hover {
+            background: rgba(16, 185, 129, 0.15);
+            color: #059669;
+        }
+
+        /* Alerts */
+        .alert-box {
+            position: fixed;
+            top: 1.5rem;
+            right: 1.5rem;
+            z-index: 9999;
+        }
+
+        .alert-item {
+            background: #fff;
+            border-radius: 10px;
+            padding: 14px 20px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+            font-size: 0.9rem;
+            font-weight: 500;
+            margin-bottom: 8px;
+            border-left: 4px solid #e54f38;
+            animation: slideIn 0.4s ease-out;
+        }
+
+        .alert-item.error, .alert-item.oh-alert--danger { border-left-color: #ef4444; }
+        .alert-item.success, .alert-item.oh-alert--success { border-left-color: #10b981; }
+        .alert-item.warning, .alert-item.oh-alert--warning { border-left-color: #f59e0b; }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(80px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        /* Modal overlay */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(15, 23, 42, 0.5);
+            backdrop-filter: blur(8px);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-overlay.show { display: flex; }
+        .modal-card {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+        }
+
+        @media (min-width: 1024px) {
+            .side-panel { display: flex; }
+            .mobile-brand { display: none; }
+        }
+
+        @media (max-width: 600px) {
+            .card { padding: 2rem 1.5rem; }
+            .main-panel { padding: 1.5rem 1rem; }
+            .init-buttons { flex-direction: column; }
+        }
+    </style>
 </head>
 
 <body>
-    <div id="main">
-        <div class="oh-alert-container">
-            {% for message in messages %}
-            <div class="oh-alert oh-alert--animated {{ message.tags }}">
-                {{ message }}
+    <div class="alert-box">
+        {% for message in messages %}
+        <div class="alert-item {{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+    </div>
+
+    <div class="side-panel">
+        <div class="side-content">
+            <div class="side-logo">
+                <img src="{% static 'landing/images/easy-logo.png' %}" alt="EasyTalent">
+                <span>EasyTalent</span>
             </div>
-            {% endfor %}
-        </div>
-        <main class="oh-auth">
-            <div class="oh-auth-card mb-4">
-                <div class="text-center">
-                    <img src={% if white_label_company.icon %}
-                            "{{white_label_company.icon.url}}"
-                            alt="{{white_label_company_name}}"
-                            style=" opacity:.90; 200px; height: 140px;"
-                        {% else %}
-                            "{% static 'landing/images/logo.png' %}" alt="Horilla" style=" opacity:.90; width: 220px; height: 80px;"
-                        {% endif %}
-                    />
-                    {% if white_label_company %}
-                    <p style=" font-size: large; color: gray; text-align: center;" class="mt-2">{{white_label_company}}</p>
-                    {% endif %}
-    
-                </div>
-                <h1 class="oh-onboarding-card__title oh-onboarding-card__title--h2 text-center my-3">
-                    {% trans "Iniciar Sesión" %}
-                </h1>
-                <p class="text-muted text-center">
-                    {% trans "Por favor inicia sesión para acceder al panel de control." %}
-                </p>
-                <form method="post" class="oh-form-group">
-                    {% csrf_token %}
-                    <div class="oh-input-group">
-                        <label class="oh-label" for="username">{% trans "Usuario" %}</label>
-                        <input type="text" id="username" name="username" class="oh-input w-100"
-                            placeholder="{% trans 'ej. adam.luis@horilla.com' %}" />
+            <h1 class="side-title">{% trans "Bienvenido de" %} <span>{% trans "vuelta" %}</span></h1>
+            <p class="side-desc">{% trans "Accede a tu panel de control y gestiona tu equipo de forma eficiente." %}</p>
+            <div class="side-features">
+                <div class="side-feature">
+                    <div class="side-feature-icon">
+                        <ion-icon name="people-outline"></ion-icon>
                     </div>
-                    <div class="oh-input-group">
-                        <label class="oh-label" for="password">{% trans "Contraseña" %}</label>
-                        <div class="oh-password-input-container">
-                            <input type="password" id="password" name="password"
-                                class="oh-input oh-input--password w-100" placeholder="{% trans 'Usa caracteres alfanuméricos' %}" />
-                            <button type="button" class="oh-btn oh-btn--transparent oh-password-input--toggle">
-                                <ion-icon class="oh-passowrd-input__show-icon" title="{% trans 'Mostrar Contraseña' %}"
-                                    name="eye-outline"></ion-icon>
-                                <ion-icon class="oh-passowrd-input__hide-icon d-none" title="{% trans 'Ocultar Contraseña' %}"
-                                    name="eye-off-outline"></ion-icon>
+                    <div class="side-feature-text">
+                        <strong>{% trans "Gestión de empleados" %}</strong>
+                        {% trans "Administra tu equipo en un solo lugar" %}
+                    </div>
+                </div>
+                <div class="side-feature">
+                    <div class="side-feature-icon">
+                        <ion-icon name="calendar-outline"></ion-icon>
+                    </div>
+                    <div class="side-feature-text">
+                        <strong>{% trans "Control de asistencia" %}</strong>
+                        {% trans "Horarios, permisos y vacaciones" %}
+                    </div>
+                </div>
+                <div class="side-feature">
+                    <div class="side-feature-icon">
+                        <ion-icon name="bar-chart-outline"></ion-icon>
+                    </div>
+                    <div class="side-feature-text">
+                        <strong>{% trans "Reportes y análisis" %}</strong>
+                        {% trans "Datos en tiempo real de tu organización" %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="main-panel">
+        <div class="form-container">
+            <div class="mobile-brand">
+                <img src="{% static 'landing/images/easy-logo.png' %}" alt="EasyTalent">
+                <h2>EasyTalent</h2>
+            </div>
+
+            <div class="card">
+                <h2 class="card-title">{% trans "Iniciar Sesión" %}</h2>
+                <p class="card-subtitle">{% trans "Por favor inicia sesión para acceder al panel de control." %}</p>
+
+                <form method="post" id="loginForm">
+                    {% csrf_token %}
+
+                    <div class="field">
+                        <label for="username">{% trans "Usuario" %}</label>
+                        <div class="field-input">
+                            <input type="text" id="username" name="username" placeholder="{% trans 'ej. maria@miempresa.com' %}" required autofocus />
+                            <ion-icon name="person-outline"></ion-icon>
+                        </div>
+                    </div>
+
+                    <div class="field">
+                        <label for="password">{% trans "Contraseña" %}</label>
+                        <div class="field-input pw-field">
+                            <input type="password" id="password" name="password" placeholder="{% trans 'Usa caracteres alfanuméricos' %}" required />
+                            <ion-icon name="lock-closed-outline"></ion-icon>
+                            <button type="button" class="pw-toggle" onclick="togglePw()">
+                                <ion-icon name="eye-outline" id="eyeIcon"></ion-icon>
                             </button>
                         </div>
                     </div>
-                    <button type="submit"
-                        class="oh-btn oh-onboarding-card__button mt-4 oh-btn--secondary oh-btn--shadow w-100 mb-4"
-                        role="button">
-                        <ion-icon class="me-2" name="lock-closed-outline"></ion-icon>
+
+                    <button type="submit" class="btn-submit">
+                        <ion-icon name="lock-closed-outline" style="font-size:1.1rem;"></ion-icon>
                         {% trans "Iniciar Sesión" %}
                     </button>
-                    {% if not initialize_database %}
-                        <small class="text-center">
-                            <a href="{% url 'forgot-password' %}" class="oh-link oh-link--secondary justify-content-center">
-                                {% trans "¿Olvidaste tu contraseña?" %}
-                            </a>
-                        </small>
-                        <small class="text-center d-block">
-                            <a href="{% url 'register' %}" class="oh-link oh-link--secondary justify-content-center">
-                                {% trans "¿No tienes una cuenta? Créala" %}
-                            </a>
-                        </small>
-                    {% endif %}
                 </form>
+
+                {% if not initialize_database %}
+                <div class="links">
+                    <a href="{% url 'forgot-password' %}">{% trans "¿Olvidaste tu contraseña?" %}</a>
+                    <span>{% trans "¿No tienes una cuenta?" %} <a href="{% url 'register' %}">{% trans "Créala" %}</a></span>
+                </div>
+                {% endif %}
+
                 {% if initialize_database %}
-                    <div>
-                        <div class="d-flex gap-2">
-                            <a href="{% url 'initialize-database' %}"
-                                class="oh-btn oh-onboarding-card__button mt-4 oh-btn--secondary oh-btn--shadow w-100 mb-4"
-                                role="button" style="
-                                background-color: rgba(229, 79, 56, 0.1);
-                                color: hsl(8, 77%, 56%);
-                                ">
-                                {% trans "Inicializar Base de Datos" %}
-                                <ion-icon class="ms-2" name="arrow-forward-outline"></ion-icon>
-                            </a>
-                            <a
-                                onclick="$('#dataLoadAuthentication').toggleClass('oh-modal--show');"
-                                class="oh-btn oh-onboarding-card__button mt-4 oh-btn--secondary oh-btn--shadow w-100 mb-4"
-                                style="background-color: #31b46e1f; color: #1fad61" role="button">
-                                {% trans "Cargar Datos de Demostración" %}
-                                <ion-icon class="ms-2" name="arrow-forward-outline"></ion-icon>
-                            </a>
-                        </div>
-                    </div>
-                    <div class="oh-modal" id="dataLoadAuthentication" role="dialog" aria-labelledby="dataLoadAuthenticationLabel" aria-hidden="true" style="backdrop-filter: blur(8px);">
-                        <div class="oh-modal__dialog">
-                            {% include "demo_database/auth_load_data.html" %}
-                        </div>
-                    </div>
+                <div class="divider">{% trans "o bien" %}</div>
+                <div class="init-buttons">
+                    <a href="{% url 'initialize-database' %}" class="btn-init btn-init--primary">
+                        <ion-icon name="server-outline"></ion-icon>
+                        {% trans "Inicializar BD" %}
+                    </a>
+                    <a onclick="document.getElementById('demoModal').classList.add('show');" class="btn-init btn-init--success" style="cursor:pointer;">
+                        <ion-icon name="cloud-download-outline"></ion-icon>
+                        {% trans "Datos de Demo" %}
+                    </a>
+                </div>
                 {% endif %}
             </div>
-           
-        </main>
+        </div>
     </div>
+
+    {% if initialize_database %}
+    <div class="modal-overlay" id="demoModal">
+        <div class="modal-card">
+            {% include "demo_database/auth_load_data.html" %}
+            <button onclick="document.getElementById('demoModal').classList.remove('show');" style="margin-top:1rem;width:100%;padding:10px;border:1.5px solid #e2e8f0;border-radius:10px;background:white;cursor:pointer;font-family:inherit;font-weight:500;color:#64748b;">
+                {% trans "Cancelar" %}
+            </button>
+        </div>
+    </div>
+    {% endif %}
+
     <script src="{% static '/build/js/web.frontend.min.js' %}"></script>
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-    <script type="module"  src="{% static 'images/ionicons/ui_icons/ionicons/ionicons.esm.js' %}"></script>
+    <script type="module" src="{% static 'images/ionicons/ui_icons/ionicons/ionicons.esm.js' %}"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
     <script>
-        $(document).ready(function () {
-            // Solo mostrar SweetAlert para mensajes de ERROR, no para WARNING del middleware
-            // Los mensajes de warning del middleware de restricciones no deben mostrarse aquí
-            var errorAlerts = $(".oh-alert--danger, .oh-alert--error");
-            if (errorAlerts.length > 0) {
-                // Verificar que el mensaje no sea del middleware de restricciones
-                var alertText = errorAlerts.first().text().trim();
-                var isRestrictionMessage = alertText.includes("administrador de licencias") || 
-                                          alertText.includes("solo puedes acceder");
-                
-                if (!isRestrictionMessage) {
-                    Swal.fire({
-                        title: '{% trans "¡Acceso Denegado!" %}',
-                        text: '{% trans "Tus credenciales de inicio de sesión están actualmente bloqueadas. Por favor contacta a los administradores de RRHH para asistencia." %}',
-                        icon: 'warning',
-                        confirmButtonText: 'OK',
-                    });
-                }
-            }
+    function togglePw() {
+        var inp = document.getElementById('password');
+        var ico = document.getElementById('eyeIcon');
+        inp.type = inp.type === 'password' ? 'text' : 'password';
+        ico.setAttribute('name', inp.type === 'password' ? 'eye-outline' : 'eye-off-outline');
+    }
+
+    $(document).ready(function () {
+        var warningAlerts = $(".alert-item.oh-alert--warning, .alert-item.warning");
+        if (warningAlerts.length > 0) {
+            Swal.fire({
+                title: '{% trans "¡Acceso Denegado!" %}',
+                text: '{% trans "Tus credenciales de inicio de sesión están actualmente bloqueadas. Por favor contacta a los administradores de RRHH para asistencia." %}',
+                icon: 'warning',
+                confirmButtonText: 'OK',
+                confirmButtonColor: '#e54f38',
+            });
+        }
+    });
+
+    setTimeout(function() {
+        document.querySelectorAll('.alert-item').forEach(function(el) {
+            el.style.transition = 'all 0.4s'; el.style.opacity = '0';
+            el.style.transform = 'translateX(80px)';
+            setTimeout(function() { el.remove(); }, 400);
         });
+    }, 4000);
     </script>
 </body>
 
 </html>
-

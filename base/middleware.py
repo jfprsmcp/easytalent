@@ -13,7 +13,15 @@ from django.utils.translation import gettext_lazy as _
 from base.backends import ConfiguredEmailBackend
 from base.context_processors import AllCompany
 from base.horilla_company_manager import HorillaCompanyManager
-from base.models import Company, ShiftRequest, WorkTypeRequest
+from base.models import (
+    Company,
+    Department,
+    EmployeeType,
+    JobPosition,
+    JobRole,
+    ShiftRequest,
+    WorkTypeRequest,
+)
 from employee.models import (
     DisciplinaryAction,
     Employee,
@@ -144,6 +152,10 @@ class CompanyMiddleware:
         if company_models is None:
             company_models = [
                 Employee,
+                Department,
+                JobPosition,
+                JobRole,
+                EmployeeType,
                 ShiftRequest,
                 WorkTypeRequest,
                 DocumentRequest,
@@ -153,7 +165,22 @@ class CompanyMiddleware:
             ]
 
             app_model_mappings = {
-                "recruitment": ["recruitment", "candidate"],
+                "recruitment": [
+                    "recruitment",
+                    "candidate",
+                    "stage",
+                    "surveytemplate",
+                    "rejectreason",
+                    "rejectedcandidate",
+                    "stagenote",
+                    "recruitmentsurvey",
+                    "questionordering",
+                    "recruitmentsurveyanswer",
+                    "skillzone",
+                    "skillzonecandidate",
+                    "interviewschedule",
+                    "linkedinaccount",
+                ],
                 "leave": [
                     "leaverequest",
                     "restrictleave",

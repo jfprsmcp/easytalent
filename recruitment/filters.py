@@ -610,57 +610,57 @@ class SkillZoneCandFilter(HorillaFilterSet):
         field_name="candidate_id__name", method="cand_search"
     )
     start_date = django_filters.DateFilter(
-        field_name="candidate__id__recruitment_id__start_date",
+        field_name="candidate_id__recruitment_id__start_date",
         widget=forms.DateInput(attrs={"type": "date"}),
     )
     end_date = django_filters.DateFilter(
-        field_name="candidate__id__recruitment_id__end_date",
+        field_name="candidate_id__recruitment_id__end_date",
         widget=forms.DateInput(attrs={"type": "date"}),
     )
     scheduled_from = django_filters.DateFilter(
-        field_name="candidate__id__joining_date",
+        field_name="candidate_id__joining_date",
         lookup_expr="gte",
         widget=forms.DateInput(attrs={"type": "date"}),
         label=_("Joining From"),
     )
     probation_end = django_filters.DateFilter(
-        field_name="candidate__id__probation_end",
+        field_name="candidate_id__probation_end",
         widget=forms.DateInput(attrs={"type": "date"}),
     )
     probation_end_till = django_filters.DateFilter(
-        field_name="candidate__id__probation_end",
+        field_name="candidate_id__probation_end",
         lookup_expr="lte",
         widget=forms.DateInput(attrs={"type": "date"}),
         label=_("Probation Till"),
     )
     probation_end_from = django_filters.DateFilter(
-        field_name="candidate__id__probation_end",
+        field_name="candidate_id__probation_end",
         lookup_expr="gte",
         widget=forms.DateInput(attrs={"type": "date"}),
         label=_("Probation From"),
     )
     schedule_date = django_filters.DateFilter(
-        field_name="candidate__id__schedule_date",
+        field_name="candidate_id__schedule_date",
         widget=forms.DateInput(attrs={"type": "date"}),
     )
     scheduled_till = django_filters.DateFilter(
-        field_name="candidate__id__joining_date",
+        field_name="candidate_id__joining_date",
         lookup_expr="lte",
         widget=forms.DateInput(attrs={"type": "date"}),
         label=_("Joining Till"),
     )
     recruitment = django_filters.CharFilter(
-        field_name="candidate__id__recruitment_id__title", lookup_expr="icontains"
+        field_name="candidate_id__recruitment_id__title", lookup_expr="icontains"
     )
 
     portal_sent = django_filters.BooleanFilter(
-        field_name="candidate__id__onboarding_portal",
+        field_name="candidate_id__onboarding_portal",
         method="filter_mail_sent",
         widget=django_filters.widgets.BooleanWidget(),
         label=_("Portal Sent"),
     )
     joining_set = django_filters.BooleanFilter(
-        field_name="candidate__id__joining_date",
+        field_name="candidate_id__joining_date",
         method="filter_joining_set",
         widget=django_filters.widgets.BooleanWidget(),
         label=_("Joining Set"),

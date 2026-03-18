@@ -1,4 +1,4 @@
-{% load static %} 
+{% load static %}
 {% load i18n %}
 <!DOCTYPE html>
 <html lang="es">
@@ -25,8 +25,348 @@
 
   <!-- Main CSS File -->
   <link href="{% static 'landing/images/assets/css/main.css' %}" rel="stylesheet">
-    
+
   <meta name="theme-color" content="#e54f38">
+
+  <style>
+    /* ===== Module Detail Page Styles ===== */
+    .module-hero {
+      padding-top: 140px;
+      padding-bottom: 60px;
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(160deg, #fff 0%, color-mix(in srgb, var(--accent-color), transparent 95%) 50%, #fff 100%);
+    }
+
+    .module-hero::before {
+      content: "";
+      position: absolute;
+      top: -15%;
+      right: -8%;
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, color-mix(in srgb, var(--accent-color), transparent 90%), transparent 70%);
+      pointer-events: none;
+      border-radius: 50%;
+      filter: blur(60px);
+    }
+
+    .module-hero .breadcrumb {
+      background: none;
+      padding: 0;
+      margin-bottom: 2rem;
+    }
+
+    .module-hero .breadcrumb-item a {
+      color: color-mix(in srgb, var(--default-color), transparent 40%);
+      text-decoration: none;
+      font-size: 14px;
+    }
+
+    .module-hero .breadcrumb-item.active {
+      color: var(--accent-color);
+      font-weight: 600;
+      font-size: 14px;
+    }
+
+    .module-hero .breadcrumb-item + .breadcrumb-item::before {
+      color: color-mix(in srgb, var(--default-color), transparent 60%);
+    }
+
+    .module-icon-badge {
+      width: 72px;
+      height: 72px;
+      border-radius: 20px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .module-icon-badge.orange {
+      background: rgba(237, 184, 110, 0.18);
+    }
+    .module-icon-badge.blue {
+      background: rgba(229, 79, 56, 0.12);
+    }
+    .module-icon-badge.green {
+      background: rgba(72, 200, 138, 0.15);
+    }
+    .module-icon-badge.red {
+      background: rgba(242, 132, 132, 0.15);
+    }
+
+    .module-icon-badge i {
+      font-size: 2rem;
+    }
+    .module-icon-badge.orange i { color: #edb86e; }
+    .module-icon-badge.blue i { color: #e54f38; }
+    .module-icon-badge.green i { color: #48c88a; }
+    .module-icon-badge.red i { color: #f28484; }
+
+    .module-hero h1 {
+      font-size: 2.75rem;
+      font-weight: 800;
+      line-height: 1.15;
+      color: var(--heading-color);
+      margin-bottom: 1.25rem;
+    }
+
+    .module-hero .lead {
+      font-size: 1.15rem;
+      color: color-mix(in srgb, var(--default-color), transparent 20%);
+      line-height: 1.7;
+      margin-bottom: 2rem;
+    }
+
+    .module-hero .hero-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .module-hero .btn-primary {
+      background: linear-gradient(135deg, var(--accent-color), color-mix(in srgb, var(--accent-color), black 15%));
+      border: none;
+      padding: 0.8rem 2rem;
+      border-radius: 50px;
+      font-weight: 600;
+      box-shadow: 0 4px 20px rgba(229, 79, 56, 0.3);
+      transition: all 0.4s ease;
+    }
+
+    .module-hero .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(229, 79, 56, 0.4);
+    }
+
+    .module-hero .btn-outline-secondary {
+      padding: 0.8rem 2rem;
+      border-radius: 50px;
+      font-weight: 600;
+      border: 1.5px solid color-mix(in srgb, var(--heading-color), transparent 80%);
+      color: var(--heading-color);
+      transition: all 0.4s ease;
+    }
+
+    .module-hero .btn-outline-secondary:hover {
+      background: var(--heading-color);
+      color: #fff;
+      border-color: var(--heading-color);
+      transform: translateY(-2px);
+    }
+
+    .module-image-wrapper {
+      position: relative;
+    }
+
+    .module-image-wrapper img {
+      border-radius: 20px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.12);
+      transition: transform 0.4s ease;
+    }
+
+    .module-image-wrapper:hover img {
+      transform: translateY(-4px);
+    }
+
+    /* ===== Features Grid ===== */
+    .module-features {
+      padding: 80px 0;
+      background: var(--background-color);
+    }
+
+    .module-features .section-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: var(--accent-color);
+      margin-bottom: 1rem;
+    }
+
+    .module-features h2 {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--heading-color);
+      margin-bottom: 3rem;
+    }
+
+    .feature-card {
+      background: var(--surface-color);
+      border: 1px solid rgba(0, 0, 0, 0.05);
+      border-radius: 16px;
+      padding: 28px 24px;
+      height: 100%;
+      transition: all 0.4s ease;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.06);
+      border-color: color-mix(in srgb, var(--accent-color), transparent 75%);
+    }
+
+    .feature-card .feature-num {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 14px;
+      margin-bottom: 16px;
+    }
+
+    .feature-card .feature-num.orange { background: rgba(237, 184, 110, 0.18); color: #d4982e; }
+    .feature-card .feature-num.blue { background: rgba(229, 79, 56, 0.12); color: #e54f38; }
+    .feature-card .feature-num.green { background: rgba(72, 200, 138, 0.15); color: #2ea860; }
+    .feature-card .feature-num.red { background: rgba(242, 132, 132, 0.15); color: #e05555; }
+
+    .feature-card h5 {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--heading-color);
+      margin-bottom: 8px;
+    }
+
+    .feature-card p {
+      font-size: 14px;
+      color: color-mix(in srgb, var(--default-color), transparent 30%);
+      margin-bottom: 0;
+      line-height: 1.6;
+    }
+
+    /* ===== CTA Section ===== */
+    .module-cta {
+      padding: 80px 0;
+      background: #fef7f6;
+    }
+
+    .module-cta .cta-box {
+      background: linear-gradient(135deg, var(--accent-color) 0%, color-mix(in srgb, var(--accent-color), #ff8a65 40%) 50%, color-mix(in srgb, var(--accent-color), black 10%) 100%);
+      border-radius: 1.5rem;
+      padding: 4rem 3rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .module-cta .cta-box::before {
+      content: "";
+      position: absolute;
+      top: -50%;
+      right: -20%;
+      width: 400px;
+      height: 400px;
+      background: rgba(255, 255, 255, 0.06);
+      border-radius: 50%;
+    }
+
+    .module-cta .cta-box h2 {
+      color: #fff;
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      position: relative;
+    }
+
+    .module-cta .cta-box p {
+      color: rgba(255, 255, 255, 0.85);
+      font-size: 1.1rem;
+      margin-bottom: 2rem;
+      position: relative;
+    }
+
+    .module-cta .cta-box .btn {
+      background: #fff;
+      color: var(--accent-color);
+      padding: 0.8rem 2.5rem;
+      border-radius: 50px;
+      font-weight: 700;
+      transition: all 0.4s ease;
+      position: relative;
+      border: none;
+    }
+
+    .module-cta .cta-box .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    }
+
+    /* ===== Responsive ===== */
+    @media (max-width: 991px) {
+      .module-hero {
+        padding-top: 120px;
+        text-align: center;
+      }
+
+      .module-hero h1 {
+        font-size: 2.25rem;
+      }
+
+      .module-hero .hero-buttons {
+        justify-content: center;
+      }
+
+      .module-icon-badge {
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      .module-image-wrapper {
+        margin-bottom: 2.5rem;
+      }
+    }
+
+    @media (max-width: 767px) {
+      .module-hero {
+        padding-top: 100px;
+        padding-bottom: 40px;
+      }
+
+      .module-hero h1 {
+        font-size: 1.75rem;
+      }
+
+      .module-hero .lead {
+        font-size: 1rem;
+      }
+
+      .module-hero .hero-buttons {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .module-hero .btn-primary,
+      .module-hero .btn-outline-secondary {
+        width: 100%;
+        max-width: 280px;
+        justify-content: center;
+        text-align: center;
+      }
+
+      .module-features {
+        padding: 50px 0;
+      }
+
+      .module-features h2 {
+        font-size: 1.5rem;
+      }
+
+      .module-cta .cta-box {
+        padding: 3rem 1.5rem;
+      }
+
+      .module-cta .cta-box h2 {
+        font-size: 1.5rem;
+      }
+    }
+  </style>
 </head>
 
 <body class="index-page">
@@ -42,7 +382,7 @@
         <ul>
           <li><a href="{% url 'landing-page' %}#hero">Inicio</a></li>
           <li><a href="{% url 'landing-page' %}#features">Características</a></li>
-          <li><a href="{% url 'landing-page' %}#modules">Módulos</a></li>
+          <li><a href="{% url 'landing-page' %}#modules" class="active">Módulos</a></li>
           <li><a href="{% url 'landing-page' %}#faq">FAQ</a></li>
           <li><a href="{% url 'landing-page' %}#contact">Contacto</a></li>
         </ul>
@@ -56,13 +396,11 @@
 
   <main class="main">
 
-    <!-- Module Detail Section -->
-    <section id="module-detail" class="module-detail section" style="padding-top: 120px;">
+    <!-- Hero Section -->
+    <section class="module-hero">
+      <div class="container">
 
-      <div class="container" data-aos="fade-up" data-aos-delay="100">
-
-        <!-- Breadcrumb -->
-        <nav aria-label="breadcrumb" class="mb-4">
+        <nav aria-label="breadcrumb" data-aos="fade-down" data-aos-delay="50">
           <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="{% url 'landing-page' %}">Inicio</a></li>
             <li class="breadcrumb-item"><a href="{% url 'landing-page' %}#modules">Módulos</a></li>
@@ -72,34 +410,70 @@
 
         <div class="row align-items-center">
 
-          <div class="col-lg-6 order-2 order-lg-1" data-aos="fade-right" data-aos-delay="200">
-            <div class="module-content">
-              <div class="module-icon mb-4">
-                <i class="bi {{ module.icon }} feature-box {{ module.color }}" style="font-size: 3rem; padding: 1.5rem; display: inline-block;"></i>
-              </div>
-              <h1 class="mb-4">{{ module.title }}</h1>
-              <p class="lead mb-4">{{ module.description }}</p>
-              <div class="module-description">
-                {{ module.content|safe }}
-              </div>
-              <div class="mt-4">
-                <a href="{% url 'register' %}" class="btn btn-primary me-3">Comenzar Ahora</a>
-                <a href="{% url 'landing-page' %}#modules" class="btn btn-outline-secondary">Ver Otros Módulos</a>
-              </div>
+          <div class="col-lg-6 order-2 order-lg-1" data-aos="fade-right" data-aos-delay="100">
+            <div class="module-icon-badge {{ module.color }}">
+              <i class="bi {{ module.icon }}"></i>
+            </div>
+            <h1>{{ module.title }}</h1>
+            <p class="lead">{{ module.description }}</p>
+            <div class="hero-buttons">
+              <a href="{% url 'register' %}" class="btn btn-primary">
+                Comenzar Ahora <i class="bi bi-arrow-right ms-2"></i>
+              </a>
+              <a href="{% url 'landing-page' %}#modules" class="btn btn-outline-secondary">
+                Ver Otros Módulos
+              </a>
             </div>
           </div>
 
-          <div class="col-lg-6 order-1 order-lg-2" data-aos="fade-left" data-aos-delay="300">
-            <div class="module-image text-center">
-              <img src="{% static module.image %}" alt="{{ module.title }}" class="img-fluid rounded shadow-lg">
+          <div class="col-lg-6 order-1 order-lg-2 mb-4 mb-lg-0" data-aos="fade-left" data-aos-delay="200">
+            <div class="module-image-wrapper text-center">
+              <img src="{% static module.image %}" alt="{{ module.title }}" class="img-fluid">
             </div>
           </div>
 
         </div>
 
       </div>
+    </section>
 
-    </section><!-- /Module Detail Section -->
+    <!-- Features Grid Section -->
+    <section class="module-features">
+      <div class="container">
+
+        <div class="text-center" data-aos="fade-up">
+          <div class="section-label">
+            <i class="bi bi-lightning-fill"></i> Características
+          </div>
+          <h2>Todo lo que incluye {{ module.title }}</h2>
+        </div>
+
+        <div class="row g-4" data-aos="fade-up" data-aos-delay="100">
+          {% for feature in module.features %}
+          <div class="col-lg-4 col-md-6">
+            <div class="feature-card">
+              <div class="feature-num {{ module.color }}">{{ forloop.counter }}</div>
+              <h5>{{ feature }}</h5>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+
+      </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="module-cta">
+      <div class="container" data-aos="fade-up">
+        <div class="cta-box">
+          <h2>¿Listo para potenciar tu equipo?</h2>
+          <p>Comienza a usar {{ module.title }} y todos los módulos de EasyTalent hoy mismo.</p>
+          <a href="{% url 'register' %}" class="btn">
+            Registrarse Gratis <i class="bi bi-arrow-right ms-2"></i>
+          </a>
+        </div>
+      </div>
+    </section>
 
   </main>
 
@@ -125,16 +499,33 @@
           </ul>
         </div>
         <div class="col-lg-2 col-md-3 footer-links">
+          <h4>Módulos</h4>
+          <ul>
+            <li><a href="{% url 'module-detail' 'gestion-empleados' %}">Gestión de Empleados</a></li>
+            <li><a href="{% url 'module-detail' 'control-asistencia' %}">Control de Asistencia</a></li>
+            <li><a href="{% url 'module-detail' 'gestion-permisos' %}">Gestión de Permisos</a></li>
+            <li><a href="{% url 'module-detail' 'nomina' %}">Nómina</a></li>
+            <li><a href="{% url 'module-detail' 'reclutamiento' %}">Reclutamiento</a></li>
+          </ul>
+        </div>
+        <div class="col-lg-2 col-md-3 footer-links">
           <h4>Acceso</h4>
           <ul>
             <li><a href="{% url 'login' %}">Iniciar Sesión</a></li>
             <li><a href="{% url 'register' %}">Registrarse</a></li>
           </ul>
         </div>
+        <div class="col-lg-2 col-md-3 footer-links">
+          <h4>Soporte</h4>
+          <ul>
+            <li><a href="{% url 'landing-page' %}#faq">Preguntas Frecuentes</a></li>
+            <li><a href="{% url 'landing-page' %}#contact">Contacto</a></li>
+          </ul>
+        </div>
       </div>
     </div>
     <div class="container copyright text-center mt-4">
-      <p>© <span>Copyright</span> <strong class="px-1 sitename">EasyTalent</strong> <span>2025. Todos los derechos reservados.</span></p>
+      <p>© <span>Copyright</span> <strong class="px-1 sitename">EasyTalent</strong> <span>2026. Todos los derechos reservados.</span></p>
     </div>
   </footer>
 

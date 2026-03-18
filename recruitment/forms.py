@@ -346,7 +346,7 @@ class RecruitmentCreationForm(BaseModelForm):
         is_published = self.cleaned_data.get("is_published")
         if is_published and not open_positions:
             raise forms.ValidationError(
-                _("Job position is required if the recruitment is publishing.")
+                _("El puesto de trabajo es obligatorio si el reclutamiento está publicado.")
             )
         if (
             self.cleaned_data.get("publish_in_linkedin")
@@ -355,7 +355,7 @@ class RecruitmentCreationForm(BaseModelForm):
             raise forms.ValidationError(
                 {
                     "linkedin_account_id": _(
-                        "LinkedIn account is required for publishing."
+                        "La cuenta de LinkedIn es obligatoria para publicar."
                     )
                 }
             )

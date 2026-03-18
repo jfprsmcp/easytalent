@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(grep -r \"show_onboarding_banner\\\\|onboarding_progress\" /c/Users/jorge/OneDrive/Escritorio/Proyecto/easytalent --include=*.html)",
+      "Bash(grep -E \"\\\\.html$\")",
+      "Bash(ls -la /c/Users/jorge/OneDrive/Escritorio/Proyecto/easytalent/recruitment/cbv/*.py)"
+    ]
+  }
+}

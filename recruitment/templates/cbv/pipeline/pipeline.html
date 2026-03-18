@@ -1,4 +1,5 @@
 {% extends "index.html" %} {% load i18n %} {% block content %}
+<meta name="csrf-token" content="{{ csrf_token }}">
 <style>
 	.note-modal-backdrop {
 		z-index: 998 !important;
@@ -98,7 +99,8 @@
 			showCancelButton: true,
 			confirmButtonColor: "green",
 			cancelButtonColor: "#d33",
-			confirmButtonText: "Confirm",
+			confirmButtonText: i18nMessages.confirm,
+			cancelButtonText: i18nMessages.cancel,
 		}).then((result) => {
 			if (result.isConfirmed) {
 				window.location.href = url;
@@ -114,12 +116,13 @@
 
 	function deleteCandidate(url) {
 		Swal.fire({
-			text: "Do you want to delete this candidate?",
+			text: i18nMessages.confirmBulkDelete,
 			icon: "question",
 			showCancelButton: true,
 			confirmButtonColor: "green",
 			cancelButtonColor: "#d33",
-			confirmButtonText: "Confirm",
+			confirmButtonText: i18nMessages.confirm,
+			cancelButtonText: i18nMessages.cancel,
 		}).then((result) => {
 			if (result.isConfirmed) {
 				const form = document.createElement("form");

@@ -280,12 +280,12 @@ class Recruitment(HorillaModel):
 
     def clean(self):
         if self.title is None:
-            raise ValidationError({"title": _("This field is required")})
+            raise ValidationError({"title": _("Este campo es obligatorio")})
         if self.is_published:
             if self.vacancy <= 0:
                 raise ValidationError(
                     _(
-                        "Vacancy must be greater than zero if the recruitment is publishing."
+                        "Las vacantes deben ser mayor a cero si el reclutamiento está publicado."
                     )
                 )
 
@@ -293,7 +293,7 @@ class Recruitment(HorillaModel):
             self.start_date is not None and self.start_date > self.end_date
         ):
             raise ValidationError(
-                {"end_date": _("End date cannot be less than start date.")}
+                {"end_date": _("La fecha de fin no puede ser menor a la fecha de inicio.")}
             )
         return super().clean()
 

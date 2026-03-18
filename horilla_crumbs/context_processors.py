@@ -154,6 +154,7 @@ sidebar_urls = [
     "task-all",
     "gdrive",
     "color-settings",
+    "company-onboarding",
     "employee-report",
     "employee-pivot",
     "recruitment-report",
@@ -178,6 +179,20 @@ remove_urls = [
     "faq-view",
     "get-job-positions",
     "task-view",
+    "company-onboarding",
+    "step1",
+    "step2",
+    "step3",
+    "step4",
+    "step5",
+    "step6",
+    "step7",
+    "step8",
+    "step9",
+    "step10",
+    "complete",
+    "skip",
+    "dismiss-banner",
 ]
 
 user_breadcrumbs = {}

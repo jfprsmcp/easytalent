@@ -1928,7 +1928,8 @@ def candidate_conversion(request, cand_id, **kwargs):
 
             work_info = new_employee.employee_work_info
             work_info.job_position_id = candidate_obj.job_position_id
-            work_info.department_id = candidate_obj.job_position_id.department_id
+            if candidate_obj.job_position_id:
+                work_info.department_id = candidate_obj.job_position_id.department_id
             work_info.company_id = candidate_obj.recruitment_id.company_id
             work_info.save()
 
@@ -1951,8 +1952,8 @@ def candidate_conversion(request, cand_id, **kwargs):
                 request,
                 _("Candidate has been successfully converted into an employee."),
             )
-        except IntegrityError:
-            messages.warning(request, "An error occurred while creating employee data.")
+        except (IntegrityError, Exception) as e:
+            messages.warning(request, _("An error occurred while creating employee data."))
 
     else:
         messages.info(request, "An employee with this email already exists")
@@ -2857,7 +2858,7 @@ def open_recruitments(request):
     """
     This method is used to render the open recruitment page
     """
-    recruitments = Recruitment.default.filter(
+    recruitments = Recruitment.objects.filter(
         closed=False, is_published=True, is_active=True
     )
     context = {
@@ -2874,7 +2875,7 @@ def recruitment_details(request, id):
     """
     This method is used to render the recruitment details page
     """
-    recruitment = Recruitment.default.get(id=id)
+    recruitment = Recruitment.objects.get(id=id)
     context = {
         "recruitment": recruitment,
     }

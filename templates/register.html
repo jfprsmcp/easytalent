@@ -6,491 +6,645 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>{% trans "Registrarse" %} - {{white_label_company_name}} Dashboard</title>
-    <link rel="apple-touch-icon" sizes="180x180"
-        href="{% static 'landing/images/easy-logo.png' %}">
-    <link rel="icon" type="image/png" sizes="32x32"
-        href="{% static 'landing/images/easy-logo.png' %}">
-    <link rel="icon" type="image/png" sizes="16x16"
-        href="{% static 'landing/images/easy-logo.png' %}">
+    <title>{% trans "Registrarse" %} - EasyTalent</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="{% static 'landing/images/easy-logo.png' %}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{% static 'landing/images/easy-logo.png' %}">
     <link rel="stylesheet" href="{% static '/build/css/style.min.css' %}" />
-    <link rel="manifest" href="{% static 'build/manifest.json' %}" />
-
-    <!-- Bootstrap CSS para consistencia con login -->
-    <link href="{% static 'landing/images/assets/vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
-    <link href="{% static 'landing/images/assets/vendor/bootstrap-icons/bootstrap-icons.css' %}" rel="stylesheet">
-    <link href="{% static 'landing/images/assets/css/main.css' %}" rel="stylesheet">
-
-    <meta name="theme-color" content="#0d83fd">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        .register-card {
-            max-width: 520px;
-            width: 100%;
-            margin: 0 auto;
-            animation: fadeInUp 0.5s ease-out;
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            min-height: 100vh;
+            background: #f6f6f6;
         }
 
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        /* ===== Panel izquierdo (fijo) ===== */
+        .side-panel {
+            display: none;
+            width: 42%;
+            background: linear-gradient(160deg, #0f172a 0%, #1a2540 60%, #243352 100%);
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            overflow: hidden;
+            padding: 3rem;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
         }
 
-        .form-section {
-            border-left: 3px solid #0d83fd;
-            padding-left: 16px;
-            margin-bottom: 20px;
+        .side-panel::before {
+            content: '';
+            position: absolute;
+            top: -20%; right: -15%;
+            width: 600px; height: 600px;
+            background: radial-gradient(circle, rgba(229,79,56,0.18) 0%, transparent 65%);
+            pointer-events: none;
         }
 
-        .form-section__title {
+        .side-panel::after {
+            content: '';
+            position: absolute;
+            bottom: -25%; left: -10%;
+            width: 400px; height: 400px;
+            background: radial-gradient(circle, rgba(229,79,56,0.1) 0%, transparent 65%);
+            pointer-events: none;
+        }
+
+        .side-content {
+            position: relative;
+            z-index: 1;
+            max-width: 380px;
+        }
+
+        .side-logo {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 3rem;
+        }
+
+        .side-logo img {
+            width: 48px; height: 48px;
+            filter: drop-shadow(0 2px 8px rgba(0,0,0,0.3));
+        }
+
+        .side-logo span {
+            color: #fff;
+            font-size: 1.4rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+        }
+
+        .side-title {
+            color: #fff;
+            font-size: 2.2rem;
+            font-weight: 800;
+            line-height: 1.15;
+            letter-spacing: -1px;
+            margin-bottom: 1rem;
+        }
+
+        .side-title span { color: #e54f38; }
+
+        .side-desc {
+            color: rgba(255,255,255,0.45);
+            font-size: 1rem;
+            line-height: 1.7;
+            margin-bottom: 2.5rem;
+        }
+
+        .side-steps {
+            display: flex;
+            flex-direction: column;
+            gap: 1.4rem;
+        }
+
+        .side-step {
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+        }
+
+        .side-step-num {
+            width: 36px; height: 36px;
+            border-radius: 10px;
+            background: rgba(229,79,56,0.12);
+            color: #e54f38;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             font-size: 0.85rem;
-            font-weight: 600;
-            color: #0d83fd;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .side-step-text {
+            color: rgba(255,255,255,0.5);
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        .side-step-text strong {
+            color: rgba(255,255,255,0.85);
+            display: block;
+            margin-bottom: 2px;
+        }
+
+        /* ===== Panel derecho (scrolleable) ===== */
+        .main-panel {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .form-container {
+            width: 100%;
+            max-width: 520px;
+            animation: fadeUp 0.5s ease-out;
+            padding: 1rem 0;
+        }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(16px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .mobile-brand {
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .mobile-brand img {
+            width: 48px; height: 48px;
+            margin-bottom: 0.4rem;
+        }
+
+        .mobile-brand h2 {
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: #0f172a;
+        }
+
+        /* Card */
+        .card {
+            background: #fff;
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 8px 30px rgba(0,0,0,0.06);
+            border: 1px solid #e6e6e6;
+        }
+
+        .card-title {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: #0f172a;
+            margin-bottom: 0.15rem;
+        }
+
+        .card-subtitle {
+            color: #64748b;
+            font-size: 0.88rem;
+            margin-bottom: 1.4rem;
+        }
+
+        /* Sections */
+        .section {
+            margin-bottom: 1rem;
+        }
+
+        .section-label {
+            font-size: 0.7rem;
+            font-weight: 700;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 12px;
+            letter-spacing: 0.8px;
+            color: #94a3b8;
+            margin-bottom: 0.6rem;
             display: flex;
             align-items: center;
             gap: 6px;
         }
 
-        .name-row {
+        .section-label ion-icon {
+            color: #e54f38;
+            font-size: 0.95rem;
+        }
+
+        /* Fields */
+        .field {
+            margin-bottom: 0.85rem;
+        }
+
+        .field label {
+            display: block;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #475569;
+            margin-bottom: 4px;
+        }
+
+        .field-input {
+            position: relative;
+        }
+
+        .field-input input {
+            width: 100%;
+            padding: 11px 14px 11px 42px;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            font-family: inherit;
+            color: #1e293b;
+            background: #fff;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            outline: none;
+        }
+
+        .field-input input:focus {
+            border-color: #e54f38;
+            box-shadow: 0 0 0 3px rgba(229,79,56,0.12);
+        }
+
+        .field-input input::placeholder { color: #94a3b8; }
+
+        .field-input > ion-icon {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #94a3b8;
+            font-size: 1.15rem;
+            pointer-events: none;
+        }
+
+        .field-input input:focus ~ ion-icon { color: #e54f38; }
+
+        .row-2 {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 12px;
         }
 
-        @media (max-width: 480px) {
-            .name-row {
-                grid-template-columns: 1fr;
-            }
-        }
+        /* Password */
+        .pw-field input { padding-right: 48px; }
 
-        .oh-input-group {
-            margin-bottom: 14px;
-        }
-
-        .oh-input {
-            transition: border-color 0.2s, box-shadow 0.2s;
-        }
-
-        .oh-input:focus {
-            border-color: #0d83fd;
-            box-shadow: 0 0 0 3px rgba(13, 131, 253, 0.15);
-        }
-
-        .input-icon-wrap {
-            position: relative;
-        }
-
-        .input-icon-wrap .oh-input {
-            padding-left: 38px;
-        }
-
-        .input-icon-wrap ion-icon.input-icon {
+        .pw-toggle {
             position: absolute;
-            left: 12px;
+            right: 14px;
             top: 50%;
             transform: translateY(-50%);
-            color: #999;
-            font-size: 18px;
-            pointer-events: none;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #94a3b8;
+            font-size: 1.15rem;
+            display: flex;
+            padding: 4px;
         }
 
-        /* Indicador de fortaleza */
-        .password-strength {
+        .pw-toggle:hover { color: #64748b; }
+
+        .pw-strength {
             display: flex;
             gap: 4px;
             margin-top: 6px;
         }
 
-        .password-strength__bar {
-            height: 4px;
+        .pw-bar {
+            height: 3px;
             flex: 1;
             border-radius: 2px;
-            background: #e0e0e0;
+            background: #e2e8f0;
             transition: background 0.3s;
         }
 
-        .password-strength__bar.active-weak { background: #dc3545; }
-        .password-strength__bar.active-medium { background: #f0ad4e; }
-        .password-strength__bar.active-strong { background: #28a745; }
-
-        .password-strength__text {
-            font-size: 0.75rem;
+        .pw-text {
+            font-size: 0.72rem;
             margin-top: 4px;
-            color: #999;
-            transition: color 0.3s;
+            color: #94a3b8;
         }
 
-        /* Validacion en tiempo real */
-        .field-error {
-            border-color: #dc3545 !important;
-            box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.15) !important;
-        }
-
-        .field-success {
-            border-color: #28a745 !important;
-        }
-
-        .field-hint {
-            font-size: 0.75rem;
-            color: #dc3545;
+        .hint {
+            font-size: 0.72rem;
+            color: #ef4444;
             margin-top: 4px;
             display: none;
         }
 
-        .field-hint.visible {
-            display: block;
-        }
+        .hint.visible { display: block; }
+        .err { border-color: #ef4444 !important; }
+        .ok { border-color: #10b981 !important; }
 
-        /* Boton submit */
-        .btn-register {
-            position: relative;
-            overflow: hidden;
-            transition: transform 0.15s, box-shadow 0.15s;
-        }
-
-        .btn-register:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(13, 131, 253, 0.35);
-        }
-
-        .btn-register:active {
-            transform: translateY(0);
-        }
-
-        /* Stepper visual */
-        .register-steps {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 8px;
-            margin-bottom: 24px;
-        }
-
-        .register-steps__step {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            font-size: 0.78rem;
-            color: #bbb;
-        }
-
-        .register-steps__step.active {
-            color: #0d83fd;
-        }
-
-        .register-steps__dot {
-            width: 24px;
-            height: 24px;
-            border-radius: 50%;
-            background: #eee;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 600;
-            font-size: 0.75rem;
-        }
-
-        .register-steps__step.active .register-steps__dot {
-            background: #0d83fd;
+        /* Button */
+        .btn-submit {
+            width: 100%;
+            padding: 12px;
+            background: #e54f38;
             color: #fff;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            font-family: inherit;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: background 0.2s, box-shadow 0.2s, transform 0.15s;
+            margin-top: 0.5rem;
         }
 
-        .register-steps__line {
-            width: 30px;
-            height: 2px;
-            background: #0d83fd;
-            opacity: 0.3;
+        .btn-submit:hover {
+            background: #cc3d28;
+            box-shadow: 0 6px 20px rgba(229,79,56,0.3);
+            transform: translateY(-1px);
         }
 
-        /* Alertas mejoradas */
-        .oh-alert {
-            border-radius: 8px;
-            padding: 12px 16px;
+        .btn-submit:active { transform: translateY(0); }
+
+        .links {
+            text-align: center;
+            margin-top: 1.3rem;
             font-size: 0.9rem;
+            color: #64748b;
         }
 
-        /* Headings consistentes */
-        .register-card h1 {
-            color: #2d465e;
+        .links a {
+            color: #e54f38;
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        .links a:hover { text-decoration: underline; }
+
+        /* Alerts */
+        .alert-box {
+            position: fixed;
+            top: 1.5rem;
+            right: 1.5rem;
+            z-index: 9999;
+        }
+
+        .alert-item {
+            background: #fff;
+            border-radius: 10px;
+            padding: 14px 20px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+            font-size: 0.9rem;
+            font-weight: 500;
+            margin-bottom: 8px;
+            border-left: 4px solid #e54f38;
+            animation: slideIn 0.4s ease-out;
+        }
+
+        .alert-item.error { border-left-color: #ef4444; }
+        .alert-item.success { border-left-color: #10b981; }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(80px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        @media (min-width: 1024px) {
+            .side-panel { display: flex; }
+            .mobile-brand { display: none; }
+            .main-panel { margin-left: 42%; }
+        }
+
+        @media (max-width: 768px) {
+            .card { padding: 1.5rem; }
+            .main-panel { padding: 1.5rem 1rem; }
+        }
+
+        @media (max-width: 600px) {
+            .card { padding: 1.3rem 1rem; }
+            .main-panel { padding: 1rem 0.75rem; }
+            .row-2 { grid-template-columns: 1fr; }
+            .card-title { font-size: 1.15rem; }
+        }
+
+        @media (max-width: 400px) {
+            .card { padding: 1rem 0.8rem; border-radius: 12px; }
+            .mobile-brand img { width: 40px; height: 40px; }
+        }
+
+        @media (min-width: 1400px) {
+            .side-panel { width: 40%; }
+            .main-panel { margin-left: 40%; }
+            .form-container { max-width: 540px; }
+            .card { padding: 2.5rem; }
         }
     </style>
 </head>
 
 <body>
-    <div id="main">
-        <div class="oh-alert-container">
-            {% for message in messages %}
-            <div class="oh-alert oh-alert--animated {{ message.tags }}">
-                {{ message }}
+    <div class="alert-box">
+        {% for message in messages %}
+        <div class="alert-item {{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+    </div>
+
+    <div class="side-panel">
+        <div class="side-content">
+            <div class="side-logo">
+                <img src="{% static 'landing/images/easy-logo.png' %}" alt="EasyTalent">
+                <span>EasyTalent</span>
             </div>
-            {% endfor %}
+            <h1 class="side-title">{% trans "Empieza a gestionar tu equipo" %} <span>{% trans "hoy" %}</span></h1>
+            <p class="side-desc">{% trans "Crea tu cuenta y configura tu empresa en minutos. Sin tarjeta de credito." %}</p>
+            <div class="side-steps">
+                <div class="side-step">
+                    <div class="side-step-num">1</div>
+                    <div class="side-step-text">
+                        <strong>{% trans "Crea tu cuenta" %}</strong>
+                        {% trans "Registra tu empresa y datos personales" %}
+                    </div>
+                </div>
+                <div class="side-step">
+                    <div class="side-step-num">2</div>
+                    <div class="side-step-text">
+                        <strong>{% trans "Configura tu empresa" %}</strong>
+                        {% trans "Departamentos, horarios y permisos" %}
+                    </div>
+                </div>
+                <div class="side-step">
+                    <div class="side-step-num">3</div>
+                    <div class="side-step-text">
+                        <strong>{% trans "Listo para usar" %}</strong>
+                        {% trans "Agrega empleados y empieza a gestionar" %}
+                    </div>
+                </div>
+            </div>
         </div>
-        <main class="oh-auth">
-            <div class="oh-auth-card mb-4 register-card">
-                <!-- Logo -->
-                <div class="text-center mb-3">
-                    <img src={% if white_label_company.icon %}
-                            "{{white_label_company.icon.url}}"
-                            alt="{{white_label_company_name}}"
-                            style="opacity:.90; max-width: 200px; height: auto;"
-                        {% else %}
-                            "{% static 'landing/images/logo.png' %}" alt="EasyTalent" style="opacity:.90; max-width: 220px; height: auto;"
-                        {% endif %}
-                    />
-                    {% if white_label_company %}
-                    <p style="font-size: large; color: gray; text-align: center;" class="mt-2">{{white_label_company}}</p>
-                    {% endif %}
-                </div>
+    </div>
 
-                <h1 class="oh-onboarding-card__title oh-onboarding-card__title--h2 text-center my-2" style="font-size: 1.5rem;">
-                    {% trans "Crear Cuenta" %}
-                </h1>
-                <p class="text-muted text-center mb-4" style="font-size: 0.9rem;">
-                    {% trans "Completa los datos para comenzar a usar la plataforma." %}
-                </p>
+    <div class="main-panel">
+        <div class="form-container">
+            <div class="mobile-brand">
+                <img src="{% static 'landing/images/easy-logo.png' %}" alt="EasyTalent">
+                <h2>EasyTalent</h2>
+            </div>
 
-                <!-- Indicador de pasos -->
-                <div class="register-steps">
-                    <div class="register-steps__step active">
-                        <span class="register-steps__dot">1</span>
-                        <span>{% trans "Empresa" %}</span>
-                    </div>
-                    <div class="register-steps__line"></div>
-                    <div class="register-steps__step active">
-                        <span class="register-steps__dot">2</span>
-                        <span>{% trans "Datos" %}</span>
-                    </div>
-                    <div class="register-steps__line"></div>
-                    <div class="register-steps__step active">
-                        <span class="register-steps__dot">3</span>
-                        <span>{% trans "Seguridad" %}</span>
-                    </div>
-                </div>
+            <div class="card">
+                <h2 class="card-title">{% trans "Crear Cuenta" %}</h2>
+                <p class="card-subtitle">{% trans "Completa los datos para comenzar a usar la plataforma" %}</p>
 
-                <form method="post" class="oh-form-group" action="{% url 'register' %}" id="registerForm" novalidate>
+                <form method="post" action="{% url 'register' %}" id="registerForm" novalidate>
                     {% csrf_token %}
 
-                    <!-- Seccion 1: Empresa -->
-                    <div class="form-section">
-                        <div class="form-section__title">
-                            <ion-icon name="business-outline"></ion-icon>
-                            {% trans "Tu Empresa" %}
+                    <div class="section">
+                        <div class="section-label">
+                            <ion-icon name="business-outline"></ion-icon> {% trans "Empresa" %}
                         </div>
-                        <div class="oh-input-group">
-                            <label class="oh-label" for="company_name">{% trans "Nombre de la Empresa" %}</label>
-                            <div class="input-icon-wrap">
-                                <ion-icon name="briefcase-outline" class="input-icon"></ion-icon>
-                                <input type="text" id="company_name" name="company_name" class="oh-input w-100" placeholder="{% trans 'ej. Mi Empresa S.A.' %}" required />
+                        <div class="field">
+                            <label for="company_name">{% trans "Nombre de la empresa" %}</label>
+                            <div class="field-input">
+                                <input type="text" id="company_name" name="company_name" placeholder="{% trans 'ej. Mi Empresa S.A.' %}" required autofocus />
+                                <ion-icon name="briefcase-outline"></ion-icon>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Seccion 2: Datos personales -->
-                    <div class="form-section">
-                        <div class="form-section__title">
-                            <ion-icon name="person-outline"></ion-icon>
-                            {% trans "Datos Personales" %}
+                    <div class="section">
+                        <div class="section-label">
+                            <ion-icon name="person-outline"></ion-icon> {% trans "Datos personales" %}
                         </div>
-                        <div class="name-row">
-                            <div class="oh-input-group">
-                                <label class="oh-label" for="first_name">{% trans "Nombre" %}</label>
-                                <div class="input-icon-wrap">
-                                    <ion-icon name="person-outline" class="input-icon"></ion-icon>
-                                    <input type="text" id="first_name" name="first_name" class="oh-input w-100" placeholder="{% trans 'ej. María' %}" required />
+                        <div class="row-2">
+                            <div class="field">
+                                <label for="first_name">{% trans "Nombre" %}</label>
+                                <div class="field-input">
+                                    <input type="text" id="first_name" name="first_name" placeholder="{% trans 'ej. Maria' %}" required />
+                                    <ion-icon name="person-outline"></ion-icon>
                                 </div>
                             </div>
-                            <div class="oh-input-group">
-                                <label class="oh-label" for="last_name">{% trans "Apellido" %}</label>
-                                <div class="input-icon-wrap">
-                                    <ion-icon name="people-outline" class="input-icon"></ion-icon>
-                                    <input type="text" id="last_name" name="last_name" class="oh-input w-100" placeholder="{% trans 'ej. García' %}" />
+                            <div class="field">
+                                <label for="last_name">{% trans "Apellido" %}</label>
+                                <div class="field-input">
+                                    <input type="text" id="last_name" name="last_name" placeholder="{% trans 'ej. Garcia' %}" />
+                                    <ion-icon name="people-outline"></ion-icon>
                                 </div>
                             </div>
                         </div>
-                        <div class="oh-input-group">
-                            <label class="oh-label" for="email">{% trans "Correo Electrónico" %}</label>
-                            <div class="input-icon-wrap">
-                                <ion-icon name="mail-outline" class="input-icon"></ion-icon>
-                                <input type="email" id="email" name="email" class="oh-input w-100" placeholder="{% trans 'ej. maria@miempresa.com' %}" required />
+                        <div class="row-2">
+                            <div class="field">
+                                <label for="email">{% trans "Correo electronico" %}</label>
+                                <div class="field-input">
+                                    <input type="email" id="email" name="email" placeholder="{% trans 'ej. maria@empresa.com' %}" required />
+                                    <ion-icon name="mail-outline"></ion-icon>
+                                </div>
+                                <div class="hint" id="emailHint">{% trans "Correo no valido." %}</div>
                             </div>
-                            <div class="field-hint" id="emailHint">{% trans "Ingresa un correo electrónico válido." %}</div>
-                        </div>
-                        <div class="oh-input-group">
-                            <label class="oh-label" for="phone">{% trans "Teléfono" %}</label>
-                            <div class="input-icon-wrap">
-                                <ion-icon name="call-outline" class="input-icon"></ion-icon>
-                                <input type="tel" id="phone" name="phone" class="oh-input w-100" placeholder="{% trans 'ej. +52 55 1234 5678' %}" required />
+                            <div class="field">
+                                <label for="phone">{% trans "Telefono" %}</label>
+                                <div class="field-input">
+                                    <input type="tel" id="phone" name="phone" placeholder="{% trans 'ej. +591 7XXXXXXX' %}" required />
+                                    <ion-icon name="call-outline"></ion-icon>
+                                </div>
                             </div>
-                        </div>
-                    </div>
-
-                    <!-- Seccion 3: Seguridad -->
-                    <div class="form-section">
-                        <div class="form-section__title">
-                            <ion-icon name="shield-checkmark-outline"></ion-icon>
-                            {% trans "Seguridad" %}
-                        </div>
-                        <div class="oh-input-group">
-                            <label class="oh-label" for="password1">{% trans "Contraseña" %}</label>
-                            <div class="oh-password-input-container">
-                                <input type="password" id="password1" name="password1" class="oh-input oh-input--password w-100" placeholder="{% trans 'Al menos 8 caracteres' %}" required />
-                                <button type="button" class="oh-btn oh-btn--transparent oh-password-input--toggle">
-                                    <ion-icon class="oh-passowrd-input__show-icon" title="{% trans 'Mostrar' %}" name="eye-outline"></ion-icon>
-                                    <ion-icon class="oh-passowrd-input__hide-icon d-none" title="{% trans 'Ocultar' %}" name="eye-off-outline"></ion-icon>
-                                </button>
-                            </div>
-                            <div class="password-strength" id="passwordStrength">
-                                <div class="password-strength__bar" id="bar1"></div>
-                                <div class="password-strength__bar" id="bar2"></div>
-                                <div class="password-strength__bar" id="bar3"></div>
-                                <div class="password-strength__bar" id="bar4"></div>
-                            </div>
-                            <div class="password-strength__text" id="passwordText"></div>
-                        </div>
-                        <div class="oh-input-group">
-                            <label class="oh-label" for="password2">{% trans "Confirmar Contraseña" %}</label>
-                            <div class="oh-password-input-container">
-                                <input type="password" id="password2" name="password2" class="oh-input oh-input--password w-100" placeholder="{% trans 'Repite tu contraseña' %}" required />
-                                <button type="button" class="oh-btn oh-btn--transparent oh-password-input--toggle">
-                                    <ion-icon class="oh-passowrd-input__show-icon" title="{% trans 'Mostrar' %}" name="eye-outline"></ion-icon>
-                                    <ion-icon class="oh-passowrd-input__hide-icon d-none" title="{% trans 'Ocultar' %}" name="eye-off-outline"></ion-icon>
-                                </button>
-                            </div>
-                            <div class="field-hint" id="passwordMatchHint">{% trans "Las contraseñas no coinciden." %}</div>
                         </div>
                     </div>
 
-                    <button type="submit" id="btnSubmit" class="btn-register oh-btn oh-onboarding-card__button mt-3 oh-btn--secondary oh-btn--shadow w-100 mb-4">
-                        <ion-icon class="me-2" name="person-add-outline"></ion-icon>
+                    <div class="section">
+                        <div class="section-label">
+                            <ion-icon name="shield-checkmark-outline"></ion-icon> {% trans "Seguridad" %}
+                        </div>
+                        <div class="row-2">
+                            <div class="field">
+                                <label for="password1">{% trans "Contrasena" %}</label>
+                                <div class="field-input pw-field">
+                                    <input type="password" id="password1" name="password1" placeholder="{% trans 'Min. 8 caracteres' %}" required />
+                                    <ion-icon name="lock-closed-outline"></ion-icon>
+                                    <button type="button" class="pw-toggle" onclick="togglePw('password1','eye1')">
+                                        <ion-icon name="eye-outline" id="eye1"></ion-icon>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="field">
+                                <label for="password2">{% trans "Confirmar contrasena" %}</label>
+                                <div class="field-input pw-field">
+                                    <input type="password" id="password2" name="password2" placeholder="{% trans 'Repite contrasena' %}" required />
+                                    <ion-icon name="lock-closed-outline"></ion-icon>
+                                    <button type="button" class="pw-toggle" onclick="togglePw('password2','eye2')">
+                                        <ion-icon name="eye-outline" id="eye2"></ion-icon>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="pw-strength">
+                            <div class="pw-bar" id="b1"></div>
+                            <div class="pw-bar" id="b2"></div>
+                            <div class="pw-bar" id="b3"></div>
+                            <div class="pw-bar" id="b4"></div>
+                        </div>
+                        <div class="pw-text" id="pwText"></div>
+                        <div class="hint" id="pwHint">{% trans "Las contrasenas no coinciden." %}</div>
+                    </div>
+
+                    <button type="submit" class="btn-submit">
+                        <ion-icon name="person-add-outline" style="font-size:1.2rem;"></ion-icon>
                         {% trans "Crear Cuenta" %}
                     </button>
-
-                    <small class="text-center d-block">
-                        {% trans "¿Ya tienes una cuenta?" %}
-                        <a href="{% url 'login' %}" class="oh-link oh-link--secondary justify-content-center">
-                            {% trans "Iniciar Sesión" %}
-                        </a>
-                    </small>
                 </form>
             </div>
 
-        </main>
+            <div class="links">
+                {% trans "Ya tienes cuenta?" %}
+                <a href="{% url 'login' %}">{% trans "Iniciar Sesion" %}</a>
+            </div>
+        </div>
     </div>
+
     <script src="{% static '/build/js/web.frontend.min.js' %}"></script>
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <script type="module" src="{% static 'images/ionicons/ui_icons/ionicons/ionicons.esm.js' %}"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
     <script>
+    function togglePw(id, iconId) {
+        var inp = document.getElementById(id);
+        var ico = document.getElementById(iconId);
+        inp.type = inp.type === 'password' ? 'text' : 'password';
+        ico.setAttribute('name', inp.type === 'password' ? 'eye-outline' : 'eye-off-outline');
+    }
+
     document.addEventListener('DOMContentLoaded', function() {
-        var password1 = document.getElementById('password1');
-        var password2 = document.getElementById('password2');
-        var emailInput = document.getElementById('email');
-        var bars = [document.getElementById('bar1'), document.getElementById('bar2'), document.getElementById('bar3'), document.getElementById('bar4')];
-        var passwordText = document.getElementById('passwordText');
-        var passwordMatchHint = document.getElementById('passwordMatchHint');
+        var pw1 = document.getElementById('password1');
+        var pw2 = document.getElementById('password2');
+        var email = document.getElementById('email');
+        var bars = [document.getElementById('b1'), document.getElementById('b2'), document.getElementById('b3'), document.getElementById('b4')];
+        var pwText = document.getElementById('pwText');
+        var pwHint = document.getElementById('pwHint');
         var emailHint = document.getElementById('emailHint');
 
-        // Indicador de fortaleza de contraseña
-        password1.addEventListener('input', function() {
-            var val = this.value;
-            var score = 0;
-            if (val.length >= 8) score++;
-            if (/[a-z]/.test(val) && /[A-Z]/.test(val)) score++;
-            if (/\d/.test(val)) score++;
-            if (/[^a-zA-Z0-9]/.test(val)) score++;
-
-            var labels = ['', 'Débil', 'Regular', 'Buena', 'Fuerte'];
-            var classes = ['', 'active-weak', 'active-medium', 'active-medium', 'active-strong'];
-
-            bars.forEach(function(bar, i) {
-                bar.className = 'password-strength__bar';
-                if (i < score) bar.classList.add(classes[score]);
-            });
-
-            if (val.length > 0) {
-                passwordText.textContent = labels[score] || 'Muy corta';
-                passwordText.style.color = score <= 1 ? '#dc3545' : score <= 2 ? '#f0ad4e' : '#28a745';
-            } else {
-                passwordText.textContent = '';
-            }
-
-            checkPasswordMatch();
+        pw1.addEventListener('input', function() {
+            var v = this.value, s = 0;
+            if (v.length >= 8) s++;
+            if (/[a-z]/.test(v) && /[A-Z]/.test(v)) s++;
+            if (/\d/.test(v)) s++;
+            if (/[^a-zA-Z0-9]/.test(v)) s++;
+            var c = ['','#ef4444','#f59e0b','#f59e0b','#10b981'];
+            var l = ['','Debil','Regular','Buena','Fuerte'];
+            bars.forEach(function(b,i) { b.style.background = i < s ? c[s] : ''; });
+            pwText.textContent = v.length > 0 ? (l[s] || 'Muy corta') : '';
+            pwText.style.color = v.length > 0 ? c[Math.max(s,1)] : '';
+            chk();
         });
 
-        // Validacion de coincidencia de contraseñas
-        function checkPasswordMatch() {
-            if (password2.value.length === 0) {
-                passwordMatchHint.classList.remove('visible');
-                password2.classList.remove('field-error', 'field-success');
-                return;
-            }
-            if (password1.value !== password2.value) {
-                passwordMatchHint.classList.add('visible');
-                password2.classList.add('field-error');
-                password2.classList.remove('field-success');
-            } else {
-                passwordMatchHint.classList.remove('visible');
-                password2.classList.remove('field-error');
-                password2.classList.add('field-success');
-            }
+        function chk() {
+            if (!pw2.value.length) { pwHint.classList.remove('visible'); pw2.classList.remove('err','ok'); return; }
+            if (pw1.value !== pw2.value) { pwHint.classList.add('visible'); pw2.classList.add('err'); pw2.classList.remove('ok'); }
+            else { pwHint.classList.remove('visible'); pw2.classList.remove('err'); pw2.classList.add('ok'); }
         }
+        pw2.addEventListener('input', chk);
 
-        password2.addEventListener('input', checkPasswordMatch);
-
-        // Validacion de email
-        emailInput.addEventListener('blur', function() {
-            var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (this.value.length > 0 && !emailRegex.test(this.value)) {
-                emailHint.classList.add('visible');
-                this.classList.add('field-error');
-                this.classList.remove('field-success');
-            } else if (this.value.length > 0) {
-                emailHint.classList.remove('visible');
-                this.classList.remove('field-error');
-                this.classList.add('field-success');
+        email.addEventListener('blur', function() {
+            if (this.value.length > 0 && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(this.value)) {
+                emailHint.classList.add('visible'); this.classList.add('err');
             } else {
-                emailHint.classList.remove('visible');
-                this.classList.remove('field-error', 'field-success');
+                emailHint.classList.remove('visible'); this.classList.remove('err');
+                if (this.value.length > 0) this.classList.add('ok');
             }
         });
 
-        // Validacion al enviar
         document.getElementById('registerForm').addEventListener('submit', function(e) {
-            var pw1 = password1.value;
-            var pw2 = password2.value;
-
-            if (pw1.length < 8) {
-                e.preventDefault();
-                Swal.fire({
-                    icon: 'warning',
-                    title: 'Contraseña muy corta',
-                    text: 'La contraseña debe tener al menos 8 caracteres.',
-                    confirmButtonColor: '#0d83fd'
-                });
-                return;
-            }
-
-            if (pw1 !== pw2) {
-                e.preventDefault();
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Las contraseñas no coinciden',
-                    text: 'Por favor verifica que ambas contraseñas sean iguales.',
-                    confirmButtonColor: '#0d83fd'
-                });
-                return;
-            }
+            if (pw1.value.length < 8) { e.preventDefault(); alert('La contrasena debe tener al menos 8 caracteres.'); return; }
+            if (pw1.value !== pw2.value) { e.preventDefault(); alert('Las contrasenas no coinciden.'); }
         });
     });
+
+    setTimeout(function() {
+        document.querySelectorAll('.alert-item').forEach(function(el) {
+            el.style.transition = 'all 0.4s'; el.style.opacity = '0';
+            el.style.transform = 'translateX(80px)';
+            setTimeout(function() { el.remove(); }, 400);
+        });
+    }, 4000);
     </script>
 </body>
-
 </html>

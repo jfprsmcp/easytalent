@@ -91,12 +91,6 @@
         <ion-icon name="arrow-forward-outline"></ion-icon>
     </a>
 </div>
-<div class="text-center mt-3">
-    <a href="{% url 'company-onboarding-step4' %}" class="skip-link">
-        {% trans "Saltar este paso" %}
-        <ion-icon name="arrow-forward-outline" style="font-size: 0.75rem;"></ion-icon>
-    </a>
-</div>
 {% endblock %}
 
 {% block extra_js %}
@@ -113,7 +107,7 @@ function addSuggestion(el) {
     setTimeout(function() {
         document.getElementById('deptForm').submit();
     }, 200);
-}
+} 
 document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('department_name').focus();
 });

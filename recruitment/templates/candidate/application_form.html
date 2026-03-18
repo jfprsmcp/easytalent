@@ -22,7 +22,7 @@
                                     <div class="oh-modal__dialog">
                                         <div class="oh-modal__dialog-header">
                                             <span class="oh-modal__dialog-title" id="uploadPhotoModalLabel">
-                                                Upload Photo
+                                                {% trans "Upload Photo" %}
                                             </span>
                                             <button type="button" onclick="event.stopPropagation()"
                                                 class="oh-modal__close" aria-label="Close">
@@ -65,21 +65,21 @@
                                         <label class="oh-label required-star" for="name">{% trans "Name" %}</label>
                                         <input type="text" id="name" name="name" required class="oh-input w-100"
                                             placeholder="e.g. Jane Doe" value="{{ form.name.value|default:'' }}"/>
-                                        {{ form.name.errrors }}
+                                        {{ form.name.errors }}
                                     </div>
                                 </div>
 
                                 {% if not request.GET.recruitmentId %}
                                 <div class="col-sm-12 col-md-6 col-lg-6">
                                     <div class="oh-input-group">
-                                        <label class="oh-label required-star" for="recuitment"> {% trans "Open Recruitment" %}
+                                        <label class="oh-label required-star" for="recruitment_id"> {% trans "Open Recruitment" %}
                                         </label>
                                         {{ form.recruitment_id }} {{ form.recruitment_id.errors }}
                                     </div>
                                 </div>
                                 <div class="col-sm-12 col-md-6 col-lg-6">
                                     <div class="oh-input-group">
-                                        <label class="oh-label required-star" for="recuitment">{% trans "Choose Open Position" %}
+                                        <label class="oh-label required-star" for="job_position_id">{% trans "Choose Open Position" %}
                                         </label>
                                         {{ form.job_position_id }} {{ form.job_position_id.errors }}
                                     </div>
@@ -87,11 +87,10 @@
                                 {% else %}
                                 <input type="text" name="recruitment_id" hidden value="{{ recruitment.id }}" />
                                 <div class="oh-input-group">
-                                    <label class="oh-label" for="recuitment">{% trans "Choose Job Position" %}
+                                    <label class="oh-label required-star" for="job_position_id">{% trans "Choose Job Position" %}
                                     </label>
 
-                                    <select name="job_position_id" class="oh-select oh-select2 w-100"
-                                        style="height: 50px">
+                                    <select name="job_position_id" class="oh-select oh-select2 w-100" required>
                                         {% for job in recruitment.open_positions.all %}
                                             <option value="{{ job.id }}">{{ job.job_position }}</option>
                                         {% endfor %}
@@ -142,10 +141,10 @@
                                 <div class="col-sm-12 col-md-6 col-lg-6">
                                     <div class="oh-input-group">
                                         <label class="oh-label required-star" for="gender">{% trans "Gender" %}</label>
-                                        {{ form.gender }} {{ form.gender.errros }}
+                                        {{ form.gender }} {{ form.gender.errors }}
                                     </div>
                                 </div>
-                                <div class="col-sm-12 col-md-6 col-lg-12">
+                                <div class="col-sm-12 col-md-6 col-lg-6">
                                     <div class="oh-input-group">
                                         <label class="oh-label required-star" for="address">{% trans "Address" %}</label>
                                         <textarea id="address" name="address" required class="oh-input oh-input--textarea w-100">{{ form.address.value|default:'' }}</textarea>
@@ -199,7 +198,7 @@
 
                                 <div class="col-sm-12 col-md-12 col-lg-12">
                                     <p class="small text-muted text-center">
-                                        &copy; {% now 'Y' %} {{ white_label_company_name }}. All rights resevered.
+                                        &copy; {% now 'Y' %} {{ white_label_company_name }}. {% trans "All rights reserved." %}
                                     </p>
                                 </div>
                             </div>
@@ -243,13 +242,10 @@
     });
     function validateForm(event) {
         var fileInput = document.getElementById("photo");
-        var errorList = document.getElementById("error-list");
         {% if not perms.recruitment.add_candidate %}
-        if (!fileInput.value) {
-            errorList.scrollIntoView({ behavior: "smooth", block: "center" });
-            errorList.style.display = "block"; // Show error message
-        } else {
-            errorList.style.display = "none"; // Hide error message
+        if (fileInput && !fileInput.value) {
+            fileInput.scrollIntoView({ behavior: "smooth", block: "center" });
+            event.preventDefault();
         }
         {% endif %}
     }

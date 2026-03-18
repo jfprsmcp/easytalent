@@ -67,14 +67,14 @@ class RecruitmentList(HorillaListView):
         return self.queryset
 
     columns = [
-        ("Recruitment", "recruitment_column"),
-        ("Managers", "managers_column"),
-        ("Open Jobs", "open_job_col"),
-        ("Vaccancy", "vacancy"),
-        ("Total Hires", "tot_hires"),
-        ("Start Date", "start_date"),
-        ("End date", "end_date"),
-        ("Status", "status_col"),
+        (_("Reclutamiento"), "recruitment_column"),
+        (_("Managers"), "managers_column"),
+        (_("Puestos Abiertos"), "open_job_col"),
+        (_("Vacantes"), "vacancy"),
+        (_("Total Contratados"), "tot_hires"),
+        (_("Fecha Inicio"), "start_date"),
+        (_("Fecha Fin"), "end_date"),
+        (_("Estado"), "status_col"),
     ]
     action_method = "rec_actions"
 
@@ -112,10 +112,10 @@ class RecruitmentList(HorillaListView):
     row_status_class = "closed-{closed}"
 
     sortby_mapping = [
-        ("Recruitment", "recruitment_column"),
-        ("Vaccancy", "vacancy"),
-        ("Start Date", "start_date"),
-        ("End date", "end_date"),
+        (_("Reclutamiento"), "recruitment_column"),
+        (_("Vacantes"), "vacancy"),
+        (_("Fecha Inicio"), "start_date"),
+        (_("Fecha Fin"), "end_date"),
     ]
 
     row_attrs = """
@@ -147,7 +147,7 @@ class RecruitmentNav(HorillaNavView):
                             data-toggle="oh-modal-toggle"
                             """
 
-    nav_title = _("Recruitment")
+    nav_title = _("Reclutamiento")
     filter_instance = RecruitmentFilter()
     filter_form_context_name = "form"
     search_swap_target = "#listContainer"
@@ -197,16 +197,21 @@ class RecruitmentCreationFormExtended(RecruitmentCreationForm):
             "description": forms.Textarea(attrs={"data-summernote": ""}),
         }
         labels = {
-            "description": _("Description"),
-            "start_date": _("Start Date"),
-            "end_date": _("End Date"),
-            "survey_templates": _("Survey Templates"),
-            "is_published": _("Is Published?"),
-            "vacancy": _("Vacancy"),
-            "open_positions": _("Job Position"),
+            "title": _("Título"),
+            "description": _("Descripción"),
+            "start_date": _("Fecha de Inicio"),
+            "end_date": _("Fecha de Fin"),
+            "survey_templates": _("Plantillas de Encuesta"),
+            "is_published": _("¿Publicado?"),
+            "vacancy": _("Vacantes"),
+            "open_positions": _("Puesto de Trabajo"),
             "recruitment_managers": _("Managers"),
-            "optional_profile_image": _("Optional Profile Image?"),
-            "optional_resume": _("Optional Resume?"),
+            "company_id": _("Empresa"),
+            "skills": _("Habilidades"),
+            "optional_profile_image": _("¿Foto de perfil opcional?"),
+            "optional_resume": _("¿CV opcional?"),
+            "publish_in_linkedin": _("Publicar en LinkedIn"),
+            "linkedin_account_id": _("Cuenta de LinkedIn"),
         }
 
 
@@ -222,7 +227,7 @@ class RecruitmentNewSkillForm(HorillaFormView):
 
     def form_valid(self, form: SkillsForm) -> HttpResponse:
         if form.is_valid():
-            message = _("New Skill Created Successfully")
+            message = _("Nueva habilidad creada exitosamente")
             form.save()
             messages.success(self.request, message)
             return self.HttpResponse()
@@ -240,7 +245,7 @@ class RecruitmentForm(HorillaFormView):
 
     model = Recruitment
     form_class = RecruitmentCreationFormExtended
-    new_display_title = _("Add Recruitment")
+    new_display_title = _("Nuevo Reclutamiento")
     dynamic_create_fields = [("skills", RecruitmentNewSkillForm)]
     template_name = "cbv/recruitment/recruitment_form.html"
 
@@ -251,7 +256,7 @@ class RecruitmentForm(HorillaFormView):
         context = super().get_context_data(**kwargs)
 
         if self.form.instance.pk:
-            self.form_class.verbose_name = "Edit Recruitment"
+            self.form_class.verbose_name = _("Editar Reclutamiento")
         return context
 
     def form_valid(self, form: RecruitmentCreationFormExtended) -> HttpResponse:
@@ -269,7 +274,7 @@ class RecruitmentForm(HorillaFormView):
                     post_recruitment_in_linkedin(
                         self.request, recruitment, recruitment.linkedin_account_id
                     )
-                message = _("Recruitment Updated Successfully")
+                message = _("Reclutamiento actualizado exitosamente")
             else:
                 recruitment = form.save()
                 recruitment_managers = self.request.POST.getlist("recruitment_managers")
@@ -279,7 +284,7 @@ class RecruitmentForm(HorillaFormView):
                     post_recruitment_in_linkedin(
                         self.request, recruitment, recruitment.linkedin_account_id
                     )
-                message = _("Recruitment Created Successfully")
+                message = _("Reclutamiento creado exitosamente")
             messages.success(self.request, message)
             if self.request.GET.get("pipeline") == "true":
                 return HttpResponse("<script>window.location.reload();</script>")
@@ -294,7 +299,7 @@ class AddCandidateFormView(HorillaFormView):
 
     form_class = AddCandidateForm
     model = Candidate
-    new_display_title = _("Add Candidate")
+    new_display_title = _("Agregar Candidato")
 
     def get_initial(self) -> dict:
         initial = super().get_initial()
@@ -306,7 +311,7 @@ class AddCandidateFormView(HorillaFormView):
 
     def form_valid(self, form: AddCandidateForm) -> HttpResponse:
         if form.is_valid():
-            message = _("Candidate Added successfully.")
+            message = _("Candidato agregado exitosamente.")
             form.save()
             messages.success(self.request, message)
             return self.HttpResponse("<script>window.location.reload</script>")
@@ -337,11 +342,11 @@ class RecruitmentFormDuplicate(HorillaFormView):
                 if field.initial:
                     initial_value = field.initial
                 else:
-                    initial_value = f"{form.initial.get(field_name, '')} (copy)"
+                    initial_value = f"{form.initial.get(field_name, '')} (copia)"
                 form.initial[field_name] = initial_value
                 form.fields[field_name].initial = initial_value
         context["form"] = form
-        self.form_class.verbose_name = _("Duplicate")
+        self.form_class.verbose_name = _("Duplicar")
         return context
 
     def form_valid(self, form: RecruitmentCreationFormExtended) -> HttpResponse:
@@ -351,7 +356,7 @@ class RecruitmentFormDuplicate(HorillaFormView):
         form = self.form_class(self.request.POST)
         if form.is_valid():
             recruitment = form.save()
-            message = _("Recruitment added")
+            message = _("Reclutamiento agregado exitosamente")
             recruitment.save()
             recruitment_managers = self.request.POST.getlist("recruitment_managers")
             job_positions = self.request.POST.getlist("open_positions")
@@ -377,18 +382,18 @@ class RecruitmentDetailView(HorillaDetailedView):
     def __init__(self, **kwargs: Any) -> None:
         super().__init__(**kwargs)
         self.body = [
-            ("Managers", "managers_detail"),
-            ("Open Jobs", "open_job_detail"),
-            ("Vaccancy", "vacancy"),
-            ("Total Hires", "tot_hires"),
-            ("Start Date", "start_date"),
-            ("End date", "end_date"),
+            (_("Managers"), "managers_detail"),
+            (_("Puestos Abiertos"), "open_job_detail"),
+            (_("Vacantes"), "vacancy"),
+            (_("Total Contratados"), "tot_hires"),
+            (_("Fecha Inicio"), "start_date"),
+            (_("Fecha Fin"), "end_date"),
         ]
 
     action_method = "detail_actions"
 
     model = Recruitment
-    title = _("Details")
+    title = _("Detalles")
     header = {
         "title": "title",
         "subtitle": "status_col",

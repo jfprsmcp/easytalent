@@ -33,7 +33,7 @@
         </span>
         {% endfor %}
     </div>
-</div>
+</div> 
 {% else %}
 <div class="empty-state mb-3">
     <ion-icon name="briefcase-outline"></ion-icon>
@@ -106,12 +106,6 @@
     <a href="{% url 'company-onboarding-step5' %}" class="btn-next">
         {% trans "Siguiente" %}
         <ion-icon name="arrow-forward-outline"></ion-icon>
-    </a>
-</div>
-<div class="text-center mt-3">
-    <a href="{% url 'company-onboarding-step5' %}" class="skip-link">
-        {% trans "Saltar este paso" %}
-        <ion-icon name="arrow-forward-outline" style="font-size: 0.75rem;"></ion-icon>
     </a>
 </div>
 {% endblock %}

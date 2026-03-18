@@ -169,7 +169,7 @@ class ListCandidates(HorillaListView):
         ("Recruitment", "recruitment_id"),
         ("Job Position", "job_position_id"),
         ("Hired Date", "hired_date"),
-        ("Resume", "resume_pdf"),
+        ("Resume", "resume"),
     ]
     default_columns = columns
 

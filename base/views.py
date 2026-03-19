@@ -946,38 +946,26 @@ def register_user(request):
                     city="Santa Cruz",  # Valor por defecto
                 )
 
-                # Create EmployeeWorkInformation with all required fields
+                # Update EmployeeWorkInformation (auto-created by Employee.save())
                 from employee.models import EmployeeWorkInformation
 
-                work_info, created = EmployeeWorkInformation.objects.get_or_create(
-                    employee_id=employee,
-                    defaults={
-                        "company_id": company,
-                        "location": "Bolivia",
-                        "email": email,
-                        "mobile": phone,
-                        "date_joining": date.today(),
-                        "basic_salary": 0,
-                        "salary_hour": 0,
-                        "additional_info": "",
-                        "experience": 0,
-                    }
-                )
-
-                if not created:
-                    work_info.employee_id = employee
-                    work_info.company_id = company
-                    work_info.location = "Bolivia"
-                    work_info.email = email
-                    work_info.mobile = phone
-                    work_info.date_joining = date.today()
-                    work_info.basic_salary = 0
-                    work_info.salary_hour = 0
-                    work_info.additional_info = ""
-                    work_info.experience = 0
-                    work_info.department_id = default_department
-                    work_info.employee_type_id = default_employee_type
-                    work_info.save()
+                work_info = EmployeeWorkInformation.objects.filter(
+                    employee_id=employee
+                ).first()
+                if not work_info:
+                    work_info = EmployeeWorkInformation.objects.create(
+                        employee_id=employee
+                    )
+                work_info.company_id = company
+                work_info.location = "Bolivia"
+                work_info.email = email
+                work_info.mobile = phone
+                work_info.date_joining = date.today()
+                work_info.basic_salary = 0
+                work_info.salary_hour = 0
+                work_info.additional_info = ""
+                work_info.experience = 0
+                work_info.save()
 
                 # Asignar rol 'user' al nuevo usuario en la tabla UserRole
                 from licenses.models import UserRole

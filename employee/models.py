@@ -666,9 +666,8 @@ class Employee(models.Model):
             user.user_permissions.add(view_ownprofile)
             user.user_permissions.add(change_ownprofile)
 
-        if not hasattr(self, "employee_work_info"):
-            EmployeeWorkInformation.objects.get_or_create(employee_id=self)
-            return self.save()
+        if not EmployeeWorkInformation.objects.filter(employee_id=self).exists():
+            EmployeeWorkInformation.objects.create(employee_id=self)
 
         return self
 

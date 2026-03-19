@@ -185,10 +185,70 @@ def needs_onboarding(user):
     return False
 
 
-# ─── Step 1: Welcome ─────────────────────────────────────────────────────────
+def _detect_current_step(company):
+    """Detect which onboarding step the company should resume from."""
+    from leave.models import LeaveType
+
+    # Step 2: Company profile — check if address is filled
+    if not company.address:
+        return 2
+
+    # Step 3: Departments
+    if not Department.objects.filter(company_id=company).exists():
+        return 3
+
+    # Step 4: Job positions
+    if not JobPosition.objects.filter(company_id=company).exists():
+        return 4
+
+    # Step 5: Schedules (shifts)
+    if not EmployeeShift.objects.filter(company_id=company).exists():
+        return 5
+
+    # Step 6: Employee types
+    if not EmployeeType.objects.filter(company_id=company).exists():
+        return 6
+
+    # Step 7: Work types
+    if not WorkType.objects.filter(company_id=company).exists():
+        return 7
+
+    # Step 8: Holidays
+    if not Holidays.objects.filter(company_id=company).exists():
+        return 8
+
+    # Step 9: Leave types
+    if not LeaveType.objects.filter(company_id=company).exists():
+        return 9
+
+    # All done — go to summary
+    return 10
+
+
+# ─── Step 1: Welcome / Router ────────────────────────────────────────────────
+
+STEP_ROUTES = {
+    2: "company-onboarding-step2",
+    3: "company-onboarding-step3",
+    4: "company-onboarding-step4",
+    5: "company-onboarding-step5",
+    6: "company-onboarding-step6",
+    7: "company-onboarding-step7",
+    8: "company-onboarding-step8",
+    9: "company-onboarding-step9",
+    10: "company-onboarding-step10",
+}
+
 
 @login_required
 def step1_welcome(request):
+    """Welcome step — if user already started onboarding, redirect to where they left off."""
+    company = _get_user_company(request)
+    if company and company.address:
+        # User already completed at least step 2, detect where they are
+        resume_step = _detect_current_step(company)
+        if resume_step in STEP_ROUTES:
+            return redirect(STEP_ROUTES[resume_step])
     return render(request, "company_onboarding/step_1_welcome.html", _wizard_context(1))
 
 

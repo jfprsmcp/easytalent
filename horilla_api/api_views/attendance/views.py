@@ -3,7 +3,7 @@ from datetime import date, datetime, timedelta, timezone
 from django import template
 from django.conf import settings
 from django.core.mail import EmailMessage
-from django.db.models import Case, CharField, F, Value, When
+from django.db.models import Case, CharField, F, Q, Value, When
 from django.http import QueryDict
 from django.shortcuts import get_object_or_404
 from django.utils.decorators import method_decorator
@@ -196,24 +196,36 @@ class AttendanceView(APIView):
     permission_classes = [IsAuthenticated]
     filterset_class = AttendanceFilters
 
-    def get_queryset(self, request, type):
-        if type == "ot":
+    def _get_company_filter(self, request):
+        """Get company filter for API requests (middleware doesn't work with JWT)."""
+        try:
+            company = request.user.employee_get.employee_work_info.company_id
+            if company:
+                return Q(employee_id__employee_work_info__company_id=company)
+        except (AttributeError, Exception):
+            pass
+        return Q()
 
+    def get_queryset(self, request, type):
+        company_filter = self._get_company_filter(request)
+
+        if type == "ot":
             condition = AttendanceValidationCondition.objects.first()
             minot = strtime_seconds("00:30")
             if condition is not None:
                 minot = strtime_seconds(condition.minimum_overtime_to_approve)
                 queryset = Attendance.objects.filter(
+                    company_filter,
                     overtime_second__gte=minot,
                     attendance_validated=True,
                 )
 
         elif type == "validated":
-            queryset = Attendance.objects.filter(attendance_validated=True)
+            queryset = Attendance.objects.filter(company_filter, attendance_validated=True)
         elif type == "non-validated":
-            queryset = Attendance.objects.filter(attendance_validated=False)
+            queryset = Attendance.objects.filter(company_filter, attendance_validated=False)
         else:
-            queryset = Attendance.objects.all()
+            queryset = Attendance.objects.filter(company_filter)
         user = request.user
         # checking user level permissions
         perm = "attendance.view_attendance"
@@ -405,13 +417,24 @@ class AttendanceRequestView(APIView):
     serializer_class = AttendanceRequestSerializer
     permission_classes = [IsAuthenticated]
 
+    def _get_company_filter(self, request):
+        try:
+            company = request.user.employee_get.employee_work_info.company_id
+            if company:
+                return Q(employee_id__employee_work_info__company_id=company)
+        except (AttributeError, Exception):
+            pass
+        return Q()
+
     def get(self, request, pk=None):
         if pk:
             attendance = Attendance.objects.get(id=pk)
             serializer = AttendanceRequestSerializer(instance=attendance)
             return Response(serializer.data, status=200)
 
+        company_filter = self._get_company_filter(request)
         requests = Attendance.objects.filter(
+            company_filter,
             is_validate_request=True,
         )
         requests = filtersubordinates(
@@ -420,6 +443,7 @@ class AttendanceRequestView(APIView):
             queryset=requests,
         )
         requests = requests | Attendance.objects.filter(
+            company_filter,
             employee_id__employee_user_id=request.user,
             is_validate_request=True,
         )
@@ -602,14 +626,25 @@ class AttendanceOverTimeView(APIView):
 
     permission_classes = [IsAuthenticated]
 
+    def _get_company_filter(self, request):
+        """Get company filter for API requests (middleware doesn't work with JWT)."""
+        try:
+            company = request.user.employee_get.employee_work_info.company_id
+            if company:
+                return Q(employee_id__employee_work_info__company_id=company)
+        except (AttributeError, Exception):
+            pass
+        return Q()
+
     def get(self, request, pk=None):
         if pk:
             attendance_ot = get_object_or_404(AttendanceOverTime, pk=pk)
             serializer = AttendanceOverTimeSerializer(attendance_ot)
             return Response(serializer.data, status=200)
 
+        company_filter = self._get_company_filter(request)
         filterset_class = AttendanceOverTimeFilter(request.GET)
-        queryset = filterset_class.qs
+        queryset = filterset_class.qs.filter(company_filter)
         self_account = queryset.filter(employee_id__employee_user_id=request.user)
         permission_based_queryset = filtersubordinates(
             request, queryset, "attendance.view_attendanceovertime"

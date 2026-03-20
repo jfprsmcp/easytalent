@@ -193,6 +193,10 @@ class CompanyMiddleware:
                     "attendance",
                     "attendanceactivity",
                     "attendanceovertime",
+                    "attendancelatecomeearlyout",
+                    "attendancevalidationcondition",
+                    "attendancegeneralsetting",
+                    "gracetime",
                     "workrecords",
                 ],
                 "payroll": [

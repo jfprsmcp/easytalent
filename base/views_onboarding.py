@@ -430,9 +430,11 @@ def step5_schedule(request):
                 shift.company_id.add(company)
 
                 for day_value in work_days:
-                    day_obj, _created = EmployeeShiftDay.objects.get_or_create(
+                    day_obj = EmployeeShiftDay.objects.filter(
                         day=day_value
-                    )
+                    ).first()
+                    if not day_obj:
+                        day_obj = EmployeeShiftDay.objects.create(day=day_value)
                     day_obj.company_id.add(company)
                     EmployeeShiftSchedule.objects.create(
                         shift_id=shift,

@@ -639,32 +639,31 @@ class Employee(models.Model):
             super().save(*args, **kwargs)
         employee = self
 
-        if employee.employee_user_id is None:
+        if employee.employee_user_id is None and self.email:
             # Create user if no corresponding user exists
             username = self.email
-            password = str(self.phone)
-
-            is_new_employee_flag = (
-                not employee.employee_user_id.is_new_employee
-                if employee.employee_user_id
-                else True
-            )
-            user = User.objects.create_user(
-                username=username,
-                email=username,
-                password=password,
-                is_new_employee=is_new_employee_flag,
-            )
-            if not user:
-                user = User.objects.create_user(
-                    username=username, email=username, password=password
+            password = str(self.phone) if self.phone else username
+            try:
+                user, created = User.objects.get_or_create(
+                    username=username,
+                    defaults={
+                        "email": username,
+                        "is_new_employee": True,
+                    },
                 )
-            self.employee_user_id = user
-            # default permissions
-            change_ownprofile = Permission.objects.get(codename="change_ownprofile")
-            view_ownprofile = Permission.objects.get(codename="view_ownprofile")
-            user.user_permissions.add(view_ownprofile)
-            user.user_permissions.add(change_ownprofile)
+                if created:
+                    user.set_password(password)
+                    user.save()
+                self.employee_user_id = user
+                # Persist the user link
+                Employee.objects.filter(id=self.id).update(employee_user_id=user)
+                # default permissions
+                change_ownprofile = Permission.objects.get(codename="change_ownprofile")
+                view_ownprofile = Permission.objects.get(codename="view_ownprofile")
+                user.user_permissions.add(view_ownprofile)
+                user.user_permissions.add(change_ownprofile)
+            except Exception:
+                pass
 
         if not EmployeeWorkInformation.objects.filter(employee_id=self).exists():
             EmployeeWorkInformation.objects.create(employee_id=self)

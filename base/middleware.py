@@ -198,6 +198,9 @@ class CompanyMiddleware:
                     "attendancegeneralsetting",
                     "gracetime",
                     "workrecords",
+                    "batchattendance",
+                    "attendancerequestfile",
+                    "attendancerequestcomment",
                 ],
                 "payroll": [
                     "contract",

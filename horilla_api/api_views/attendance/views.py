@@ -70,14 +70,19 @@ class ClockInAPIView(APIView):
     def post(self, request):
         if not request.user.employee_get.check_online():
             try:
-                if request.user.employee_get.get_company().geo_fencing.start:
-                    from geofencing.views import GeoFencingEmployeeLocationCheckAPIView
+                company = request.user.employee_get.get_company()
+                if hasattr(company, 'geo_fencing') and company.geo_fencing and company.geo_fencing.start:
+                    # Solo validar geofencing si hay coordenadas reales (no 0,0)
+                    lat = request.data.get("latitude", 0)
+                    lng = request.data.get("longitude", 0)
+                    if lat and lng and (float(lat) != 0.0 or float(lng) != 0.0):
+                        from geofencing.views import GeoFencingEmployeeLocationCheckAPIView
 
-                    location_api_view = GeoFencingEmployeeLocationCheckAPIView()
-                    response = location_api_view.post(request)
-                    if response.status_code != 200:
-                        return response
-            except:
+                        location_api_view = GeoFencingEmployeeLocationCheckAPIView()
+                        response = location_api_view.post(request)
+                        if response.status_code != 200:
+                            return response
+            except Exception:
                 pass
             employee, work_info = employee_exists(request)
             datetime_now = datetime.now()
@@ -150,34 +155,61 @@ class ClockOutAPIView(APIView):
     def post(self, request):
 
         try:
-            if request.user.employee_get.get_company().geo_fencing.start:
-                from geofencing.views import GeoFencingEmployeeLocationCheckAPIView
+            company = request.user.employee_get.get_company()
+            if hasattr(company, 'geo_fencing') and company.geo_fencing and company.geo_fencing.start:
+                lat = request.data.get("latitude", 0)
+                lng = request.data.get("longitude", 0)
+                if lat and lng and (float(lat) != 0.0 or float(lng) != 0.0):
+                    from geofencing.views import GeoFencingEmployeeLocationCheckAPIView
 
-                location_api_view = GeoFencingEmployeeLocationCheckAPIView()
-                response = location_api_view.post(request)
-                if response.status_code != 200:
-                    return response
-        except:
+                    location_api_view = GeoFencingEmployeeLocationCheckAPIView()
+                    response = location_api_view.post(request)
+                    if response.status_code != 200:
+                        return response
+        except Exception:
             pass
         if request.user.employee_get.check_online():
-            current_date = date.today()
-            current_time = datetime.now().time()
-            current_datetime = datetime.now()
-
             try:
-                clock_out(
-                    Request(
-                        user=request.user,
-                        date=current_date,
-                        time=current_time,
-                        datetime=current_datetime,
-                    )
+                employee = request.user.employee_get
+                date_today = date.today()
+                now = datetime.now().strftime("%H:%M")
+                out_datetime = datetime.now()
+
+                clock_out_attendance_and_activity(
+                    employee=employee,
+                    date_today=date_today,
+                    now=now,
+                    out_datetime=out_datetime,
                 )
+
+                # Calcular early_out
+                work_info = employee.employee_work_info
+                if work_info and work_info.shift_id:
+                    shift = work_info.shift_id
+                    attendance = (
+                        Attendance.objects.filter(employee_id=employee)
+                        .order_by("id", "attendance_date")
+                        .last()
+                    )
+                    if attendance:
+                        day = attendance.attendance_day
+                        minimum_hour, start_time_sec, end_time_sec = shift_schedule_today(
+                            day=day, shift=shift
+                        )
+                        early_out_instance = attendance.late_come_early_out.filter(type="early_out")
+                        if not early_out_instance.exists():
+                            early_out(
+                                attendance=attendance,
+                                start_time=start_time_sec,
+                                end_time=end_time_sec,
+                                shift=shift,
+                            )
+
                 return Response({"message": "Clocked-Out"}, status=200)
 
             except Exception as error:
-                logger.error("Got an error in clock_out", error)
-            # return Response({"message": "Clocked-Out"}, status=200)
+                logger.error("Got an error in clock_out: %s", error)
+                return Response({"message": str(error)}, status=500)
         return Response({"message": "Already clocked-out"}, status=400)
 
 

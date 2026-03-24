@@ -565,7 +565,7 @@ def attendance_bulk_delete(request):
 
     # Build response messages
     if success_count:
-        messages.success(request, f"{success_count} attendances deleted successfully.")
+        messages.success(request, __("{} asistencias eliminadas exitosamente.").format(success_count))
     for error in error_messages:
         messages.error(request, error)
     return redirect("/attendance/attendance-search")
@@ -2948,7 +2948,7 @@ def validate_ip_address(self, value):
     try:
         validate_ipv46_address(value)
     except ValidationError:
-        raise ValidationError("Enter a valid IPv4 or IPv6 address.")
+        raise ValidationError(__("Ingresa una dirección IPv4 o IPv6 válida."))
     return value
 
 
@@ -2980,7 +2980,7 @@ def create_allowed_ips(request):
                         existing_ips.union(non_duplicates)
                     )
                     allowed_ips.save()
-                    messages.success(request, "IP addresses saved successfully")
+                    messages.success(request, __("Direcciones IP guardadas exitosamente"))
                 else:
                     messages.info(
                         request,
@@ -2991,7 +2991,7 @@ def create_allowed_ips(request):
                 AttendanceAllowedIP.objects.create(
                     is_enabled=True, additional_data={"allowed_ips": ip_addresses}
                 )
-                messages.success(request, "IP addresses saved successfully")
+                messages.success(request, __("Direcciones IP guardadas exitosamente"))
 
             return HttpResponse("<script>window.location.reload()</script>")
     else:
@@ -3018,9 +3018,9 @@ def delete_allowed_ips(request):
         allowed_ips.additional_data["allowed_ips"] = ips
         allowed_ips.save()
 
-        messages.success(request, "IP address removed successfully")
+        messages.success(request, __("Dirección IP eliminada exitosamente"))
     except:
-        messages.error(request, "Invalid id")
+        messages.error(request, __("ID inválido"))
     return redirect("allowed-ips")
 
 
@@ -3032,7 +3032,7 @@ def edit_allowed_ips(request):
     """
     allowed_ips = AttendanceAllowedIP.objects.first()
     if not allowed_ips:
-        messages.error(request, "No allowed IPs found.")
+        messages.error(request, __("No se encontraron IPs permitidas."))
         return redirect("allowed-ips")
 
     ips = allowed_ips.additional_data.get("allowed_ips", [])
@@ -3054,18 +3054,18 @@ def edit_allowed_ips(request):
                 existing_ips = set(allowed_ips.additional_data.get("allowed_ips", []))
 
                 if new_ip in existing_ips:
-                    messages.error(request, "IP address already exists.")
+                    messages.error(request, __("La dirección IP ya existe."))
                 else:
                     existing_ips.discard(initial_ip)
                     existing_ips.add(new_ip)
 
                     allowed_ips.additional_data["allowed_ips"] = list(existing_ips)
                     allowed_ips.save()
-                    messages.success(request, "IP address updated successfully")
+                    messages.success(request, __("Dirección IP actualizada exitosamente"))
                 return HttpResponse("<script>window.location.reload()</script>")
 
     except (ValueError, IndexError):
-        messages.error(request, "Invalid ID provided.")
+        messages.error(request, __("ID proporcionado inválido."))
 
     return render(
         request,

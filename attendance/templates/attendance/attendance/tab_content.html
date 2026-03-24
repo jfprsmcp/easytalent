@@ -675,8 +675,8 @@
                                               showCancelButton: true,
                                               confirmButtonColor: '#3085d6',
                                               cancelButtonColor: '#d33',
-                                              confirmButtonText: 'Approve',
-                                              cancelButtonText: 'Cancel'
+                                              confirmButtonText: '{% trans "Aprobar" %}',
+                                              cancelButtonText: '{% trans "Cancelar" %}'
                                             }).then((result) => {
                                               if (result.isConfirmed) {
                                                 // Your approve action logic here
@@ -789,12 +789,12 @@
 
     function showSweetAlert(dataReqValue) {
         Swal.fire({
-            title: 'Pending Attendance Update Request!',
-            text: 'An attendance request exists for updating this attendance prior to validation.',
+            title: '{% trans "Solicitud de actualización pendiente" %}',
+            text: '{% trans "Existe una solicitud de asistencia para actualizar esta asistencia antes de la validación." %}',
             icon: 'warning',
-            confirmButtonText: 'View Request',
+            confirmButtonText: '{% trans "Ver solicitud" %}',
             showCancelButton: true,
-            cancelButtonText: 'Close',
+            cancelButtonText: '{% trans "Cerrar" %}',
             preConfirm: () => {
                 // Redirect to the page based on dataReqValue
                 localStorage.setItem("attendanceRequestActiveTab", "#tab_1")

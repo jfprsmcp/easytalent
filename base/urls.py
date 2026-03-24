@@ -200,7 +200,7 @@ urlpatterns = [
     ),
     path("404", views.custom404, name="404"),
     path("login/", views.login_user, name="login"),
-    path("register/", views.register_user, name="register"),
+    # path("register/", views.register_user, name="register"),  # Deshabilitado por seguridad - SIFON
     path(
         "forgot-password",
         views.HorillaPasswordResetView.as_view(),

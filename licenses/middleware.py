@@ -234,3 +234,33 @@ class AdminRestrictionMiddleware:
             return redirect("license_admin_dashboard")
 
         return self.get_response(request)
+
+
+from django.http import HttpResponseForbidden
+from django.conf import settings as django_settings
+
+class DjangoAdminIPRestrictionMiddleware:
+    """
+    Restringe acceso a /admin/ (Django admin) solo a IPs autorizadas.
+    Configurar ADMIN_ALLOWED_IPS en settings.py o .env.
+    Si no se configura, solo permite 127.0.0.1 y ::1 (localhost).
+    """
+    def __init__(self, get_response):
+        self.get_response = get_response
+        default_ips = ['127.0.0.1', '::1']
+        self.allowed_ips = getattr(django_settings, 'ADMIN_ALLOWED_IPS', default_ips)
+
+    def __call__(self, request):
+        if request.path.startswith('/admin/'):
+            ip = self._get_client_ip(request)
+            if ip not in self.allowed_ips:
+                return HttpResponseForbidden(
+                    '<h1>403 Forbidden</h1><p>Acceso restringido por IP.</p>'
+                )
+        return self.get_response(request)
+
+    def _get_client_ip(self, request):
+        x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+        if x_forwarded_for:
+            return x_forwarded_for.split(',')[0].strip()
+        return request.META.get('REMOTE_ADDR', '')

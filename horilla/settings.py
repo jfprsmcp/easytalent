@@ -101,6 +101,7 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     'licenses.middleware.LicenseMiddleware',
     'licenses.middleware.AdminRestrictionMiddleware',
+    'licenses.middleware.DjangoAdminIPRestrictionMiddleware',
 ]
 
 ROOT_URLCONF = "horilla.urls"

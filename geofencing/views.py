@@ -92,6 +92,21 @@ class GeoFencingSetupPutDeleteAPIView(APIView):
         raise serializers.ValidationError("Access Denied..")
 
 
+class GeoFencingStatusAPIView(APIView):
+    """Endpoint sin permisos especiales para que cualquier empleado sepa si geofencing está activo."""
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        try:
+            company = request.user.employee_get.get_company()
+            geo = GeoFencing.objects.filter(company_id=company).first()
+            if geo:
+                return Response({"start": geo.start}, status=status.HTTP_200_OK)
+            return Response({"start": False}, status=status.HTTP_200_OK)
+        except Exception:
+            return Response({"start": False}, status=status.HTTP_200_OK)
+
+
 class GeoFencingEmployeeLocationCheckAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -168,24 +183,38 @@ def get_company_location(request):
 
 
 @login_required
-@permission_required("geofencing.add_localbackup")
+@permission_required("geofencing.add_geofencing", raise_exception=True)
 def geo_location_config(request):
+    company = None
     try:
-        form = GeoFencingSetupForm(instance=get_company_location(request))
-    except:
-        form = GeoFencingSetupForm()
-    if request.method == "POST":
+        company = request.user.employee_get.get_company()
+    except Exception:
+        company = get_company(request)
+
+    instance = None
+    if company:
         try:
-            form = GeoFencingSetupForm(
-                request.POST, instance=get_company_location(request)
-            )
-        except:
-            form = GeoFencingSetupForm(request.POST)
+            instance = GeoFencing.objects.get(company_id=company)
+        except GeoFencing.DoesNotExist:
+            pass
+
+    if request.method == "POST":
+        form = GeoFencingSetupForm(request.POST, instance=instance)
         if form.is_valid():
             geofencing = form.save(commit=False)
-            geofencing.company_id = get_company(request)
+            geofencing.company_id = company
             geofencing.save()
-            messages.success(request, _("Geofencing config created successfully."))
+            messages.success(request, _("Configuración de geocerca guardada exitosamente."))
         else:
-            messages.info(request, "Not valid")
-    return render(request, "geo_config.html", {"form": form})
+            messages.error(request, _("Error al guardar la configuración."))
+    else:
+        form = GeoFencingSetupForm(instance=instance)
+
+    context = {
+        "form": form,
+        "saved_lat": instance.latitude if instance else "",
+        "saved_lng": instance.longitude if instance else "",
+        "saved_radius": instance.radius_in_meters if instance else 100,
+        "saved_start": instance.start if instance else False,
+    }
+    return render(request, "geo_config.html", context)

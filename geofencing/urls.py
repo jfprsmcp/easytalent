@@ -8,4 +8,5 @@ urlpatterns = [
     path("setup-check/", GeoFencingSetUpPermissionCheck.as_view()),
     path("location-check/", GeoFencingEmployeeLocationCheckAPIView.as_view()),
     path("config/", geo_location_config, name="geo-config"),
+    path("status/", GeoFencingStatusAPIView.as_view()),
 ]

@@ -137,28 +137,32 @@ def get_facedetection(request):
 
 
 @login_required
-@permission_required("geofencing.add_localbackup")
+@permission_required("facedetection.add_facedetection", raise_exception=True)
 @hx_request_required
 def face_detection_config(request):
+    company = None
     try:
-        form = FaceDetectionSetupForm(instance=get_facedetection(request))
-    except:
-        form = FaceDetectionSetupForm()
+        company = request.user.employee_get.get_company()
+    except Exception:
+        company = get_company(request)
+
+    instance = None
+    if company:
+        try:
+            instance = FaceDetection.objects.get(company_id=company)
+        except FaceDetection.DoesNotExist:
+            pass
 
     if request.method == "POST":
-        try:
-            form = FaceDetectionSetupForm(
-                request.POST, instance=get_facedetection(request)
-            )
-        except:
-            form = FaceDetectionSetupForm(request.POST)
+        form = FaceDetectionSetupForm(request.POST, instance=instance)
         if form.is_valid():
-            facedetection = form.save(
-                commit=False,
-            )
-            facedetection.company_id = get_company(request)
+            facedetection = form.save(commit=False)
+            facedetection.company_id = company
             facedetection.save()
-            messages.success(request, _("facedetection config created successfully."))
+            messages.success(request, _("Configuración de detección facial guardada exitosamente."))
         else:
-            messages.info(request, "Not valid")
+            messages.error(request, _("Error al guardar la configuración."))
+    else:
+        form = FaceDetectionSetupForm(instance=instance)
+
     return render(request, "face_config.html", {"form": form})

@@ -1,4 +1,48 @@
-<form hx-post="{% url 'face-config' %}" hx-swap="none" hx-on-htmx-after-request="$('#reloadMessagesButton').click();">
-    {% csrf_token %}
-    {{form.as_p}}
-</form>
+{% load i18n %}
+
+<div style="margin-bottom: 24px;">
+    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 16px;">
+        <ion-icon name="scan-outline" style="font-size: 24px; color: #8b5cf6;"></ion-icon>
+        <h4 style="margin: 0; font-weight: 700;">{% trans "Configuración de Detección Facial" %}</h4>
+    </div>
+    <p style="color: #6b7280; font-size: 14px; margin-bottom: 16px;">
+        {% trans "Activa la verificación facial para que los empleados confirmen su identidad al marcar asistencia." %}
+    </p>
+
+    <form hx-post="{% url 'face-config' %}" hx-swap="none" hx-on-htmx-after-request="$('#reloadMessagesButton').click(); setTimeout(function(){ htmx.ajax('GET', '{% url 'face-config' %}', {target: '#face', swap: 'innerHTML'}); }, 500);">
+        {% csrf_token %}
+
+        <!-- Activar/Desactivar -->
+        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 20px; padding: 16px; background: #f9fafb; border-radius: 12px; border: 1px solid #e5e7eb;">
+            <div style="flex: 1;">
+                <label style="font-weight: 600; font-size: 14px; color: #1f2937;">{% trans "Activar Detección Facial" %}</label>
+                <p style="margin: 4px 0 0; font-size: 12px; color: #6b7280;">{% trans "Cuando está activa, los empleados deberán escanear su rostro para marcar entrada y salida." %}</p>
+            </div>
+            <div class="oh-switch">
+                <input type="checkbox" name="start" id="id_face_start" class="oh-switch__checkbox"
+                    {% if form.start.value %}checked{% endif %} />
+            </div>
+        </div>
+
+        <div style="padding: 12px 16px; background: #faf5ff; border-radius: 8px; border: 1px solid #e9d5ff; margin-bottom: 16px;">
+            <div style="display: flex; align-items: start; gap: 8px;">
+                <ion-icon name="information-circle-outline" style="font-size: 18px; color: #8b5cf6; margin-top: 2px;"></ion-icon>
+                <div style="font-size: 12px; color: #6b21a8;">
+                    <p style="margin: 0 0 4px;"><strong>{% trans "Requisitos:" %}</strong></p>
+                    <ul style="margin: 0; padding-left: 16px;">
+                        <li>{% trans "Cada empleado debe configurar su imagen facial desde la aplicación móvil." %}</li>
+                        <li>{% trans "La comparación se realiza localmente en el dispositivo del empleado." %}</li>
+                        <li>{% trans "Se requiere una cámara frontal funcional en el dispositivo." %}</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div style="display: flex; justify-content: flex-end; margin-top: 16px;">
+            <button type="submit" class="oh-btn oh-btn--secondary">
+                <ion-icon name="save-outline" style="margin-right: 6px;"></ion-icon>
+                {% trans "Guardar Configuración" %}
+            </button>
+        </div>
+    </form>
+</div>

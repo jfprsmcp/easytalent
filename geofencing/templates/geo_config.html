@@ -1,5 +1,256 @@
-<form hx-post="{% url 'geo-config' %}" hx-swap="none" hx-on-htmx-after-request="$('#reloadMessagesButton').click();">
-    {% csrf_token %}
-    {{form.as_p}}
+{% load i18n %}
 
-</form>
+<style>
+    #geoMap { z-index: 1 !important; cursor: crosshair !important; min-height: 250px; }
+    #geoMap * { touch-action: auto !important; }
+    .geo-radius-slider {
+        -webkit-appearance: none; appearance: none; width: 100%; height: 8px;
+        border-radius: 4px; background: linear-gradient(to right, #fed7aa, #f97316); outline: none;
+    }
+    .geo-radius-slider::-webkit-slider-thumb {
+        -webkit-appearance: none; appearance: none; width: 22px; height: 22px; border-radius: 50%;
+        background: #f97316; cursor: pointer; border: 3px solid white; box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    }
+    .geo-radius-slider::-moz-range-thumb {
+        width: 22px; height: 22px; border-radius: 50%; background: #f97316;
+        cursor: pointer; border: 3px solid white; box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    }
+    .geo-config-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    @media (max-width: 600px) { .geo-config-grid { grid-template-columns: 1fr; } }
+</style>
+
+<!-- Valores guardados desde el servidor -->
+<div id="geo-saved-lat" data-value="{{ saved_lat }}" style="display:none;"></div>
+<div id="geo-saved-lng" data-value="{{ saved_lng }}" style="display:none;"></div>
+<div id="geo-saved-radius" data-value="{{ saved_radius }}" style="display:none;"></div>
+<div id="geo-saved-start" data-value="{{ saved_start }}" style="display:none;"></div>
+
+<div style="margin-bottom: 24px;">
+    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 16px;">
+        <ion-icon name="location-outline" style="font-size: 24px; color: #f97316;"></ion-icon>
+        <h4 style="margin: 0; font-weight: 700;">{% trans "Configuración de Geocerca" %}</h4>
+    </div>
+    <p style="color: #6b7280; font-size: 14px; margin-bottom: 16px;">
+        {% trans "Define la ubicación y el radio permitido para que los empleados puedan marcar asistencia." %}
+    </p>
+
+    <form id="geoConfigForm" hx-post="{% url 'geo-config' %}" hx-swap="none"
+          hx-on-htmx-after-request="$('#reloadMessagesButton').click(); setTimeout(function(){ htmx.ajax('GET', '{% url 'geo-config' %}', {target: '#geo', swap: 'innerHTML'}); }, 500);">
+        {% csrf_token %}
+
+        <!-- Activar/Desactivar -->
+        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 20px; padding: 16px; background: #f9fafb; border-radius: 12px; border: 1px solid #e5e7eb;">
+            <div style="flex: 1;">
+                <label style="font-weight: 600; font-size: 14px; color: #1f2937;">{% trans "Activar Geocerca" %}</label>
+                <p style="margin: 4px 0 0; font-size: 12px; color: #6b7280;">{% trans "Cuando está activa, los empleados solo podrán marcar asistencia dentro del radio definido." %}</p>
+            </div>
+            <div class="oh-switch">
+                <input type="checkbox" name="start" id="id_start" class="oh-switch__checkbox"
+                    {% if saved_start %}checked{% endif %}
+                    onchange="toggleGeoFields(this.checked)" />
+            </div>
+        </div>
+
+        <!-- Mapa y campos -->
+        <div id="geoMapContainer" style="{% if not saved_start %}opacity: 0.5; pointer-events: none;{% endif %}">
+            <div id="geoMap" style="width: 100%; height: 50vh; min-height: 250px; max-height: 500px; border-radius: 12px; border: 2px solid #d1d5db; margin-bottom: 16px;"></div>
+
+            <!-- Slider de radio -->
+            <div style="margin-bottom: 16px; padding: 16px 20px; background: #fff7ed; border-radius: 10px; border: 1px solid #fed7aa;">
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
+                    <label style="font-weight: 600; font-size: 14px; color: #9a3412;">
+                        <ion-icon name="resize-outline" style="vertical-align: middle; margin-right: 4px;"></ion-icon>
+                        {% trans "Radio de la geocerca" %}
+                    </label>
+                    <span id="radiusDisplay" style="font-weight: 700; font-size: 16px; color: #f97316; background: white; padding: 4px 12px; border-radius: 20px; border: 1px solid #fed7aa;"></span>
+                </div>
+                <input type="range" id="id_radius_slider" class="geo-radius-slider" min="10" max="5000" step="10" value="100" />
+                <div style="display: flex; justify-content: space-between; font-size: 11px; color: #9a3412; margin-top: 4px;">
+                    <span>10 m</span><span>500 m</span><span>1 km</span><span>2.5 km</span><span>5 km</span>
+                </div>
+                <input type="hidden" name="radius_in_meters" id="id_radius_in_meters" value="100" />
+            </div>
+
+            <!-- Coordenadas -->
+            <div class="geo-config-grid" style="margin-bottom: 16px;">
+                <div>
+                    <label for="id_latitude" style="font-weight: 600; font-size: 13px; color: #374151;">{% trans "Latitud" %}</label>
+                    <input type="text" inputmode="decimal" name="latitude" id="id_latitude"
+                        class="oh-input w-100" placeholder="-17.7833" required />
+                </div>
+                <div>
+                    <label for="id_longitude" style="font-weight: 600; font-size: 13px; color: #374151;">{% trans "Longitud" %}</label>
+                    <input type="text" inputmode="decimal" name="longitude" id="id_longitude"
+                        class="oh-input w-100" placeholder="-63.1821" required />
+                </div>
+            </div>
+
+            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px; padding: 10px 14px; background: #eff6ff; border-radius: 8px; border: 1px solid #bfdbfe;">
+                <ion-icon name="information-circle-outline" style="font-size: 18px; color: #3b82f6;"></ion-icon>
+                <span style="font-size: 12px; color: #1e40af;">{% trans "Haz clic en el mapa para seleccionar la ubicación. Arrastra el marcador para ajustar. Usa el slider para cambiar el radio." %}</span>
+            </div>
+        </div>
+
+        <div style="display: flex; justify-content: flex-end; margin-top: 16px;">
+            <button type="submit" class="oh-btn oh-btn--secondary">
+                <ion-icon name="save-outline" style="margin-right: 6px;"></ion-icon>
+                {% trans "Guardar Configuración" %}
+            </button>
+        </div>
+    </form>
+</div>
+
+<script>
+function initGeoMap() {
+    if (typeof L === 'undefined') {
+        setTimeout(initGeoMap, 300);
+        return;
+    }
+
+    var mapEl = document.getElementById('geoMap');
+    if (!mapEl) { setTimeout(initGeoMap, 300); return; }
+
+    // Limpiar mapa anterior si existe
+    if (mapEl._leaflet_id) {
+        mapEl._leaflet_id = null;
+        mapEl.innerHTML = '';
+    }
+
+    // 1. Cargar valores guardados del servidor desde data attributes
+    var defaultLat = -17.7833;
+    var defaultLng = -63.1821;
+    var savedLatStr = (document.getElementById('geo-saved-lat') || {}).getAttribute('data-value') || '';
+    var savedLngStr = (document.getElementById('geo-saved-lng') || {}).getAttribute('data-value') || '';
+    var savedRadStr = (document.getElementById('geo-saved-radius') || {}).getAttribute('data-value') || '100';
+
+    var lat = savedLatStr ? parseFloat(savedLatStr) : defaultLat;
+    var lng = savedLngStr ? parseFloat(savedLngStr) : defaultLng;
+    var radius = savedRadStr ? parseInt(savedRadStr) : 100;
+
+    if (isNaN(lat)) lat = defaultLat;
+    if (isNaN(lng)) lng = defaultLng;
+    if (isNaN(radius) || radius < 10) radius = 100;
+
+    console.log('[GEO-MAP] Valores cargados: lat=' + lat + ', lng=' + lng + ', radius=' + radius);
+
+    // 2. Setear inputs con valores guardados
+    document.getElementById('id_latitude').value = lat;
+    document.getElementById('id_longitude').value = lng;
+    document.getElementById('id_radius_in_meters').value = radius;
+    document.getElementById('id_radius_slider').value = radius;
+    updateRadiusLabel(radius);
+
+    // 3. Crear mapa centrado en la ubicación guardada
+    var map = L.map('geoMap', {
+        center: [lat, lng],
+        zoom: 15,
+        scrollWheelZoom: true,
+        dragging: true,
+        zoomControl: true,
+        doubleClickZoom: true,
+        boxZoom: true,
+        keyboard: true,
+        touchZoom: true,
+    });
+
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+        attribution: '&copy; OpenStreetMap &copy; CARTO',
+        maxZoom: 19,
+        subdomains: 'abcd',
+    }).addTo(map);
+
+    // 4. Marcador arrastrable en la ubicación guardada
+    var marker = L.marker([lat, lng], { draggable: true, autoPan: true }).addTo(map);
+
+    // 5. Círculo de radio en la ubicación guardada
+    var circle = L.circle([lat, lng], {
+        radius: radius,
+        color: '#f97316',
+        fillColor: '#f97316',
+        fillOpacity: 0.12,
+        weight: 2,
+        dashArray: '8, 4',
+    }).addTo(map);
+
+    // Ajustar zoom al radio
+    if (radius > 50) {
+        map.fitBounds(circle.getBounds().pad(0.3));
+    }
+
+    // --- EVENTOS ---
+
+    // Click en mapa → actualiza inputs
+    map.on('click', function(e) {
+        var newLat = e.latlng.lat.toFixed(8);
+        var newLng = e.latlng.lng.toFixed(8);
+        marker.setLatLng(e.latlng);
+        circle.setLatLng(e.latlng);
+        document.getElementById('id_latitude').value = newLat;
+        document.getElementById('id_longitude').value = newLng;
+    });
+
+    // Arrastrar marcador → actualiza inputs
+    marker.on('dragend', function() {
+        var pos = marker.getLatLng();
+        circle.setLatLng(pos);
+        document.getElementById('id_latitude').value = pos.lat.toFixed(8);
+        document.getElementById('id_longitude').value = pos.lng.toFixed(8);
+    });
+
+    // Editar input lat → actualiza mapa
+    document.getElementById('id_latitude').addEventListener('change', function() {
+        var newLat = parseFloat(this.value);
+        var newLng = parseFloat(document.getElementById('id_longitude').value);
+        if (!isNaN(newLat) && !isNaN(newLng)) {
+            marker.setLatLng([newLat, newLng]);
+            circle.setLatLng([newLat, newLng]);
+            map.setView([newLat, newLng]);
+        }
+    });
+
+    // Editar input lng → actualiza mapa
+    document.getElementById('id_longitude').addEventListener('change', function() {
+        var newLat = parseFloat(document.getElementById('id_latitude').value);
+        var newLng = parseFloat(this.value);
+        if (!isNaN(newLat) && !isNaN(newLng)) {
+            marker.setLatLng([newLat, newLng]);
+            circle.setLatLng([newLat, newLng]);
+            map.setView([newLat, newLng]);
+        }
+    });
+
+    // Slider de radio → actualiza círculo
+    var slider = document.getElementById('id_radius_slider');
+    slider.addEventListener('input', function() {
+        var r = parseInt(this.value);
+        document.getElementById('id_radius_in_meters').value = r;
+        circle.setRadius(r);
+        updateRadiusLabel(r);
+    });
+    slider.addEventListener('change', function() {
+        var r = parseInt(this.value);
+        circle.setRadius(r);
+        map.fitBounds(circle.getBounds().pad(0.3));
+    });
+
+    // Fix mapa en contenedores HTMX
+    setTimeout(function() { map.invalidateSize(); }, 300);
+    setTimeout(function() { map.invalidateSize(); }, 800);
+}
+
+function updateRadiusLabel(r) {
+    var label = document.getElementById('radiusDisplay');
+    if (label) {
+        label.textContent = r >= 1000 ? (r / 1000).toFixed(1) + ' km' : r + ' m';
+    }
+}
+
+function toggleGeoFields(enabled) {
+    var container = document.getElementById('geoMapContainer');
+    container.style.opacity = enabled ? '1' : '0.5';
+    container.style.pointerEvents = enabled ? 'auto' : 'none';
+}
+
+// Inicializar
+initGeoMap();
+</script>

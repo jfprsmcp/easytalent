@@ -3375,10 +3375,10 @@ msgid "monday"
 msgstr "lunes"
 
 msgid "tuesday"
-msgstr "tutoría"
+msgstr "martes"
 
 msgid "wednesday"
-msgstr "novio"
+msgstr "miércoles"
 
 msgid "thursday"
 msgstr "jueves"

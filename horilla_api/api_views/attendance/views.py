@@ -933,49 +933,63 @@ class CheckingStatus(APIView):
         return f"{hours:02}:{minutes:02}:{seconds:02}"
 
     def get(self, request):
-        attendance_activity = (
-            AttendanceActivity.objects.filter(employee_id=request.user.employee_get)
+        employee = request.user.employee_get
+        today = datetime.now().date()
+
+        # Get today's latest activity (not all-time)
+        today_activity = (
+            AttendanceActivity.objects.filter(
+                employee_id=employee, clock_in_date=today
+            )
             .order_by("-id")
             .first()
         )
-        duration = None
-        work_seconds = request.user.employee_get.get_forecasted_at_work()[
-            "forecasted_at_work_seconds"
-        ]
-        duration = CheckingStatus._format_seconds(int(work_seconds))
-        status = False
-        clock_in_time = None
 
-        today = datetime.now()
-        attendance_activity_first = (
+        # Get today's first activity for clock_in_time display
+        today_first_activity = (
             AttendanceActivity.objects.filter(
-                employee_id=request.user.employee_get, clock_in_date=today
+                employee_id=employee, clock_in_date=today
             )
             .order_by("in_datetime")
             .first()
         )
-        if attendance_activity:
+
+        # Calculate today's worked duration only
+        today_activities = AttendanceActivity.objects.filter(
+            employee_id=employee, clock_in_date=today
+        )
+        total_seconds = 0
+        for act in today_activities:
+            if act.in_datetime:
+                out = act.out_datetime if act.out_datetime else datetime.now(timezone.utc)
+                diff = (out - act.in_datetime).total_seconds()
+                total_seconds += max(0, diff)
+
+        duration = CheckingStatus._format_seconds(int(total_seconds))
+        status = False
+        clock_in_time = None
+
+        if today_activity:
             try:
-                clock_in_time = attendance_activity_first.clock_in.strftime("%I:%M %p")
-                if attendance_activity.clock_out_date:
-                    status = False
-                else:
+                if today_first_activity:
+                    clock_in_time = today_first_activity.clock_in.strftime("%I:%M %p")
+
+                if today_activity.clock_out_date is None and today_activity.out_datetime is None:
+                    # Currently clocked in
                     status = True
-                    return Response(
-                        {
-                            "status": status,
-                            "duration": duration,
-                            "clock_in": clock_in_time,
-                        },
-                        status=200,
-                    )
-            except:
-                return Response(
-                    {"status": status, "duration": duration, "clock_in": clock_in_time},
-                    status=200,
-                )
+                else:
+                    # Already clocked out
+                    status = False
+            except Exception:
+                pass
+
         return Response(
-            {"status": status, "duration": duration, "clock_in_time": clock_in_time},
+            {
+                "status": status,
+                "duration": duration,
+                "clock_in": clock_in_time,
+                "clock_in_time": clock_in_time,
+            },
             status=200,
         )
 

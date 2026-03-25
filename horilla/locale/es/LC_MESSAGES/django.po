@@ -33,7 +33,7 @@ msgid "Exclude Employees"
 msgstr "Excluir Empleados"
 
 msgid "Job Position"
-msgstr "Posición del trabajo"
+msgstr "Puesto de Trabajo"
 
 msgid "Department"
 msgstr "Departamento"
@@ -45,13 +45,13 @@ msgid "Employee Type"
 msgstr "Tipo de empleado"
 
 msgid "Job Role"
-msgstr "Rol de trabajo"
+msgstr "Rol del Puesto"
 
 msgid "Company"
 msgstr "Empresa"
 
 msgid "Shift"
-msgstr "Cambio"
+msgstr "Turno"
 
 msgid "Tags"
 msgstr "Etiquetas"
@@ -717,7 +717,7 @@ msgid "Pending Hours"
 msgstr "Horas pendientes"
 
 msgid "Overtime"
-msgstr "Extraño"
+msgstr "Horas Extra"
 
 msgid "<span title='Do not Auto Validate Attendance if an Employee Works More Than this Amount of Duration'>{}</span>"
 msgstr "<span title='Do not Auto Validate Attendance if an Employee Works More Than this Amount of Duration'>{}</span>"
@@ -726,10 +726,10 @@ msgid "Worked Hours(At Work) Auto Approve Till"
 msgstr "Horas Trabajadas (En Trabajo) Auto-Aprobar hasta"
 
 msgid "Minimum Hour to Approve Overtime"
-msgstr "Hora Mínima de Aprobación Extraordinaria"
+msgstr "Hora mínima para aprobar horas extra"
 
 msgid "Maximum Allowed Overtime Per Day"
-msgstr "Máximo permitido demora por día"
+msgstr "Máximo de horas extra permitido por día"
 
 msgid "Create Bulk"
 msgstr "Crear en masa"
@@ -738,10 +738,10 @@ msgid "Employee work info not found"
 msgstr "Información de trabajo del empleado no encontrada"
 
 msgid "Allcocate this grace time for Check-In Attendance"
-msgstr "Preparar este tiempo de gracia para la asistencia al registro"
+msgstr "Asignar este tiempo de gracia para la entrada de asistencia"
 
 msgid "Assign Shifts"
-msgstr "Asignar Mayús"
+msgstr "Asignar Turnos"
 
 msgid "From Date"
 msgstr "Desde fecha"
@@ -792,19 +792,19 @@ msgid "Attendance Date"
 msgstr "Fecha de asistencia"
 
 msgid "Shift Day"
-msgstr "Día de cambio"
+msgstr "Día del turno"
 
 msgid "In Date"
-msgstr "En Fecha"
+msgstr "Fecha de Entrada"
 
 msgid "Check In"
-msgstr "Registrar"
+msgstr "Entrada"
 
 msgid "Out Date"
-msgstr "Salida"
+msgstr "Fecha de Salida"
 
 msgid "Check Out"
-msgstr "Comprobar"
+msgstr "Salida"
 
 msgid "Create Request"
 msgstr "Crear Solicitud"
@@ -825,19 +825,19 @@ msgid "Check-In Date"
 msgstr "Fecha de llegada"
 
 msgid "Check-In"
-msgstr "Inicia"
+msgstr "Entrada"
 
 msgid "First Check-In Time"
-msgstr "Primer registro a tiempo"
+msgstr "Hora de primera entrada"
 
 msgid "Check-Out Date"
 msgstr "Fecha de salida"
 
 msgid "Check-Out"
-msgstr "Salir"
+msgstr "Salida"
 
 msgid "Last Check-Out Time"
-msgstr "Última hora de salida"
+msgstr "Hora de última salida"
 
 msgid "Minimum hour"
 msgstr "Hora mínima"
@@ -846,13 +846,13 @@ msgid "Batch Attendance"
 msgstr "Asistencia en Lote"
 
 msgid "Overtime Approve"
-msgstr "Aprobar con retraso"
+msgstr "Aprobar Horas Extra"
 
 msgid "Attendance Validate"
-msgstr "Attendance Validate"
+msgstr "Validar Asistencia"
 
 msgid "Overtime In Second"
-msgstr "Más tarde en segundo"
+msgstr "Horas Extra en segundos"
 
 msgid "Is validate request"
 msgstr "Es validar la solicitud"
@@ -882,16 +882,16 @@ msgid "Overtime Seconds"
 msgstr "Segundos de tiempo excesivo"
 
 msgid "Hour Account"
-msgstr "Hora de cuenta"
+msgstr "Cuenta de Horas"
 
 msgid "Hour Accounts"
-msgstr "Cuentas Horas"
+msgstr "Cuentas de Horas"
 
 msgid "Year must be an integer value between 1900 and 2100"
 msgstr "Año debe ser un valor entero entre 1900 y 2100"
 
 msgid "Late Come"
-msgstr "Tarde Llegada"
+msgstr "Llegada Tardía"
 
 msgid "Early Out"
 msgstr "Salir temprano"
@@ -912,13 +912,13 @@ msgid "Allowed Time"
 msgstr "Tiempo permitido"
 
 msgid "Allowed Clock-In"
-msgstr "Reloj permitido"
+msgstr "Entrada permitida"
 
 msgid "Allcocate this grace time for Check-Out Attendance"
 msgstr "Apagar este tiempo de gracia para la asistencia de salida"
 
 msgid "Allowed Clock-Out"
-msgstr "Bloqueo permitido"
+msgstr "Salida permitida"
 
 msgid "There is already a default grace time that exists."
 msgstr "Ya existe un tiempo de gracia predeterminado que existe."
@@ -966,7 +966,7 @@ msgid "Attendance Activities"
 msgstr "Actividades de asistencia"
 
 msgid "Late Come Early Out"
-msgstr "Llegar tarde temprano"
+msgstr "Llegada tardía / Salida temprana"
 
 msgid "My Attendances"
 msgstr "Mis Asistencias"
@@ -993,10 +993,10 @@ msgid "Activities"
 msgstr "Actividades"
 
 msgid "Clock In"
-msgstr "Reloj"
+msgstr "Marcar Entrada"
 
 msgid "Clock Out"
-msgstr "Salir"
+msgstr "Marcar Salida"
 
 msgid "Add to batch"
 msgstr "Añadir al lote"
@@ -1023,7 +1023,7 @@ msgid "Work Info"
 msgstr "Info de Trabajo"
 
 msgid "Reporting Manager"
-msgstr "Gestor de informes"
+msgstr "Supervisor"
 
 msgid "Work Location"
 msgstr "Lugar de trabajo"
@@ -1044,13 +1044,13 @@ msgid "OT Approved?"
 msgstr "¿Aprobado OT?"
 
 msgid "Attendance From"
-msgstr "Asistencia de"
+msgstr "Asistencia Desde"
 
 msgid "In From"
-msgstr "En de"
+msgstr "Entrada Desde"
 
 msgid "Out From"
-msgstr "Fuera de"
+msgstr "Salida Desde"
 
 msgid "At Work Greater or Equal"
 msgstr "En Trabajo Mayor o Igual"
@@ -1059,25 +1059,25 @@ msgid "Pending Hour Greater or Equal"
 msgstr "Horas mayores o iguales pendientes"
 
 msgid "OT Greater or Equal"
-msgstr "OT Mayor o Igual"
+msgstr "Horas Extra Mayor o Igual"
 
 msgid "Attendance Till"
-msgstr "Attendance Till"
+msgstr "Asistencia Hasta"
 
 msgid "In Till"
-msgstr "In Till"
+msgstr "Entrada Hasta"
 
 msgid "Out Till"
-msgstr "Salir hasta"
+msgstr "Salida Hasta"
 
 msgid "At Work Less Than or Equal"
-msgstr "En el trabajo menos que o igual"
+msgstr "En Trabajo Menor o Igual"
 
 msgid "Pending Hour Less Than or Equal"
-msgstr "Esperando hora menor que o igual"
+msgstr "Horas Pendientes Menor o Igual"
 
 msgid "OT Less Than or Equal"
-msgstr "OT Menos que o Igual"
+msgstr "Horas Extra Menor o Igual"
 
 msgid "Search in : Day"
 msgstr "Buscar en: Día"
@@ -1210,7 +1210,7 @@ msgid "The attendances for this employee in %(month_name)s has not been validate
 msgstr "Las asistencias de este empleado en %(month_name)s no han sido validadas."
 
 msgid "Export Hour Accounts"
-msgstr "Exportar Cuentas Horas"
+msgstr "Exportar Cuentas de Horas"
 
 msgid "Worked Hours Greater or Equal"
 msgstr "Horas Mayor o Igual Trabajadas"
@@ -1381,10 +1381,10 @@ msgid "Is active"
 msgstr "Está activo"
 
 msgid "Applicable on clock-in"
-msgstr "Aplicable en el reloj"
+msgstr "Aplicable en la entrada"
 
 msgid "Applicable on clock-out"
-msgstr "Aplicable al reloj."
+msgstr "Aplicable en la salida"
 
 msgid "Hours"
 msgstr "Horas"
@@ -1435,13 +1435,13 @@ msgid "Add Allowed IPs"
 msgstr "Añadir permisos permitidos"
 
 msgid "Export Late Come Early Out"
-msgstr "Exportación tardía de salida temprana"
+msgstr "Exportar Llegadas Tardías / Salidas Tempranas"
 
 msgid "Late Come/Early Out"
-msgstr "Llegada tarde/temprano"
+msgstr "Llegada Tardía / Salida Temprana"
 
 msgid "Penalties"
-msgstr "Penicenciario"
+msgstr "Penalizaciones"
 
 msgid "Penalty"
 msgstr "Penalidad"
@@ -1459,7 +1459,7 @@ msgid "Attendance validated"
 msgstr "Asistencia validada"
 
 msgid "Penalties "
-msgstr "Penicenciario "
+msgstr "Penalizaciones "
 
 msgid "No penalties found."
 msgstr "No se encontraron penalizaciones."
@@ -1495,7 +1495,7 @@ msgid "Leave type is optional when 'minus leave' is 0"
 msgstr "El tipo de salida es opcional cuando 'menos leave' es 0"
 
 msgid "Penalty amount will affect payslip on the date"
-msgstr "El monto de la pena afectará a la factura en la fecha"
+msgstr "El monto de la penalización afectará la nómina en la fecha"
 
 msgid "By default minus leave will cut/deduct from available leaves"
 msgstr "Por defecto menos las bajas cortarán/deducir de las hojas disponibles"
@@ -1516,7 +1516,7 @@ msgid "At-Work Tracker"
 msgstr "Rastreador de At-Work"
 
 msgid "By enabling this feature user's will be able to see their current day worked hours in live on the navbar (inside the check in button)."
-msgstr "Al activar esta función, los usuarios podrán ver sus horas de trabajo de día en vivo en la barra de navegación (dentro del botón de facturación)."
+msgstr "Al activar esta función, los usuarios podrán ver sus horas trabajadas del día en vivo en la barra de navegación (dentro del botón de entrada)."
 
 msgid "save"
 msgstr "ahorra"
@@ -1697,7 +1697,7 @@ msgid "No validated Overtimes were found"
 msgstr "No se encontraron overtimes validados"
 
 msgid "Penalty/Fine added"
-msgstr "Penalización/Finalidad añadida"
+msgstr "Penalización/Multa añadida"
 
 msgid "Attendance request created"
 msgstr "Solicitud de asistencia creada"
@@ -1745,7 +1745,7 @@ msgid "Attendance Does not exists.."
 msgstr "Asistencia no existe.."
 
 msgid "Hour account deleted."
-msgstr "Hora de cuenta eliminada."
+msgstr "Cuenta de horas eliminada."
 
 msgid "Hour account not found"
 msgstr "Cuenta hora no encontrada"

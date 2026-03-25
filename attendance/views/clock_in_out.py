@@ -172,7 +172,7 @@ def clock_in_attendance_and_activity(
         attendance.work_type_id = attendance.employee_id.employee_work_info.work_type_id
         attendance.attendance_date = attendance_date
         attendance.attendance_day = day
-        attendance.attendance_clock_in = now
+        attendance.attendance_clock_in = now + ":00"
         attendance.attendance_clock_in_date = date_today
         attendance.minimum_hour = minimum_hour
         attendance.save()
@@ -344,10 +344,16 @@ def clock_out_attendance_and_activity(employee, date_today, now, out_datetime=No
             total_seconds = days_second + seconds
             duration = duration + total_seconds
         duration = format_time(duration)
-        # update clock out of attendance
-        attendance = Attendance.objects.filter(employee_id=employee).order_by(
-            "-attendance_date", "-id"
-        )[0]
+        # update clock out of attendance (filter by today's date to avoid updating old records)
+        attendance_qs = Attendance.objects.filter(
+            employee_id=employee,
+            attendance_date=attendance_activity.attendance_date,
+        )
+        if not attendance_qs.exists():
+            attendance_qs = Attendance.objects.filter(employee_id=employee).order_by(
+                "-attendance_date", "-id"
+            )
+        attendance = attendance_qs[0]
         attendance.attendance_clock_out = now + ":00"
         attendance.attendance_clock_out_date = date_today
         attendance.attendance_worked_hour = duration

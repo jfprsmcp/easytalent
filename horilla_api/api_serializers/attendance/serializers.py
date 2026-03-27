@@ -228,6 +228,19 @@ class UserAttendanceListSerializer(serializers.ModelSerializer):
 
 
 class UserAttendanceDetailedSerializer(serializers.ModelSerializer):
+    employee_first_name = serializers.CharField(
+        source="employee_id.employee_first_name", read_only=True, default=""
+    )
+    employee_last_name = serializers.CharField(
+        source="employee_id.employee_last_name", read_only=True, default=""
+    )
+    badge_id = serializers.CharField(
+        source="employee_id.badge_id", read_only=True, default=""
+    )
+    shift_name = serializers.CharField(
+        source="shift_id.employee_shift", read_only=True, default=None
+    )
+
     class Meta:
         model = Attendance
         fields = "__all__"

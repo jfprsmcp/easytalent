@@ -85,11 +85,17 @@ class ClockInAPIView(APIView):
             except Exception:
                 pass
             employee, work_info = employee_exists(request)
+            if not employee:
+                return Response({"message": "No se encontró el registro de empleado"}, status=400)
+            if work_info is None:
+                return Response({"message": "No tienes información laboral configurada. Contacta al administrador."}, status=400)
+            shift = work_info.shift_id
+            if shift is None:
+                return Response({"message": "No tienes un turno asignado. Contacta al administrador para que te asigne uno."}, status=400)
             datetime_now = datetime.now()
             if request.__dict__.get("datetime"):
                 datetime_now = request.datetime
             if employee and work_info is not None:
-                shift = work_info.shift_id
                 date_today = date.today()
                 if request.__dict__.get("date"):
                     date_today = request.date

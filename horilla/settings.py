@@ -242,7 +242,7 @@ LOCALE_PATHS = [
 
 LANGUAGE_CODE = "es"
 
-TIME_ZONE = env("TIME_ZONE", default="Asia/Kolkata")
+TIME_ZONE = env("TIME_ZONE", default="America/La_Paz")
 
 USE_I18N = True
 
